@@ -22,3 +22,21 @@ $("#settings-cf-test").on('click', function(e){
         alert('Please enter an API key and email address first.');
     }
 });
+
+$("#settings-purge-urls").click(function(e){
+    e.preventDefault();
+
+    $.ajax({
+        url: '/admin/actions/cloudflare/purgeUrls',
+        type: 'POST',
+        data: { "urls": $("#settings-urls").val() },
+        success: function(data){
+            $("#settings-urls").val('');
+            alert("URL(s) purged.");
+        },
+        error: function(data) {
+            alert('Failed.');
+            console.log(data);
+        }
+    });
+});

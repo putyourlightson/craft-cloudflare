@@ -85,7 +85,7 @@ class CloudflarePlugin extends BasePlugin
 		return array(
 			'apiKey'         => array(AttributeType::String, 'required' => true, 'label' => 'Cloudflare API Key'),
 			'email'          => array(AttributeType::String, 'required' => true, 'label' => 'Cloudflare Account Email'),
-			'zone'          => array(AttributeType::String, 'required' => true, 'label' => 'Cloudflare Zone'),
+			'zone'           => array(AttributeType::String, 'required' => true, 'label' => 'Cloudflare Zone'),
 			'userServiceKey' => array(AttributeType::String, 'required' => false, 'label' => 'Cloudflare User Service Key'),
 		);
 	}

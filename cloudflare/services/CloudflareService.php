@@ -127,12 +127,23 @@ class CloudflareService extends BaseApplicationComponent
 
     public function purgeUrls($urls = array(), $tags = array())
     {
+        // trim whitespace from each URL
+        $urls = array_map('trim', $urls);
+
+        // remove any invalid URLs
+        for ($i=0; $i < count($urls); $i++)
+        {
+            if (filter_var($urls[$i], FILTER_VALIDATE_URL) === false)
+            {
+                unset($urls[$i]);
+            }
+        }
+
+        // don't do anything if URLs are missing
         if (count($urls) === 0)
         {
             return;
         }
-
-        // TODO: make sure we have *valid* URLs, too
 
         try
         {

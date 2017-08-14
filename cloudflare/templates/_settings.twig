@@ -1,10 +1,5 @@
 {% import "_includes/forms" as forms %}
 
-{% set embedJs %}
-window.CLOUDFLARE_API_BASE_URL = "{{ craft.cloudflare.apiBaseUrl }}";
-{% endset %}
-
-{% includeJs embedJs %}
 {% includeJsResource "cloudflare/js/settings.js" %}
 
 {{ forms.textField({
@@ -21,7 +16,6 @@ window.CLOUDFLARE_API_BASE_URL = "{{ craft.cloudflare.apiBaseUrl }}";
 }) }}
 
 {{ forms.textField({
-    first: true,
     label: 'Cloudflare Account Email'|t,
     id: 'email',
     required: true,
@@ -38,7 +32,6 @@ window.CLOUDFLARE_API_BASE_URL = "{{ craft.cloudflare.apiBaseUrl }}";
 <br>
 
 {{ forms.selectField({
-    first: true,
     label: 'Cloudflare Zone'|t,
     id: 'zone',
     required: true,
@@ -47,11 +40,26 @@ window.CLOUDFLARE_API_BASE_URL = "{{ craft.cloudflare.apiBaseUrl }}";
     value: settings.zone,
     autofocus: true,
     errors: settings.getErrors('zone'),
-    instructions: "Specify which Cloudflare Zone is tied to this site."
+    instructions: "Specify which Cloudflare Zone is utilized by this site."
 }) }}
 
 {% if settings.apiKey and settings.email and settings.zone %}
     <hr>
     <a href="/admin/actions/cloudflare/purgeAll" class="btn">Purge Cloudflare Cache</a>
+
+    <hr>
+
+    {{ forms.textareaField({
+        label: 'Purge Individual URLs'|t,
+        id: 'urls',
+        required: false,
+        name: 'urls',
+        autofocus: true,
+        errors: settings.getErrors('urls'),
+        instructions: "Add complete URLs, each on its own line, that you'd like to clear from Cloudflare's cache."
+    }) }}
+
+    <button class="btn submit" id="purge-urls">Purge URLs</button>
+
 {% endif %}
 
