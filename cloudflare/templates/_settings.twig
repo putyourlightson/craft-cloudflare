@@ -1,0 +1,57 @@
+{% import "_includes/forms" as forms %}
+
+{% set embedJs %}
+window.CLOUDFLARE_API_BASE_URL = "{{ craft.cloudflare.apiBaseUrl }}";
+{% endset %}
+
+{% includeJs embedJs %}
+{% includeJsResource "cloudflare/js/settings.js" %}
+
+{{ forms.textField({
+    first: true,
+    label: 'Cloudflare API Key'|t,
+    id: 'apiKey',
+    required: true,
+    name: 'apiKey',
+    value: settings.apiKey,
+    placeholder: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    autofocus: true,
+    errors: settings.getErrors('apiKey'),
+    instructions: "Add your API key, which you'll find in the _My Profile_ section of Cloudflare's interface."
+}) }}
+
+{{ forms.textField({
+    first: true,
+    label: 'Cloudflare Account Email'|t,
+    id: 'email',
+    required: true,
+    name: 'email',
+    value: settings.email,
+    placeholder: 'foo@foo.com',
+    autofocus: true,
+    errors: settings.getErrors('email'),
+    instructions: "Specify which account email should be used for API requests."
+}) }}
+
+<a class="btn" id="cf-test">Test</a>
+<br>
+<br>
+
+{{ forms.selectField({
+    first: true,
+    label: 'Cloudflare Zone'|t,
+    id: 'zone',
+    required: true,
+    name: 'zone',
+    options: craft.cloudflare.getZoneOptions,
+    value: settings.zone,
+    autofocus: true,
+    errors: settings.getErrors('zone'),
+    instructions: "Specify which Cloudflare Zone is tied to this site."
+}) }}
+
+{% if settings.apiKey and settings.email and settings.zone %}
+    <hr>
+    <a href="/admin/actions/cloudflare/purgeAll" class="btn">Purge Cloudflare Cache</a>
+{% endif %}
+
