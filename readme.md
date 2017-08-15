@@ -17,7 +17,7 @@ Submit an issue here or email hello@workingconcept.com if you run into any issue
 ## Limitations
 
 - Doesn't know or care what Cloudflare is caching, just tries clearing URLs in update+delete conditions.
-- Doesn't yet delete indexes, only individual Asset and Entry URLs.
+- Some features are rough: purging individual URLs (from plugin settings), and setting up cache-breaking rules (if you can figure out how).
 - May not be suitable for sizeable bulk operations; if you replace or delete a massive number of files, it could result in the same number of hits to the Cloudflare API.
 
 ---
