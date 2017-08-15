@@ -14,6 +14,11 @@ class CloudflarePlugin extends BasePlugin
 		return '0.1.0';
 	}
 
+	public function getSchemaVersion()
+	{
+		return '0.0.1';
+	}
+
 	public function getDescription()
 	{
 		return 'Automatically purge Cloudflare URLs.';
