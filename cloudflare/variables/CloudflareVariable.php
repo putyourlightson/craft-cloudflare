@@ -17,15 +17,24 @@ class CloudflareVariable
 
     public function getZoneOptions()
     {
-        $zoneResponse = $this->getZones();
-        $zones        = $zoneResponse->result;
+        $options = array();
 
-        foreach ($zones as $zone)
+        if ($zoneResponse = $this->getZones())
         {
-            $options[$zone->id] = $zone->name;
+            $zones = $zoneResponse->result;
+
+            foreach ($zones as $zone)
+            {
+                $options[$zone->id] = $zone->name;
+            }
         }
 
         return $options;
+    }
+
+    public function getRulesForTable()
+    {
+        return craft()->cloudflare_rules->getRulesForTable();
     }
 
 }

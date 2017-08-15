@@ -62,15 +62,16 @@ class CloudflarePlugin extends BasePlugin
 		craft()->on('entries.onSaveEntry', function (Event $event) {
 			$entry = $event->params['entry'];
 			craft()->cloudflare->purgeUrls(array($entry->url));
+			craft()->cloudflare_rules->purgeCachesForUrl($entry->url);
 		});
 
 		craft()->on('entries.onDeleteEntry', function (Event $event) {
 			$entry = $event->params['entry'];
 			craft()->cloudflare->purgeUrls(array($entry->url));
+			craft()->cloudflare_rules->purgeCachesForUrl($entry->url);
 		});
 
 		// TODO: clear on publish, update, or delete entry
-		// TODO: figure out how to clear indexes, not just detail URLs
 	}
 
 	public function getSettingsHtml()

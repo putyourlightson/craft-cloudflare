@@ -73,4 +73,11 @@ class CloudflareController extends BaseController
 		craft()->request->redirect($referrer);
 	}
 
+	public function actionSaveRules()
+	{
+		craft()->cloudflare_rules->saveRules();
+		craft()->userSession->setNotice(Craft::t('Cloudflare rules saved.'));
+		craft()->request->redirect('/admin/cloudflare/rules');
+	}
+
 }
