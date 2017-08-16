@@ -33,8 +33,8 @@ class CloudflareService extends BaseApplicationComponent
 
     public function getZones()
     {
-        $apiKey = ! empty($this->settings->apiKey) ? $this->settings->apiKey : craft()->request->getParam('apiKey');
-        $email = ! empty($this->settings->email) ? $this->settings->email : craft()->request->getParam('email');
+        $apiKey = ! empty(craft()->request->getParam('apiKey')) ? craft()->request->getParam('apiKey') : $this->settings->apiKey;
+        $email = ! empty(craft()->request->getParam('email')) ? craft()->request->getParam('email') : $this->settings->email;
 
         try
         {
