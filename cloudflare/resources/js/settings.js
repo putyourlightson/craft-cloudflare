@@ -3,7 +3,7 @@ $("#settings-cf-test").on('click', function(e){
 
     if ($("#settings-apiKey").val() !== '' && $("#settings-email").val() !== '') {
         $.ajax({
-            url: '/admin/actions/cloudflare/getZones',
+            url: window.FETCH_ZONES_ACTION,
             type: 'GET',
             data: { "apiKey": $("#settings-apiKey").val(), "email": $("#settings-email").val() },
             success: function(data){
@@ -27,7 +27,7 @@ $("#settings-purge-urls").click(function(e){
     e.preventDefault();
 
     $.ajax({
-        url: '/admin/actions/cloudflare/purgeUrls',
+        url: window.PURGE_URLS_ACTION,
         type: 'POST',
         data: { "urls": $("#settings-urls").val() },
         success: function(data){

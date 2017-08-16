@@ -43,7 +43,7 @@ class CloudflareController extends BaseController
 
 			if (empty($referrer))
 			{
-				$referrer = '/admin/settings/plugins/cloudflare';
+				$referrer = UrlHelper::getCpUrl('settings/plugins/cloudflare');
 			}
 
 			craft()->request->redirect($referrer);
@@ -67,7 +67,7 @@ class CloudflareController extends BaseController
 
 		if (empty($referrer))
 		{
-			$referrer = '/admin/settings/plugins/cloudflare';
+			$referrer = UrlHelper::getCpUrl('settings/plugins/cloudflare');
 		}
 
 		craft()->request->redirect($referrer);
@@ -77,7 +77,7 @@ class CloudflareController extends BaseController
 	{
 		craft()->cloudflare_rules->saveRules();
 		craft()->userSession->setNotice(Craft::t('Cloudflare rules saved.'));
-		craft()->request->redirect('/admin/cloudflare/rules');
+		craft()->request->redirect(UrlHelper::getCpUrl('cloudflare/rules'));
 	}
 
 }

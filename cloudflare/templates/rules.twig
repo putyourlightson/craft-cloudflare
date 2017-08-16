@@ -5,7 +5,7 @@
 
 {% block content %}
 
-    <form action="/admin/actions/cloudflare/saveRules" method="post">
+    <form action="{{ actionUrl('cloudflare/saveRules') }}" method="post">
 
         {{ forms.editableTableField({
             first: true,

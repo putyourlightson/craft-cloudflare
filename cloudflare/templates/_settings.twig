@@ -1,5 +1,11 @@
 {% import "_includes/forms" as forms %}
 
+{% set extraJs %}
+window.FETCH_ZONES_ACTION = "{{ actionUrl('cloudflare/getZones') }}";
+window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
+{% endset %}
+
+{% inclueJs extraJs %}
 {% includeJsResource "cloudflare/js/settings.js" %}
 
 {{ forms.textField({
@@ -45,7 +51,7 @@
 
 {% if settings.apiKey and settings.email and settings.zone %}
     <hr>
-    <a href="/admin/actions/cloudflare/purgeAll" class="btn">Purge Cloudflare Cache</a>
+    <a href="{{ actionUrl('cloudflare/purgeAll') }}" class="btn">Purge Cloudflare Cache</a>
 
     <hr>
 
