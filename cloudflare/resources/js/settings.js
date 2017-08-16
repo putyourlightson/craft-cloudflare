@@ -1,5 +1,6 @@
-$zoneSelect = $("#settings-zone");
-$purgeUrlField = $("#settings-urls");
+$zoneSelect      = $("#settings-zone");
+$purgeUrlField   = $("#settings-urls");
+$verifyContainer = $(".cloudflare-verify");
 
 $("#settings-cf-test").on('click', function(e){
     e.preventDefault();
@@ -27,13 +28,17 @@ $("#settings-cf-test").on('click', function(e){
                     if (selectedZoneId) {
                         $zoneSelect.val(selectedZoneId);
                     }
+
+                    $verifyContainer.removeClass("fail").addClass("success");
                 } else {
                     alert('Failed.');
+                    $verifyContainer.removeClass("success").addClass("fail");
                     console.log(data);
                 }
             },
             error: function(data) {
                 alert('Failed.');
+                $verifyContainer.removeClass("success").addClass("fail");
                 console.log(data);
             }
         });

@@ -1,0 +1,29 @@
+.cloudflare-verify {
+    margin-bottom: 35px;
+}
+
+.cloudflare-verify.success:after {
+    content: "";
+    display: inline-block;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyMHB4IiBoZWlnaHQ9IjIwcHgiIHZpZXdCb3g9IjAgMCAyMCAyMCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT5TaGFwZTwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz48L2RlZnM+ICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPiAgICAgICAgPGcgaWQ9ImNoZWNrIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9IiMyN0FFNjAiPiAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwwIEM0LjQ4LDAgMCw0LjQ4IDAsMTAgQzAsMTUuNTIgNC40OCwyMCAxMCwyMCBDMTUuNTIsMjAgMjAsMTUuNTIgMjAsMTAgQzIwLDQuNDggMTUuNTIsMCAxMCwwIFogTTgsMTUgTDMsMTAgTDQuNDEsOC41OSBMOCwxMi4xNyBMMTUuNTksNC41OCBMMTcsNiBMOCwxNSBaIiBpZD0iU2hhcGUiPjwvcGF0aD4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
+    background-size: 14px;
+    background-repeat: no-repeat;
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 3px;
+    margin-left: 8px;
+}
+
+.cloudflare-verify.fail:after {
+    content: "";
+    display: inline-block;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyMnB4IiBoZWlnaHQ9IjE5cHgiIHZpZXdCb3g9IjAgMCAyMiAxOSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT5TaGFwZTwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz48L2RlZnM+ICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPiAgICAgICAgPGcgaWQ9Indhcm5pbmciIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0iI0QwMDIxQiI+ICAgICAgICAgICAgPHBhdGggZD0iTTAsMTkgTDIyLDE5IEwxMSwwIEwwLDE5IFogTTEyLDE2IEwxMCwxNiBMMTAsMTQgTDEyLDE0IEwxMiwxNiBaIE0xMiwxMiBMMTAsMTIgTDEwLDggTDEyLDggTDEyLDEyIFoiIGlkPSJTaGFwZSI+PC9wYXRoPiAgICAgICAgPC9nPiAgICA8L2c+PC9zdmc+);
+    background-size: 14px;
+    background-repeat: no-repeat;
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 3px;
+    margin-left: 8px;
+}

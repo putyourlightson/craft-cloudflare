@@ -7,6 +7,9 @@ window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
 
 {% includeJs extraJs %}
 {% includeJsResource "cloudflare/js/settings.js" %}
+{% includeCssResource "cloudflare/css/settings.css" %}
+
+{% set zoneOptions = craft.cloudflare.getZoneOptions %}
 
 {{ forms.textField({
     first: true,
@@ -33,16 +36,16 @@ window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
     instructions: "Specify which account email should be used for API requests."
 }) }}
 
-<a class="btn" id="cf-test">Verify Credentials</a>
-<br>
-<br>
+<div class="cloudflare-verify{% if zoneOptions | length %} success{% endif %}">
+    <a class="btn" id="cf-test">Verify Credentials</a>
+</div>
 
 {{ forms.selectField({
     label: 'Cloudflare Zone'|t,
     id: 'zone',
     required: true,
     name: 'zone',
-    options: craft.cloudflare.getZoneOptions,
+    options: zoneOptions,
     value: settings.zone,
     autofocus: true,
     errors: settings.getErrors('zone'),
@@ -50,9 +53,6 @@ window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
 }) }}
 
 {% if settings.apiKey and settings.email and settings.zone %}
-    <hr>
-    <a href="{{ actionUrl('cloudflare/purgeAll') }}" class="btn">Purge Cloudflare Cache</a>
-
     <hr>
 
     {{ forms.textareaField({
@@ -65,7 +65,10 @@ window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
         instructions: "Add complete URLs, each on its own line, that you'd like to clear from Cloudflare's cache."
     }) }}
 
-    <button class="btn submit" id="purge-urls">Purge URLs</button>
+    <a class="btn warning" id="purge-urls">Purge URLs</a>
+
+    <hr>
+    <a href="{{ actionUrl('cloudflare/purgeAll') }}" class="btn warning">Purge Cloudflare Cache</a>
 
 {% endif %}
 
