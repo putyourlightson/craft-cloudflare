@@ -5,7 +5,7 @@ window.FETCH_ZONES_ACTION = "{{ actionUrl('cloudflare/getZones') }}";
 window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
 {% endset %}
 
-{% inclueJs extraJs %}
+{% includeJs extraJs %}
 {% includeJsResource "cloudflare/js/settings.js" %}
 
 {{ forms.textField({
@@ -33,7 +33,7 @@ window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
     instructions: "Specify which account email should be used for API requests."
 }) }}
 
-<a class="btn" id="cf-test">Test</a>
+<a class="btn" id="cf-test">Verify Credentials</a>
 <br>
 <br>
 

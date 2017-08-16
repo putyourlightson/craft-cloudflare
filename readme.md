@@ -6,7 +6,9 @@ Automatically purge Cloudflare URLs when specific Assets and Entries are edited.
 
 Drop the `cloudflare` folder in your `craft/plugins` directory, then visit Settings → Plugins and install the Cloudflare plugin.
 
-Add your Cloudflare API key, email and zone details to the plugin settings. Be sure to test, because testing is always a fabulous idea.
+Add your Cloudflare API key and account email address, then choose "Verify Credentials." This will update the Cloudflare Zone dropdown so you can lastly choose the appropriate zone for your site.
+
+Be sure to test, because testing is always a fabulous idea.
 
 ## Troubleshooting
 

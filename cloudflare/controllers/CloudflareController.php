@@ -14,7 +14,7 @@ class CloudflareController extends BaseController
 	{
 		$urls = craft()->request->getPost('urls');
 
-		if (empty($url))
+		if (empty($urls))
 		{
 			craft()->userSession->setError(Craft::t('Failed to purge empty or invalid URLs.'));
 		}
