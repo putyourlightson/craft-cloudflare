@@ -2,6 +2,9 @@ $("#settings-cf-test").on('click', function(e){
     e.preventDefault();
 
     if ($("#settings-apiKey").val() !== '' && $("#settings-email").val() !== '') {
+
+        selectedZoneId = $("#settings-zone option:checked").val();
+
         $.ajax({
             url: window.FETCH_ZONES_ACTION,
             type: 'GET',
@@ -11,6 +14,11 @@ $("#settings-cf-test").on('click', function(e){
                 for (var i = 0; i < data.result.length; i++) {
                     var row = data.result[i];
                     $("#settings-zone").append('<option value="'+row.id+'">'+row.name+'</option>');
+                }
+
+                // restore selection
+                if (selectedZoneId) {
+                    $("#settings-zone").val(selectedZoneId);
                 }
             },
             error: function(data) {
