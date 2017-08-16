@@ -1,3 +1,6 @@
+$zoneSelect = $("#settings-zone");
+$purgeUrlField = $("#settings-urls");
+
 $("#settings-cf-test").on('click', function(e){
     e.preventDefault();
 
@@ -10,15 +13,23 @@ $("#settings-cf-test").on('click', function(e){
             type: 'GET',
             data: { "apiKey": $("#settings-apiKey").val(), "email": $("#settings-email").val() },
             success: function(data){
-                $("#settings-zone option").remove();
-                for (var i = 0; i < data.result.length; i++) {
-                    var row = data.result[i];
-                    $("#settings-zone").append('<option value="'+row.id+'">'+row.name+'</option>');
-                }
+                if (data !== null && data.hasOwnProperty('result')) {
+                    // clear existing options
+                    $zoneSelect.find('option').remove();
 
-                // restore selection
-                if (selectedZoneId) {
-                    $("#settings-zone").val(selectedZoneId);
+                    // append zone options from Cloudflare
+                    for (var i = 0; i < data.result.length; i++) {
+                        var row = data.result[i];
+                        $zoneSelect.append('<option value="'+row.id+'">'+row.name+'</option>');
+                    }
+
+                    // restore selection
+                    if (selectedZoneId) {
+                        $zoneSelect.val(selectedZoneId);
+                    }
+                } else {
+                    alert('Failed.');
+                    console.log(data);
                 }
             },
             error: function(data) {
@@ -37,9 +48,9 @@ $("#settings-purge-urls").click(function(e){
     $.ajax({
         url: window.PURGE_URLS_ACTION,
         type: 'POST',
-        data: { "urls": $("#settings-urls").val() },
+        data: { "urls": $purgeUrlField.val() },
         success: function(data){
-            $("#settings-urls").val('');
+            $purgeUrlField.val('');
             alert("URL(s) purged.");
         },
         error: function(data) {
