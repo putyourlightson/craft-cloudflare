@@ -1,0 +1,31 @@
+{% import "_includes/forms" as forms %}
+
+{% set extraJs %}
+  window.FETCH_ZONES_ACTION = "{{ actionUrl('cloudflare/getZones') }}";
+  window.PURGE_URLS_ACTION  = "{{ actionUrl('cloudflare/purgeUrls') }}";
+{% endset %}
+
+{% includeJs extraJs %}
+{% includeJsResource "cloudflare/js/settings.js" %}
+{% includeCssResource "cloudflare/css/settings.css" %}
+
+{% if settings.apiKey and settings.email and settings.zone %}
+    <hr>
+
+    {{ forms.textareaField({
+        label:        'Purge Individual URLs'|t,
+        id:           'urls',
+        required:     false,
+        name:         'urls',
+        autofocus:    true,
+        errors:       settings.getErrors('urls'),
+        instructions: "Add complete URLs, each on its own line, that you'd like to clear from Cloudflare's cache."
+    }) }}
+
+    <a class="btn warning" id="purge-urls">Purge URLs</a>
+
+    <hr>
+    <a href="{{ actionUrl('cloudflare/purgeAll') }}" class="btn warning">Purge Cloudflare Cache</a>
+{% else %}
+  <span>Cloudflare is not set up yet.</span>
+{% endif %}
