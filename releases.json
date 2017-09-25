@@ -1,7 +1,7 @@
 [
     {
         "version": "0.1.2",
-        "downloadUrl": "https://gitlab.com/workingconcept/cloudflare-craft-plugin/repository/archive.zip?ref=0.1.2",
+        "downloadUrl": "https://github.com/workingconcept/cloudflare-craft-plugin/archive/0.1.2.zip",
         "date": "2017-09-14T00:00:00-08:00",
         "notes": [
             "[added] Dashboard quick purge widget."
@@ -9,7 +9,7 @@
     },
     {
         "version": "0.1.1",
-        "downloadUrl": "https://gitlab.com/workingconcept/cloudflare-craft-plugin/repository/archive.zip?ref=0.1.1",
+        "downloadUrl": "https://github.com/workingconcept/cloudflare-craft-plugin/archive/0.1.1.zip",
         "date": "2017-08-16T00:00:00-08:00",
         "notes": [
             "[fixed] Support custom CP + action URLs."
@@ -17,7 +17,7 @@
     },
     {
         "version": "0.1.0",
-        "downloadUrl": "https://gitlab.com/workingconcept/cloudflare-craft-plugin/repository/archive.zip?ref=0.1.0",
+        "downloadUrl": "https://github.com/workingconcept/cloudflare-craft-plugin/archive/0.1.0.zip",
         "date": "2017-08-15T00:00:00-08:00",
         "notes": [
             "[added] Initial release."
