@@ -52,6 +52,26 @@ window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
     instructions: "Specify which Cloudflare Zone is utilized by this site."
 }) }}
 
+<hr>
+
+{{ forms.lightswitchField({
+    label: 'Automatically Purge Entry URLs'|t,
+    id: 'purgeEntryUrls',
+    name: 'purgeEntryUrls',
+    on: settings.purgeEntryUrls,
+    errors: settings.getErrors('purgeEntryUrls'),
+    instructions: "Switch on to attempt to purge Entry URLs whenever they're saved or deleted."
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Automatically Purge Asset URLs'|t,
+    id: 'purgeAssetUrls',
+    name: 'purgeAssetUrls',
+    on: settings.purgeAssetUrls,
+    errors: settings.getErrors('purgeAssetUrls'),
+    instructions: "Switch on to attempt to purge Asset URLs whenever they're saved or deleted."
+}) }}
+
 {% if settings.apiKey and settings.email and settings.zone %}
     <hr>
 
