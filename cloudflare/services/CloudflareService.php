@@ -36,6 +36,12 @@ class CloudflareService extends BaseApplicationComponent
         $apiKey = ! empty(craft()->request->getParam('apiKey')) ? craft()->request->getParam('apiKey') : $this->settings->apiKey;
         $email = ! empty(craft()->request->getParam('email')) ? craft()->request->getParam('email') : $this->settings->email;
 
+        if (empty($apiKey) || empty($email))
+        {
+            // don't bother if we don't have credentials
+            return;
+        }
+
         try
         {
             $request = $this->client->get('zones', array(), array(

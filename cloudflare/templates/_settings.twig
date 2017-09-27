@@ -60,7 +60,7 @@ window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
     name: 'purgeEntryUrls',
     on: settings.purgeEntryUrls,
     errors: settings.getErrors('purgeEntryUrls'),
-    instructions: "Switch on to attempt to purge Entry URLs whenever they're saved or deleted."
+    instructions: "Enable to attempt to purge Entry URLs whenever they're saved or deleted."
 }) }}
 
 {{ forms.lightswitchField({
@@ -69,7 +69,7 @@ window.PURGE_URLS_ACTION = "{{ actionUrl('cloudflare/purgeUrls') }}";
     name: 'purgeAssetUrls',
     on: settings.purgeAssetUrls,
     errors: settings.getErrors('purgeAssetUrls'),
-    instructions: "Switch on to attempt to purge Asset URLs whenever they're saved or deleted."
+    instructions: "Enable to attempt to purge Asset URLs whenever they're saved or deleted."
 }) }}
 
 {% if settings.apiKey and settings.email and settings.zone %}
