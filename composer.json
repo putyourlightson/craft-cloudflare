@@ -19,12 +19,13 @@
   },
   "autoload":    {
     "psr-4": {
-      "MattStein\\Cloudflare\\": "src/"
+      "mattstein\\cloudflare\\": "src/"
     }
   },
   "extra":       {
     "name":         "Cloudflare",
     "handle":       "cloudflare",
+    "class":        "mattstein\\cloudflare\\Cloudflare",
     "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/master/CHANGELOG.md",
     "downloadUrl":  "https://github.com/workingconcept/cloudflare-craft-plugin/archive/master.zip"
   }
