@@ -36,6 +36,12 @@ class CloudflareService extends BaseApplicationComponent
         $apiKey = ! empty(craft()->request->getParam('apiKey')) ? craft()->request->getParam('apiKey') : $this->settings->apiKey;
         $email = ! empty(craft()->request->getParam('email')) ? craft()->request->getParam('email') : $this->settings->email;
 
+        if (empty($apiKey) || empty($email))
+        {
+            // don't bother if we don't have credentials
+            return;
+        }
+
         try
         {
             $request = $this->client->get('zones', array(), array(
@@ -145,6 +151,8 @@ class CloudflareService extends BaseApplicationComponent
             return;
         }
 
+        // TODO: make sure attempts match zone
+
         try
         {
             $request = $this->client->delete('zones/' . $this->settings->zone . '/purge_cache',
@@ -177,7 +185,23 @@ class CloudflareService extends BaseApplicationComponent
         }
         catch(\Exception $e)
         {
-            CloudflarePlugin::log('Request failed: ' . $e, LogLevel::Error);
+            if ($responseBody = json_decode($e->getResponse()->getBody(true)))
+            {
+                $message = "URL purge failed.\n";
+                $message .= "- urls: " . implode($urls, ',') . "\n";
+
+                foreach ($responseBody->errors as $error)
+                {
+                    $message .= "- error code {$error->code}: " . $error->message . "\n";
+                }
+
+                CloudflarePlugin::log($message, LogLevel::Error);
+            }
+            else
+            {
+                CloudflarePlugin::log('Request failed: ' . $e, LogLevel::Error);
+            }
+
             return;
         }
     }

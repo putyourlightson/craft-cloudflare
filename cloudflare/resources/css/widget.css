@@ -1,0 +1,89 @@
+.widget.cloudflare_quickpurge h2 {
+    padding: 24px 24px 10px 24px;
+}
+
+.widget.cloudflare_quickpurge .front .pane {
+    padding: 0;
+}
+
+.purge-option {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    clear: both;
+    border-top: 1px solid #e3e5e8;
+}
+
+.purge-option .heading {
+    display: block;
+    clear: both;
+    padding: 24px;
+}
+
+.purge-option .heading h3 {
+    margin: 0;
+    display: inline-block;
+    font-weight: normal;
+    line-height: 24px;
+}
+
+.purge-option .heading .icon {
+    display: inline-block;
+    margin-right: 8px;
+    float: left;
+}
+
+.purge-option .heading .icon svg {
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
+.purge-option .heading .icon svg #artwork { fill: #8f98a3; }
+.purge-option:hover .heading .icon svg #artwork { fill: #29323d; }
+.purge-option .heading.active .icon svg #artwork { fill: #29323d; }
+
+.purge-option:last-child {
+    border-radius: 0 0 4px 4px;
+}
+
+.purge-option.purge-all {
+    background-image: linear-gradient(-45deg, #fafafa 25%, transparent 25%, transparent 50%, #fafafa 50%, #fafafa 75%, transparent 75%, transparent);
+    background-size: 12px 12px;
+}
+
+.purge-option.purge-all:hover {
+    background-image: linear-gradient(-45deg, #eee 25%, transparent 25%, transparent 50%, #eee 50%, #eee 75%, transparent 75%, transparent);
+    background-size: 12px 12px;
+}
+
+.purge-option:hover {
+    background: #fafafa;
+}
+
+.purge-urls-form {
+    padding: 18px 24px;
+    border-top: 1px dotted #e3e5e8;
+    overflow: hidden;
+    clear: both;
+    display: none;
+}
+
+.purge-urls-form .instructions p {
+    font-size: 1em;
+    margin-bottom: 4px;
+    color: #8f98a3;
+}
+
+.purge-urls-form .btn {
+    margin-top: 4px;
+    float: right;
+    clear: both;
+}
+
+.cloudflare-not-configured {
+    padding: 0 24px 24px 24px;
+    color: #8f98a3;
+}
