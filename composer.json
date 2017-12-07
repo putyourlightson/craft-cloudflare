@@ -1,0 +1,31 @@
+{
+  "name":        "workingconcept/cloudflare-craft-plugin",
+  "description": "Automatically purge Craft Entry and Asset URLs in Cloudflare as they're updated. Edit",
+  "type":        "craft-plugin",
+  "license":     "MIT",
+  "keywords":    [
+    "cms",
+    "craftcms",
+    "yii2"
+  ],
+  "authors":     [
+    {
+      "name":  "Mo",
+      "email": "m@9dev.de"
+    }
+  ],
+  "require":     {
+    "craftcms/cms": "^3.0.0-beta.27"
+  },
+  "autoload":    {
+    "psr-4": {
+      "MattStein\\Cloudflare\\": "src/"
+    }
+  },
+  "extra":       {
+    "name":         "Cloudflare",
+    "handle":       "cloudflare",
+    "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/master/CHANGELOG.md",
+    "downloadUrl":  "https://github.com/workingconcept/cloudflare-craft-plugin/archive/master.zip"
+  }
+}
