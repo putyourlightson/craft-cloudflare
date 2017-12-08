@@ -3,7 +3,7 @@
   {##
    # The __CLOUDFLARE_PLUGIN object is an ugly bridge from Twig to the JavaScript code, since currently there is no way
    # to translate text on the clientside. Therefore, all messages are passed to a global object.
-   # Additionally, the action URLs are specified here to have them in a single place
+   # Additionally, the action URLs are fetched from the plugin settings so they can be modified with a single change.
    #}
   {# @formatter:off #}
   {% set extraJs %}
@@ -15,15 +15,15 @@
         purgeUrlsSucceeded:           "{{ 'Successfully purged URLs' | translate('cloudflare') }}"
       },
       actions: {
-        fetchZones: "cloudflare/fetchZones",
-        purgeUrls:  "cloudflare/purgeUrls",
+        fetchZones: "{{ settings.fetchZonesActionUri }}",
+        purgeUrls:  "{{ settings.purgeUrlsActionUri }}",
       }
     };
   {% endset %}
   {# @formatter:on #}
 
   {% js extraJs %}
-{% do view.registerAssetBundle("mattstein\\cloudflare\\resources\\cloudflare\\CloudflareAsset") %}
+  {% do view.registerAssetBundle("mattstein\\cloudflare\\resources\\cloudflare\\CloudflareAsset") %}
 
   {% set zoneOptions = craft.cloudflare.getZoneOptions %}
 

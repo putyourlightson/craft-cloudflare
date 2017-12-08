@@ -86,8 +86,8 @@ class Cloudflare extends Plugin {
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function( RegisterUrlRulesEvent $event ) {
-                $event->rules['POST cloudflare/fetchZones'] = 'cloudflare/fetch-zones';
-                $event->rules['POST cloudflare/purgeUrls'] = 'cloudflare/purge-urls';
+                $event->rules[ 'POST ' . $this->getSettings()->fetchZonesActionUri ] = 'cloudflare/fetch-zones';
+                $event->rules[ 'POST ' . $this->getSettings()->purgeUrlsActionUri ]  = 'cloudflare/purge-urls';
             }
         );
 

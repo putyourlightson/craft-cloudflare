@@ -37,6 +37,20 @@ class Settings extends Model {
      *
      * @var string
      */
-    public $userServiceKey = '';
+    public $userServiceKey      = '';
+
+    /**
+     * Action URI to fetch zones
+     *
+     * @var string
+     */
+    public $fetchZonesActionUri = 'cloudflare/fetch-zones';
+
+    /**
+     * Action URI to purge URLs
+     *
+     * @var string
+     */
+    public $purgeUrlsActionUri  = 'cloudflare/purge-urls';
 
 }
