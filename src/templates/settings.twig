@@ -68,23 +68,23 @@
   instructions: 'Specify which Cloudflare Zone is utilized by this site.' | translate( 'cloudflare' )
 } ) }}
 
-  {% if settings.apiKey and settings.email and settings.zone %}
-    <hr>
+{% if settings.apiKey and settings.email and settings.zone %}
+  <hr>
 
-    {{ forms.textareaField( {
-      label:        'Purge Individual URLs' | translate( 'cloudflare' ),
-      id:           'urls',
-      required:     false,
-      name:         'urls',
-      autofocus:    true,
-      errors:       settings.getErrors( 'urls' ),
-      instructions: 'Add complete URLs, each on its own line, that you\'d like to clear from Cloudflare\'s cache.' | translate( 'cloudflare' )
-    } ) }}
+  {{ forms.textareaField( {
+    label:        'Purge Individual URLs' | translate( 'cloudflare' ),
+    id:           'urls',
+    required:     false,
+    name:         'urls',
+    autofocus:    true,
+    errors:       settings.getErrors( 'urls' ),
+    instructions: 'Add complete URLs, each on its own line, that you\'d like to clear from Cloudflare\'s cache.' | translate( 'cloudflare' )
+  } ) }}
 
-    <a class="btn warning" id="purge-urls">{{ 'Purge URLs' | translate( 'cloudflare' ) }}</a>
+  <a class="btn warning" id="purge-urls">{{ 'Purge URLs' | translate( 'cloudflare' ) }}</a>
 
-    <hr>
+  <hr>
 
-    <a href="{{ actionUrl( 'cloudflare/purgeAll' ) }}"
-       class="btn warning">{{ 'Purge Cloudflare Cache' | translate( 'cloudflare' ) }}</a>
-  {% endif %}
+  <a href="{{ actionUrl( 'cloudflare/purgeAll' ) }}"
+     class="btn warning">{{ 'Purge Cloudflare Cache' | translate( 'cloudflare' ) }}</a>
+{% endif %}
