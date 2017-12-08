@@ -2,82 +2,87 @@
 
 namespace Craft;
 
-class CloudflareController extends BaseController
-{
+use Craft;
+use craft\helpers\UrlHelper;
+use craft\web\Controller;
+use mattstein\cloudflare\Cloudflare;
 
-	public function actionGetZones()
-	{
-		$this->returnJson(craft()->cloudflare->getZones());
-	}
+/**
+ * CloudflareController class
+ *
+ * @package Craft
+ */
+class CloudflareController extends Controller {
 
-	public function actionPurgeUrls()
-	{
-		$urls = craft()->request->getPost('urls');
+    /**
+     * @return void
+     */
+    public function actionFetchZones() {
+        $this->asJson( Cloudflare::getInstance()->cloudflare->getZones() );
+    }
 
-		if (empty($urls))
-		{
-			craft()->userSession->setError(Craft::t('Failed to purge empty or invalid URLs.'));
-		}
+    /**
+     * @return void
+     */
+    public function actionPurgeUrls() {
+        $urls = Craft::$app->request->getBodyParam( 'urls' );
 
-		// split lines into array items
-		$urls = explode("\n", $urls);
+        if ( empty( $urls ) ) {
+            Craft::$app->session->setError( Craft::t( 'cloudflare', 'Failed to purge empty or invalid URLs.' ) );
+        }
 
-		$response = craft()->cloudflare->purgeUrls($urls);
+        // split lines into array items
+        $urls = explode( "\n", $urls );
 
-		if (craft()->request->isAjaxRequest())
-		{
-			$this->returnJson($response);
-		}
-		else
-		{
-			if (isset($response->success) && $response->success)
-			{
-				craft()->userSession->setNotice(Craft::t('URL(s) purged.'));
-			}
-			else
-			{
-				craft()->userSession->setError(Craft::t('Failed to purge URL(s).'));
-			}
+        $response = Cloudflare::getInstance()->cloudflare->purgeUrls( $urls );
 
-			$referrer = craft()->request->getUrlReferrer();
+        if ( Craft::$app->request->getIsAjax() ) {
+            $this->asJson( $response );
+        } else {
+            if ( isset( $response->success ) && $response->success ) {
+                Craft::$app->session->setNotice( Craft::t( 'cloudflare', 'URL(s) purged.' ) );
+            } else {
+                Craft::$app->session->setError( Craft::t( 'cloudflare', 'Failed to purge URL(s).' ) );
+            }
 
-			if (empty($referrer))
-			{
-				$referrer = UrlHelper::getCpUrl('settings/plugins/cloudflare');
-			}
+            $referrer = Craft::$app->request->getReferrer();
 
-			craft()->request->redirect($referrer);
-		}
-	}
+            if ( empty( $referrer ) ) {
+                $referrer = UrlHelper::cpUrl( 'settings/plugins/cloudflare' );
+            }
 
-	public function actionPurgeAll()
-	{
-		$response = craft()->cloudflare->purgeZoneCache();
+            Craft::$app->response->redirect( $referrer );
+        }
+    }
 
-		if (isset($response->success) && $response->success)
-		{
-			craft()->userSession->setNotice(Craft::t('Cloudflare cache purged.'));
-		}
-		else
-		{
-			craft()->userSession->setError(Craft::t('Failed to purge Cloudflare cache.'));
-		}
+    /**
+     * @return void
+     */
+    public function actionPurgeAll() {
+        $response = Cloudflare::getInstance()->cloudflare->purgeZoneCache();
 
-		$referrer = craft()->request->getUrlReferrer();
+        if ( isset( $response->success ) && $response->success ) {
+            Craft::$app->session->setNotice( Craft::t( 'cloudflare', 'Cloudflare cache purged.' ) );
+        } else {
+            Craft::$app->session->setError( Craft::t( 'cloudflare', 'Failed to purge Cloudflare cache.' ) );
+        }
 
-		if (empty($referrer))
-		{
-			$referrer = UrlHelper::getCpUrl('settings/plugins/cloudflare');
-		}
+        $referrer = Craft::$app->request->getReferrer();
 
-		craft()->request->redirect($referrer);
-	}
+        if ( empty( $referrer ) ) {
+            $referrer = UrlHelper::cpUrl( 'settings/plugins/cloudflare' );
+        }
 
-	public function actionSaveRules()
-	{
-		craft()->cloudflare_rules->saveRules();
-		craft()->userSession->setNotice(Craft::t('Cloudflare rules saved.'));
-		craft()->request->redirect(UrlHelper::getCpUrl('cloudflare/rules'));
-	}
+        Craft::$app->response->redirect( $referrer );
+    }
+
+    /**
+     * @return void
+     */
+    public function actionSaveRules() {
+        Cloudflare::getInstance()->rules->saveRules();
+        Craft::$app->session->setNotice( Craft::t( 'cloudflare', 'Cloudflare rules saved.' ) );
+        Craft::$app->response->redirect( UrlHelper::cpUrl( 'cloudflare/rules' ) );
+    }
 
 }

@@ -1,0 +1,83 @@
+{% import "_includes/forms" as forms %}
+
+  {# @formatter:off #}
+  {% set extraJs %}
+    window.__CLOUDFLARE_PLUGIN = {
+      messages: {
+        credentialVerificationFailed: "{{ 'Could not verify API credentials' | translate('cloudflare') }}",
+        noCredentialsEntered:         "{{ 'Please enter an API key and email address first.' | translate('cloudflare') }}"
+      },
+      actions: {
+        fetchZones: "cloudflare/fetchZones",
+        purgeUrls:  "cloudflare/purgeUrls",
+      }
+    };
+  {% endset %}
+  {# @formatter:on #}
+
+  {% js extraJs %}
+{% do view.registerAssetBundle("mattstein\\cloudflare\\resources\\cloudflare\\CloudflareAsset") %}
+
+  {% set zoneOptions = craft.cloudflare.getZoneOptions %}
+
+  {{ forms.textField( {
+    first: true,
+    label:        'Cloudflare API Key' | translate( 'cloudflare' ),
+    id:           'apiKey',
+    required:     true,
+    name:         'apiKey',
+    value:        settings.apiKey,
+    placeholder:  'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    autofocus:    true,
+    errors:       settings.getErrors( 'apiKey' ),
+    instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.' | translate( 'cloudflare' )
+  } ) }}
+
+  {{ forms.textField( {
+    label:        'Cloudflare Account Email' | translate( 'cloudflare' ),
+    id:           'email',
+    required:     true,
+    name:         'email',
+    value:        settings.email,
+    placeholder:  currentUser.email,
+    autofocus:    true,
+    errors:       settings.getErrors( 'email' ),
+    instructions: 'Specify which account email should be used for API requests.' | translate( 'cloudflare' )
+  } ) }}
+
+<div class="cloudflare-verify{% if zoneOptions | length %} success{% endif %}">
+  <a class="btn" id="cf-test">{{ 'Verify Credentials' | translate( 'cloudflare' ) }}</a>
+</div>
+
+{{ forms.selectField( {
+  label:        'Cloudflare Zone' | translate( 'cloudflare' ),
+  id:           'zone',
+  required:     true,
+  name:         'zone',
+  options:      zoneOptions,
+  value:        settings.zone,
+  autofocus:    true,
+  errors:       settings.getErrors( 'zone' ),
+  instructions: 'Specify which Cloudflare Zone is utilized by this site.' | translate( 'cloudflare' )
+} ) }}
+
+  {% if settings.apiKey and settings.email and settings.zone %}
+    <hr>
+
+    {{ forms.textareaField( {
+      label:        'Purge Individual URLs' | translate( 'cloudflare' ),
+      id:           'urls',
+      required:     false,
+      name:         'urls',
+      autofocus:    true,
+      errors:       settings.getErrors( 'urls' ),
+      instructions: 'Add complete URLs, each on its own line, that you\'d like to clear from Cloudflare\'s cache.' | translate( 'cloudflare' )
+    } ) }}
+
+    <a class="btn warning" id="purge-urls">{{ 'Purge URLs' | translate( 'cloudflare' ) }}</a>
+
+    <hr>
+
+    <a href="{{ actionUrl( 'cloudflare/purgeAll' ) }}"
+       class="btn warning">{{ 'Purge Cloudflare Cache' | translate( 'cloudflare' ) }}</a>
+  {% endif %}

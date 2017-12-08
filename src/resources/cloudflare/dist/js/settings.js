@@ -64,3 +64,4 @@ $("#settings-purge-urls").click(function(e){
         }
     });
 });
+

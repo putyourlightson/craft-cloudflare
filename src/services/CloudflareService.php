@@ -1,214 +1,207 @@
 <?php
 
-namespace Craft;
+namespace mattstein\cloudflare\services;
 
-class CloudflareService extends BaseApplicationComponent
-{
-    public $settings = array();
+use Craft;
+use craft\base\Component;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use mattstein\cloudflare\Cloudflare;
+use stdClass;
 
+/**
+ * Provides a Cloudflare API service
+ *
+ * @package mattstein\cloudflare
+ */
+class CloudflareService extends Component {
+
+    /**
+     * @var \mattstein\cloudflare\models\Settings
+     */
+    public $settings;
+
+    /**
+     * @var string
+     */
     protected $apiBaseUrl;
+
+    /**
+     * @var \GuzzleHttp\Client
+     */
     protected $client;
 
-
     /**
-     * Constructor
+     * Initializes the service.
+     *
+     * @return void
      */
-
-    public function init()
-    {
+    public function init() {
         parent::init();
 
-        $this->settings   = craft()->plugins->getPlugin('cloudflare')->getSettings();
-        $this->apiBaseUrl = 'https://api.cloudflare.com/client/v4/';
-        $this->client     = new \Guzzle\Http\Client($this->apiBaseUrl);
-    }
+        // populate the settings
+        $this->settings = Cloudflare::getInstance()->getSettings();
 
+        // set the Cloudflare API base URL
+        $this->apiBaseUrl = 'https://api.cloudflare.com/client/v4/';
+
+        // create a HTTP client instance
+        $this->client = new Client( [ 'base_uri' => $this->apiBaseUrl ] );
+    }
 
     /**
-     * Get a list of zones (domains) available for the provided Cloudflare account.
+     * Get a list of zones (domains) available for the provided CloudFlare account.
      * https://api.cloudflare.com/#zone-list-zones
      *
-     * @return array Cloudflare's response
+     * @return stdClass response from CloudFlare
      */
+    public function getZones(): stdClass {
+        Craft::trace( 'Getting zones', __METHOD__ );
+        $apiKey = ( ! empty( Craft::$app->request->getParam( 'apiKey' ) )
+            ? Craft::$app->request->getParam( 'apiKey' )
+            : $this->settings->apiKey
+        );
+        $email  = ( ! empty( Craft::$app->request->getParam( 'email' ) )
+            ? Craft::$app->request->getParam( 'email' )
+            : $this->settings->email
+        );
 
-    public function getZones()
-    {
-        $apiKey = ! empty(craft()->request->getParam('apiKey')) ? craft()->request->getParam('apiKey') : $this->settings->apiKey;
-        $email = ! empty(craft()->request->getParam('email')) ? craft()->request->getParam('email') : $this->settings->email;
-
-        if (empty($apiKey) || empty($email))
-        {
-            // don't bother if we don't have credentials
-            return;
-        }
-
-        try
-        {
-            $request = $this->client->get('zones', array(), array(
-                'headers' => array(
+        try {
+            $response = $this->client->get( 'zones', [
+                'headers' => [
                     'X-Auth-Key'   => $apiKey,
                     'X-Auth-Email' => $email,
-                ),
-                'verify' => false,
-                'debug'  => false
-            ));
-
-            $response = $request->send();
-
-            if ( ! $response->isSuccessful())
-            {
-                CloudflarePlugin::log('Request failed: ' . $response->getBody(), LogLevel::Warning);
-                return;
-            }
-            else
-            {
-                CloudflarePlugin::log('Retrieved zones.', LogLevel::Info);
-            }
-
-            return json_decode($response->getBody(true));
+                ],
+                'verify'  => false,
+                'debug'   => false
+            ] );
         }
-        catch(\Exception $e)
-        {
-            CloudflarePlugin::log('Request failed: ' . $e, LogLevel::Error);
-            return;
+        catch ( RequestException $exception ) {
+
+            // if there is a response, we'll use it's body, otherwise we default to the request URI
+            $reason = ( $exception->hasResponse()
+                ? $exception->getResponse()->getBody()
+                : $exception->getRequest()->getUri()
+            );
+
+            Craft::trace( 'Request failed: ' . $reason, 'cloudflare' );
+
+            return (object) [ 'result' => [] ];
         }
+
+        Craft::trace( 'Retrieved zones for account ' . $email, __METHOD__ );
+
+        return json_decode( $response->getBody() );
     }
-
 
     /**
      * Purge the entire zone cache.
      * https://api.cloudflare.com/#zone-purge-all-files
      *
-     * @return array Cloudflare's response
+     * @return array CloudFlare's response
      */
-
-    public function purgeZoneCache()
-    {
-        try
-        {
-            $request = $this->client->delete('zones/' . $this->settings->zone . '/purge_cache',
-                array(
-                    'X-Auth-Key'   => $this->settings->apiKey,
-                    'X-Auth-Email' => $this->settings->email,
-                    'Content-Type' => 'application/json',
-                    'Accept'       => 'application/json'
-                )
+    public function purgeZoneCache() {
+        try {
+            $response = $this->client->delete(
+                sprintf( 'zones/%s/purge_cache', $this->settings->zone ),
+                [
+                    'headers' => [
+                        'X-Auth-Key'   => $this->settings->apiKey,
+                        'X-Auth-Email' => $this->settings->email,
+                        'Content-Type' => 'application/json',
+                        'Accept'       => 'application/json'
+                    ],
+                    'query'   => [
+                        'purge_everything' => true
+                    ]
+                ]
             );
-
-            $request->setBody(json_encode(
-                array('purge_everything' => true)
-            ));
-
-            $response = $request->send();
-            $responseBody = json_decode($response->getBody(true));
-
-            if ( ! $response->isSuccessful())
-            {
-                CloudflarePlugin::log('Request failed: ' . json_encode($responseBody), LogLevel::Warning);
-                return;
-            }
-            else
-            {
-                CloudflarePlugin::log('Purged entire zone cache ('.$responseBody->result->id.').', LogLevel::Info);
-            }
-
-            return $responseBody;
         }
-        catch(\Exception $e)
-        {
-            CloudflarePlugin::log('Request failed: ' . $e, LogLevel::Error);
-            return;
+        catch ( RequestException $exception ) {
+
+            // if there is a response, we'll use it's body, otherwise we default to the request URI
+            $reason = ( $exception->hasResponse()
+                ? $exception->getResponse()->getBody()
+                : $exception->getRequest()->getUri()
+            );
+            Craft::trace( 'Request failed: ' . $reason, __METHOD__ );
+
+            return [];
         }
+
+        $responseBody = json_decode( $response->getBody() );
+
+        Craft::trace( sprintf( 'Purged entire zone cache (%s)', $responseBody->result->id ), __METHOD__ );
+
+        return $responseBody;
     }
-
 
     /**
      * Clear specific URLs in Cloudflare's cache.
      * https://api.cloudflare.com/#zone-purge-individual-files-by-url-and-cache-tags
      *
-     * @param  array  $urls  array of urls
+     * @param  array $urls array of urls
      *
      * @return mixed  API response object or null
      */
+    public function purgeUrls( array $urls = [], array $tags = [] ): stdClass {
 
-    public function purgeUrls($urls = array(), $tags = array())
-    {
         // trim whitespace from each URL
-        $urls = array_map('trim', $urls);
+        $urls = array_map( 'trim', $urls );
 
         // remove any invalid URLs
-        for ($i=0; $i < count($urls); $i++)
-        {
-            if (filter_var($urls[$i], FILTER_VALIDATE_URL) === false)
-            {
-                unset($urls[$i]);
+        for ( $i = 0; $i < count( $urls ); $i ++ ) {
+            if ( filter_var( $urls[ $i ], FILTER_VALIDATE_URL ) === false ) {
+                unset( $urls[ $i ] );
             }
         }
 
         // don't do anything if URLs are missing
-        if (count($urls) === 0)
-        {
-            return;
+        if ( count( $urls ) === 0 ) {
+            return [];
         }
 
-        // TODO: make sure attempts match zone
-
-        try
-        {
-            $request = $this->client->delete('zones/' . $this->settings->zone . '/purge_cache',
-                array(
-                    'X-Auth-Key'   => $this->settings->apiKey,
-                    'X-Auth-Email' => $this->settings->email,
-                    'Content-Type' => 'application/json',
-                    'Accept'       => 'application/json'
-                )
+        try {
+            $response = $this->client->delete(
+                sprintf( 'zones/%s/purge_cache', $this->settings->zone ),
+                [
+                    'headers' => [
+                        'X-Auth-Key'   => $this->settings->apiKey,
+                        'X-Auth-Email' => $this->settings->email,
+                        'Content-Type' => 'application/json',
+                        'Accept'       => 'application/json'
+                    ],
+                    'query'   => [
+                        'files' => $urls
+                    ]
+                ]
             );
-
-            $request->setBody(json_encode(
-                array('files' => $urls)
-            ));
-
-            $response = $request->send();
-            $responseBody = json_decode($response->getBody(true));
-
-            if ( ! $response->isSuccessful())
-            {
-                CloudflarePlugin::log('Request failed: ' . json_encode($responseBody), LogLevel::Warning);
-                return;
-            }
-            else
-            {
-                CloudflarePlugin::log('Purged URLs ('.$responseBody->result->id.').', LogLevel::Info);
-            }
-
-            return $responseBody;
         }
-        catch(\Exception $e)
-        {
-            if ($responseBody = json_decode($e->getResponse()->getBody(true)))
-            {
-                $message = "URL purge failed.\n";
-                $message .= "- urls: " . implode($urls, ',') . "\n";
+        catch ( RequestException $exception ) {
 
-                foreach ($responseBody->errors as $error)
-                {
-                    $message .= "- error code {$error->code}: " . $error->message . "\n";
-                }
+            // if there is a response, we'll use it's body, otherwise we default to the request URI
+            $reason = ( $exception->hasResponse()
+                ? $exception->getResponse()->getBody()
+                : $exception->getRequest()->getUri()
+            );
+            Craft::trace( 'Request failed: ' . $reason, __METHOD__ );
 
-                CloudflarePlugin::log($message, LogLevel::Error);
-            }
-            else
-            {
-                CloudflarePlugin::log('Request failed: ' . $e, LogLevel::Error);
-            }
-
-            return;
+            return new stdClass();
         }
+
+        $responseBody = json_decode( $response->getBody() );
+
+        Craft::trace( sprintf( 'Purged URLs (%s)', $responseBody->result->id ), __METHOD__ );
+
+        return $responseBody;
     }
 
-    public function getApiBaseUrl()
-    {
+    /**
+     * Retrieves the CloudFlare API base URI
+     *
+     * @return string
+     */
+    public function getApiBaseUrl(): string {
         return $this->apiBaseUrl;
     }
-
 }

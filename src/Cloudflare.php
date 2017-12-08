@@ -1,133 +1,114 @@
 <?php
 
-namespace Craft;
+namespace mattstein\cloudflare;
 
-class CloudflarePlugin extends BasePlugin
-{
-	public function getName()
-	{
-		return Craft::t('Cloudflare');
-	}
+use Craft;
+use craft\base\Plugin;
+use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterUrlRulesEvent;
+use craft\services\Dashboard;
+use craft\web\twig\variables\CraftVariable;
+use craft\web\UrlManager;
+use mattstein\cloudflare\models\Settings;
+use mattstein\cloudflare\services\CloudflareService;
+use mattstein\cloudflare\services\RulesService;
+use mattstein\cloudflare\variables\CloudflareVariable;
+use mattstein\cloudflare\widgets\QuickPurgeWidget;
+use yii\base\Event;
 
-	public function getVersion()
-	{
-		return '0.1.4';
-	}
+/**
+ * Provides a Cloudflare plugin to craft
+ *
+ * @property \mattstein\cloudflare\services\CloudflareService cloudflare
+ * @property \mattstein\cloudflare\services\RulesService      rules
+ * @package mattstein\cloudflare
+ */
+class Cloudflare extends Plugin {
 
-	public function getSchemaVersion()
-	{
-		return '0.0.1';
-	}
+    /**
+     * @var bool
+     */
+    public $hasCpSettings = true;
 
-	public function getDescription()
-	{
-		return 'Purge Cloudflare caches from Craft.';
-	}
+    /**
+     * @var bool
+     */
+    public $hasCpSection = false;
 
-	public function getDeveloper()
-	{
-		return 'Working Concept';
-	}
+    /**
+     * @var string
+     */
+    public $t9nCategory = 'cloudflare';
 
-	public function getDeveloperUrl()
-	{
-		return 'https://workingconcept.com';
-	}
+    /**
+     * Creates and returns the model used to store the plugin settings.
+     *
+     * @return \mattstein\cloudflare\Models\Settings
+     */
+    protected function createSettingsModel(): Settings {
+        return new Settings();
+    }
 
-	public function getReleaseFeedUrl()
-	{
-		return 'https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/master/releases.json';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init() {
+        parent::init();
 
-	public function getDocumentationUrl()
-	{
-	    return 'https://github.com/workingconcept/cloudflare-craft-plugin/blob/master/readme.md';
-	}
+        // load the services
+        $this->setComponents( [
+                                  'cloudflare' => CloudflareService::class,
+                                  'rules'      => RulesService::class
+                              ] );
 
-	public function hasCpSection()
-	{
-		return false;
-	}
+        // register the widget
+        Event::on(
+            Dashboard::class,
+            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
+            function( RegisterComponentTypesEvent $event ) {
+                $event->types[] = QuickPurgeWidget::class;
+            }
+        );
 
-	public function init()
-	{
-		if (craft()->cloudflare->settings->purgeAssetUrls)
-		{
-			craft()->on('assets.onSaveAsset', function (Event $event) {
-				if ($event->params['isNewAsset'] === false)
-				{
-					$asset = $event->params['asset'];
-					craft()->cloudflare->purgeUrls(array($asset->url));
-				}
-			});
+        // register the variable
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function( Event $event ) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set( 'cloudflare', CloudflareVariable::class );
+            }
+        );
 
-			craft()->on('assets.onDeleteAsset', function (Event $event) {
-				$asset = $event->params['asset'];
-				craft()->cloudflare->purgeUrls(array($asset->url));
-			});
-		}
+        // register the actions
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function( RegisterUrlRulesEvent $event ) {
+                $event->rules['POST cloudflare/fetchZones'] = 'cloudflare/fetch-zones';
+                $event->rules['POST cloudflare/purgeUrls'] = 'cloudflare/purge-urls';
+            }
+        );
 
-		if (craft()->cloudflare->settings->purgeEntryUrls)
-		{
-			craft()->on('entries.onSaveEntry', function (Event $event) {
-				$entry = $event->params['entry'];
-				craft()->cloudflare->purgeUrls(array($entry->url));
-				craft()->cloudflare_rules->purgeCachesForUrl($entry->url);
-			});
+        Craft::info( Craft::t(
+            'cloudflare',
+            '{name} plugin loaded',
+            [ 'name' => $this->name ]
+        ), __METHOD__ );
+    }
 
-			craft()->on('entries.onDeleteEntry', function (Event $event) {
-				$entry = $event->params['entry'];
-				craft()->cloudflare->purgeUrls(array($entry->url));
-				craft()->cloudflare_rules->purgeCachesForUrl($entry->url);
-			});
-		}
-
-		// TODO: clear on publish, update, or delete entry
-	}
-
-	public function getSettingsHtml()
-	{
-		return craft()->templates->render('cloudflare/_settings', array(
-			'settings' => craft()->cloudflare->settings
-		));
-	}
-
-	protected function defineSettings()
-	{
-		return array(
-			'apiKey' => array(
-				AttributeType::String,
-				'required' => true,
-				'label'    => 'Cloudflare API Key'
-			),
-			'email' => array(
-				AttributeType::String,
-				'required' => true,
-				'label'    => 'Cloudflare Account Email'
-			),
-			'zone' => array(
-				AttributeType::String,
-				'required' => true,
-				'label'    => 'Cloudflare Zone'
-			),
-			'purgeEntryUrls' => array(
-				AttributeType::Bool,
-				'required' => true,
-				'label'    => 'Purge Entry URLs',
-				'default'  => false
-			),
-			'purgeAssetUrls' => array(
-				AttributeType::Bool,
-				'required' => true,
-				'label'    => 'Purge Asset URLs',
-				'default'  => false
-			),
-			'userServiceKey' => array(
-				AttributeType::String,
-				'required' => false,
-				'label'    => 'Cloudflare User Service Key'
-			),
-		);
-	}
-
+    /**
+     * Retrieves the plugin settings HTML
+     *
+     * @return null|string
+     * @throws \RuntimeException
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     */
+    protected function settingsHtml() {
+        return Craft::$app->getView()->renderTemplate( 'cloudflare/settings', [
+            'settings' => $this->getSettings()
+        ] );
+    }
 }
