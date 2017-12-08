@@ -1,11 +1,18 @@
 {% import "_includes/forms" as forms %}
 
+  {##
+   # The __CLOUDFLARE_PLUGIN object is an ugly bridge from Twig to the JavaScript code, since currently there is no way
+   # to translate text on the clientside. Therefore, all messages are passed to a global object.
+   # Additionally, the action URLs are specified here to have them in a single place
+   #}
   {# @formatter:off #}
   {% set extraJs %}
     window.__CLOUDFLARE_PLUGIN = {
       messages: {
         credentialVerificationFailed: "{{ 'Could not verify API credentials' | translate('cloudflare') }}",
         noCredentialsEntered:         "{{ 'Please enter an API key and email address first.' | translate('cloudflare') }}"
+        purgeUrlsFailed:              "{{ 'Could not purge URLs' | translate('cloudflare') }}",
+        purgeUrlsSucceeded:           "{{ 'Successfully purged URLs' | translate('cloudflare') }}"
       },
       actions: {
         fetchZones: "cloudflare/fetchZones",
