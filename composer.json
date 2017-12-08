@@ -22,11 +22,26 @@
       "mattstein\\cloudflare\\": "src/"
     }
   },
+  "support":     {
+    "issues": "https://github.com/workingconcept/cloudflare-craft-plugin/issues?state=open",
+    "source": "https://github.com/workingconcept/cloudflare-craft-plugin",
+    "docs":   "https://github.com/workingconcept/cloudflare-craft-plugin",
+    "rss":    "https://github.com/workingconcept/cloudflare-craft-plugin/commits/master.atom"
+  },
   "extra":       {
-    "name":         "Cloudflare",
-    "handle":       "cloudflare",
-    "class":        "mattstein\\cloudflare\\Cloudflare",
-    "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/master/CHANGELOG.md",
-    "downloadUrl":  "https://github.com/workingconcept/cloudflare-craft-plugin/archive/master.zip"
+    "name":          "Cloudflare",
+    "handle":        "cloudflare",
+    "schemaVersion": "1.0.0",
+    "hasCpSettings": true,
+    "hasCpSection":  false,
+    "components":    {
+      "CloudflareService": "mattstein\\cloudflare\\services\\CloudflareService",
+      "RulesService":      "mattstein\\cloudflare\\services\\RulesService"
+    },
+    "class":         "mattstein\\cloudflare\\Cloudflare",
+    "changelogUrl":  "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/master/CHANGELOG.md",
+    "downloadUrl":   "https://github.com/workingconcept/cloudflare-craft-plugin/archive/master.zip",
+    "developer":     "Matt Stein",
+    "developerUrl":  "https://workingconcept.com/"
   }
 }
