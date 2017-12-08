@@ -1,12 +1,29 @@
-$(".purge-option.purge-individual-urls .heading").click(function(){
-    var $heading = $(this);
-    $(".purge-urls-form").slideToggle(100, function(e){
-        $heading.hasClass('active') ? $heading.removeClass('active') : $heading.addClass('active');
-    });
+'use strict';
+
+/*
+ global window,
+ Craft
+ */
+
+const purgeIndividualUrlsButton = document.querySelector('.purge-option.purge-individual-urls .heading'),
+      purgeUrlsForm             = document.querySelector('.purge-urls-form'),
+      purgeAllButton            = document.querySelector('.purge-option.purge-all .heading');
+
+purgeUrlsForm.style.height = purgeUrlsForm.clientHeight + 'px';
+purgeUrlsForm.classList.add('hidden');
+
+purgeIndividualUrlsButton.addEventListener('click', event => {
+  const heading = event.target;
+
+  purgeUrlsForm.classList.toggle('hidden');
+
+  setTimeout(() => {
+    heading.classList.toggle('active');
+  }, 100);
 });
 
-$(".purge-option.purge-all .heading").click(function(){
-    if (confirm("You definitely want to purge the entire cache, right?")) {
-        window.location.href = window.PURGE_ALL_ACTION;
-    }
+purgeAllButton.addEventListener('click', event => {
+  if (confirm(window.__CLOUDFLARE_PLUGIN.messages.purgeAllUrlsConfirmation)) {
+    window.location.href = window.__CLOUDFLARE_PLUGIN.actions.purgeAll;
+  }
 });

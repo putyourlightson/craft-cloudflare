@@ -2,10 +2,21 @@
 
 {% set isConfigured = settings.apiKey and settings.email and settings.zone %}
 
+{# @formatter:off #}
 {% set extraJs %}
-  window.PURGE_URLS_ACTION  = "{{ actionUrl('cloudflare/purgeUrls') }}";
-  window.PURGE_ALL_ACTION  = "{{ actionUrl('cloudflare/purgeAll') }}";
+  window.__CLOUDFLARE_PLUGIN = {
+    messages: {
+      purgeUrlsFailed:          "{{ 'Could not purge URLs' | translate('cloudflare') }}",
+      purgeUrlsSucceeded:       "{{ 'Successfully purged URLs' | translate('cloudflare') }}",
+      purgeAllUrlsConfirmation: "{{ 'You definitely want to purge the entire cache, right?' | translate('cloudflare') }}"
+    },
+    actions: {
+      purgeUrls: "{{ settings.purgeUrlsActionUri }}",
+      purgeAll:  "{{ settings.purgeAllActionUri }}"
+    }
+  };
 {% endset %}
+{# @formatter:on #}
 
 {% js extraJs %}
 {% do view.registerAssetBundle("mattstein\\cloudflare\\resources\\cloudflarepurgewidget\\CloudflarePurgeWidgetAsset") %}
@@ -24,7 +35,7 @@
       </div>
 
       <div class="purge-urls-form">
-        <form action="{{ actionUrl('cloudflare/purgeUrls') }}" method="post">
+        <form action="{{ settings.purgeUrlsActionUri }}" method="post">
           {{ forms.textarea({
             id:          'urls',
             required:    true,
