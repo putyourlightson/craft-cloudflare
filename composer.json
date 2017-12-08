@@ -1,6 +1,7 @@
 {
   "name":        "workingconcept/cloudflare-craft-plugin",
   "description": "Automatically purge Craft Entry and Asset URLs in Cloudflare as they're updated. Edit",
+  "version":     "1.0.0",
   "type":        "craft-plugin",
   "license":     "MIT",
   "keywords":    [
