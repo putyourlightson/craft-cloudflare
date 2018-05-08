@@ -87,7 +87,7 @@ class Install extends Migration
                     'siteId' => $this->integer()->notNull(),
                     'trigger' => $this->string(255)->notNull(),
                     'urlsToClear' => $this->string(255)->notNull(),
-					'refresh' => $this->boolean()->defaultValue(false)
+                    'refresh' => $this->boolean()->defaultValue(false)
                 ]
             );
         }

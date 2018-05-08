@@ -21,62 +21,62 @@ use Craft;
  */
 class CloudflareVariable
 {
-	/**
-	 * Returns the CloudFlare API base URL.
-	 *
-	 * @return string
-	 */
-	public function apiBaseUrl()
-	{
-		return Cloudflare::$plugin->cloudflareService->getApiBaseUrl();
-	}
+    /**
+     * Returns the CloudFlare API base URL.
+     *
+     * @return string
+     */
+    public function apiBaseUrl()
+    {
+        return Cloudflare::$plugin->cloudflareService->getApiBaseUrl();
+    }
 
-	/**
-	 * Returns the zones.
-	 *
-	 * @return \stdClass
-	 */
-	public function getZones()
-	{
-		return Cloudflare::$plugin->cloudflareService->getZones();
-	}
+    /**
+     * Returns the zones.
+     *
+     * @return \stdClass
+     */
+    public function getZones()
+    {
+        return Cloudflare::$plugin->cloudflareService->getZones();
+    }
 
-	/**
-	 * Returns the zone options.
-	 *
-	 * @return array
-	 */
-	public function getZoneOptions()
-	{
-		$options = array();
+    /**
+     * Returns the zone options.
+     *
+     * @return array
+     */
+    public function getZoneOptions()
+    {
+        $options = array();
 
-		if ($zoneResponse = $this->getZones())
-		{
-			$zones = $zoneResponse->result;
+        if ($zoneResponse = $this->getZones())
+        {
+            $zones = $zoneResponse->result;
 
-			foreach ($zones as $zone)
-			{
-				$options[$zone->id] = $zone->name;
-			}
-		}
+            foreach ($zones as $zone)
+            {
+                $options[$zone->id] = $zone->name;
+            }
+        }
 
-		return $options;
-	}
+        return $options;
+    }
 
-	/**
-	 * Returns the rules.
-	 *
-	 * @return \stdClass
-	 */
-	public function getRulesForTable()
-	{
-		return Cloudflare::$plugin->rulesService->getRulesForTable();
-	}
+    /**
+     * Returns the rules.
+     *
+     * @return \stdClass
+     */
+    public function getRulesForTable()
+    {
+        return Cloudflare::$plugin->rulesService->getRulesForTable();
+    }
 
 
-	public function getSettings()
-	{
-		return Cloudflare::$plugin->getSettings();
-	}
+    public function getSettings()
+    {
+        return Cloudflare::$plugin->getSettings();
+    }
 
 }

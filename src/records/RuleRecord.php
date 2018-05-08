@@ -33,13 +33,13 @@ class RuleRecord extends ActiveRecord
         return '{{%cloudflare_rules}}';
     }
 
-	protected function defineAttributes()
-	{
-		return array(
-			'trigger'     => array(AttributeType::String, 'required' => true),
-			'urlsToClear' => array(AttributeType::String, 'required' => true),
-			'refresh'     => array(AttributeType::Bool, 'default' => false, 'required' => false),
-		);
-	}
+    protected function defineAttributes()
+    {
+        return array(
+            'trigger'     => array(AttributeType::String, 'required' => true),
+            'urlsToClear' => array(AttributeType::String, 'required' => true),
+            'refresh'     => array(AttributeType::Bool, 'default' => false, 'required' => false),
+        );
+    }
 
 }

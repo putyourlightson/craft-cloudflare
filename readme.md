@@ -1,8 +1,8 @@
-# Cloudflare plugin for Craft CMS 3
+# Cloudflare Plugin for Craft CMS 3
 
 Purge Cloudflare caches from Craft.
 
-**This is an in-progress plugin. Use at your own risk!**
+**This is the updated Craft 3 plugin. [Craft 2 version here](https://github.com/workingconcept/cloudflare-craft-plugin/tree/craft-2).**
 
 ## Overview
 
@@ -10,7 +10,7 @@ This plugin makes it possible to purge Cloudflare caches directly from Craft. Yo
 
 ## Installation
 
-Install from the plugin store (at some point), or `composer require workingconcept/craft-cloudflare`.
+Install from the plugin store (at some point), or `composer require workingconcept/cloudflare`.
 
 If you're tinkering with the plugin, check out a copy of the repository and add the following to your Craft site's project.json:
 
@@ -18,7 +18,7 @@ If you're tinkering with the plugin, check out a copy of the repository and add 
     "repositories": [
         {
             "type": "path",
-            "url": "../craft-cloudflare/"
+            "url": "../craft-cloudflare-plugin/"
         }
     ]
 ```

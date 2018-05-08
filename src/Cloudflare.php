@@ -50,23 +50,23 @@ class Cloudflare extends Plugin
      */
     public static $plugin;
 
-	/**
-	 * @var bool
-	 */
-	public $hasCpSettings = true;
+    /**
+     * @var bool
+     */
+    public $hasCpSettings = true;
 
-	/**
-	 * @var bool
-	 */
-	public $hasCpSection = false;
+    /**
+     * @var bool
+     */
+    public $hasCpSection = false;
 
-	/**
-	 * @var string
-	 */
-	public $t9nCategory = 'cloudflare';
+    /**
+     * @var string
+     */
+    public $t9nCategory = 'cloudflare';
 
 
-	// Public Methods
+    // Public Methods
     // =========================================================================
 
     /**
@@ -77,13 +77,13 @@ class Cloudflare extends Plugin
         parent::init();
         self::$plugin = $this;
 
-		$this->setComponents([
-			'cloudflare' => CloudflareService::class,
-			'rules'      => RulesService::class
-		]);
+        $this->setComponents([
+            'cloudflare' => CloudflareService::class,
+            'rules'      => RulesService::class
+        ]);
 
-		// register the widget
-		Event::on(
+        // register the widget
+        Event::on(
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
@@ -91,7 +91,7 @@ class Cloudflare extends Plugin
             }
         );
 
-		// register the variable
+        // register the variable
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
@@ -102,54 +102,29 @@ class Cloudflare extends Plugin
             }
         );
 
-		// register the actions
-		Event::on(
-			UrlManager::class,
-			UrlManager::EVENT_REGISTER_CP_URL_RULES,
-			function(RegisterUrlRulesEvent $event) {
-				$event->rules['cloudflare/rules'] = ['template' => 'cloudflare/rules'];
-			}
-		);
+        // register the actions
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function(RegisterUrlRulesEvent $event) {
+                $event->rules['cloudflare/rules'] = ['template' => 'cloudflare/rules'];
+            }
+        );
 
-		if (Cloudflare::$plugin->settings->purgeEntryUrls || Cloudflare::$plugin->settings->purgeAssetUrls)
-		{
+        if (Cloudflare::$plugin->settings->purgeEntryUrls || Cloudflare::$plugin->settings->purgeAssetUrls)
+        {
             Event::on(
-				Elements::class,
-				Elements::EVENT_AFTER_SAVE_ELEMENT,
-				function(ElementEvent $event) {
-
-					$isClearableEntry = Cloudflare::$plugin->settings->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
-					$isClearableAsset = Cloudflare::$plugin->settings->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
-
-					if (
-						! $event->isNew && ! empty($event->element->url) // not new, has URL
-					)
-					{
-                        if ($isClearableEntry || $isClearableAsset)
-                        {
-                            Cloudflare::$plugin->cloudflareService->purgeUrls([
-                                UrlHelper::siteUrl($event->element->url)
-                            ]);
-                        }
-
-                        // honor any explicit rules that match this URL
-                        Cloudflare::$plugin->rulesService->purgeCachesForUrl($event->element->url);
-					}
-				}
-			);
-
-			Event::on(
-				Elements::class,
-				Elements::EVENT_AFTER_DELETE_ELEMENT,
-				function(ElementEvent $event) {
+                Elements::class,
+                Elements::EVENT_AFTER_SAVE_ELEMENT,
+                function(ElementEvent $event) {
 
                     $isClearableEntry = Cloudflare::$plugin->settings->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
                     $isClearableAsset = Cloudflare::$plugin->settings->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
 
-					if (
-						! $event->isNew && ! empty($event->element->url) // not new, has URL
-					)
-					{
+                    if (
+                        ! $event->isNew && ! empty($event->element->url) // not new, has URL
+                    )
+                    {
                         if ($isClearableEntry || $isClearableAsset)
                         {
                             Cloudflare::$plugin->cloudflareService->purgeUrls([
@@ -159,10 +134,35 @@ class Cloudflare extends Plugin
 
                         // honor any explicit rules that match this URL
                         Cloudflare::$plugin->rulesService->purgeCachesForUrl($event->element->url);
-					}
-				}
-			);
-		}
+                    }
+                }
+            );
+
+            Event::on(
+                Elements::class,
+                Elements::EVENT_AFTER_DELETE_ELEMENT,
+                function(ElementEvent $event) {
+
+                    $isClearableEntry = Cloudflare::$plugin->settings->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
+                    $isClearableAsset = Cloudflare::$plugin->settings->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
+
+                    if (
+                        ! $event->isNew && ! empty($event->element->url) // not new, has URL
+                    )
+                    {
+                        if ($isClearableEntry || $isClearableAsset)
+                        {
+                            Cloudflare::$plugin->cloudflareService->purgeUrls([
+                                UrlHelper::siteUrl($event->element->url)
+                            ]);
+                        }
+
+                        // honor any explicit rules that match this URL
+                        Cloudflare::$plugin->rulesService->purgeCachesForUrl($event->element->url);
+                    }
+                }
+            );
+        }
 
         Craft::info(
             Craft::t(
@@ -177,25 +177,25 @@ class Cloudflare extends Plugin
     // Protected Methods
     // =========================================================================
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function createSettingsModel()
-	{
-		return new Settings();
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function settingsHtml(): string
-	{
+    /**
+     * @inheritdoc
+     */
+    protected function settingsHtml(): string
+    {
         return Craft::$app->view->renderTemplate(
-			'cloudflare/settings',
-			[
-				'settings' => $this->getSettings()
-			]
-		);
-	}
+            'cloudflare/settings',
+            [
+                'settings' => $this->getSettings()
+            ]
+        );
+    }
 
 }
