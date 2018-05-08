@@ -10,7 +10,7 @@ This plugin makes it possible to purge Cloudflare caches directly from Craft. Yo
 
 ## Installation
 
-Install from the plugin store (at some point), or `composer require workingconcept/cloudflare`.
+Install from the plugin store (at some point), or `composer require workingconcept/craft-cloudflare`.
 
 If you're tinkering with the plugin, check out a copy of the repository and add the following to your Craft site's project.json:
 
