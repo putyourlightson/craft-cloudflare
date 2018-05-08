@@ -1,0 +1,110 @@
+{% import "_includes/forms" as forms %}
+
+  {##
+   # The __CLOUDFLARE_PLUGIN object is an ugly bridge from Twig to the JavaScript code, since currently there is no way
+   # to translate text on the clientside. Therefore, all messages are passed to a global object.
+   # Additionally, the action URLs are fetched from the plugin settings so they can be modified with a single change.
+   #}
+  {# @formatter:off #}
+  {% set extraJs %}
+  window.__CLOUDFLARE_PLUGIN = {
+    messages: {
+        credentialVerificationFailed: "{{ 'Could not verify API credentials' | translate('cloudflare') }}",
+        noCredentialsEntered:         "{{ 'Please enter an API key and email address first.' | translate('cloudflare') }}",
+        purgeUrlsFailed:              "{{ 'Could not purge URLs' | translate('cloudflare') }}",
+        purgeUrlsSucceeded:           "{{ 'Successfully purged URLs' | translate('cloudflare') }}"
+    },
+    actions: {
+        fetchZones: "{{ settings.fetchZonesActionUri }}",
+        purgeUrls:  "{{ settings.purgeUrlsActionUri }}"
+    }
+  };
+  {% endset %}
+  {# @formatter:on #}
+
+  {% js extraJs %}
+  {% do view.registerAssetBundle("workingconcept\\cloudflare\\assetbundles\\cloudflare\\CloudflareAsset") %}
+
+  {% set zoneOptions = craft.cloudflare.getZoneOptions %}
+
+  {{ forms.textField( {
+      first: true,
+      label:        'Cloudflare API Key' | translate( 'cloudflare' ),
+      id:           'apiKey',
+      required:     true,
+      name:         'apiKey',
+      value:        settings.apiKey,
+      placeholder:  'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      autofocus:    true,
+      errors:       settings.getErrors( 'apiKey' ),
+      instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.' | translate( 'cloudflare' )
+  } ) }}
+
+  {{ forms.textField( {
+      label:        'Cloudflare Account Email' | translate( 'cloudflare' ),
+      id:           'email',
+      required:     true,
+      name:         'email',
+      value:        settings.email,
+      placeholder:  currentUser.email,
+      autofocus:    true,
+      errors:       settings.getErrors( 'email' ),
+      instructions: 'Specify which account email should be used for API requests.' | translate( 'cloudflare' )
+  } ) }}
+
+<div class="cloudflare-verify{% if zoneOptions | length %} success{% endif %}">
+    <a class="btn" id="cf-test">{{ 'Verify Credentials' | translate( 'cloudflare' ) }}</a>
+</div>
+
+{{ forms.selectField( {
+    label:        'Cloudflare Zone' | translate( 'cloudflare' ),
+    id:           'zone',
+    required:     true,
+    name:         'zone',
+    options:      zoneOptions,
+    value:        settings.zone,
+    autofocus:    true,
+    errors:       settings.getErrors( 'zone' ),
+    instructions: 'Specify which Cloudflare Zone is utilized by this site.' | translate( 'cloudflare' )
+} ) }}
+
+<hr>
+
+{{ forms.lightswitchField({
+    label: 'Automatically Purge Entry URLs' | translate( 'cloudflare' ),
+    id: 'purgeEntryUrls',
+    name: 'purgeEntryUrls',
+    on: settings.purgeEntryUrls,
+    errors: settings.getErrors('purgeEntryUrls'),
+    instructions: "Enable to attempt to purge Entry URLs whenever they're saved or deleted."
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Automatically Purge Asset URLs' | translate( 'cloudflare' ),
+    id: 'purgeAssetUrls',
+    name: 'purgeAssetUrls',
+    on: settings.purgeAssetUrls,
+    errors: settings.getErrors('purgeAssetUrls'),
+    instructions: "Enable to attempt to purge Asset URLs whenever they're saved or deleted."
+}) }}
+
+{% if settings.apiKey and settings.email and settings.zone %}
+    <hr>
+
+    {{ forms.textareaField( {
+        label:        'Purge Individual URLs' | translate( 'cloudflare' ),
+        id:           'urls',
+        required:     false,
+        name:         'urls',
+        autofocus:    true,
+        errors:       settings.getErrors( 'urls' ),
+        instructions: 'Add complete URLs, each on its own line, that you\'d like to clear from Cloudflare\'s cache.' | translate( 'cloudflare' )
+    } ) }}
+
+    <a class="btn warning" id="purge-urls">{{ 'Purge URLs' | translate( 'cloudflare' ) }}</a>
+
+    <hr>
+
+    <a href="{{ actionUrl(settings.purgeAllActionUri) }}"
+       class="btn warning">{{ 'Purge Cloudflare Cache' | translate( 'cloudflare' ) }}</a>
+{% endif %}

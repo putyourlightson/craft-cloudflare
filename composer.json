@@ -1,0 +1,58 @@
+{
+    "name": "workingconcept/craft-cloudflare",
+    "description": "Purge Cloudflare caches from Craft.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "cloudflare"
+    ],
+    "support": {
+        "docs": "https://github.com/workingconcept/craft-cloudflare/blob/master/README.md",
+        "issues": "https://github.com/workingconcept/craft-cloudflare/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Working Concept",
+            "homepage": "https://workingconcept.com"
+        },
+        {
+            "name":  "Mo",
+            "email": "m@9dev.de"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+          "workingconcept\\cloudflare\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Cloudflare",
+        "handle": "cloudflare",
+        "schemaVersion": "1.0.0",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/workingconcept/craft-cloudflare/master/CHANGELOG.md",
+        "components": {
+            "cloudflareService": "workingconcept\\cloudflare\\services\\CloudflareService",
+            "rulesService": "workingconcept\\cloudflare\\services\\RulesService"
+        },
+        "class": "workingconcept\\cloudflare\\Cloudflare",
+        "downloadUrl": "https://github.com/workingconcept/craft-cloudflare/archive/master.zip",
+        "developer": "Working Concept",
+        "developerUrl": "https://workingconcept.com/"
+    }
+}
