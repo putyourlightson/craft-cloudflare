@@ -11,7 +11,7 @@
         "cloudflare"
     ],
     "support": {
-        "docs": "https://github.com/workingconcept/cloudflare-craft-plugin/blob/master/README.md",
+        "docs": "https://github.com/workingconcept/cloudflare-craft-plugin/blob/master/readme.md",
         "issues": "https://github.com/workingconcept/cloudflare-craft-plugin/issues"
     },
     "license": "MIT",
