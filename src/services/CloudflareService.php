@@ -256,7 +256,7 @@ class CloudflareService extends Component
      * @return boolean
      */
 
-    public function isConfigured(): boolean
+    public function isConfigured(): bool
     {
         return $this->isConfigured;
     }
