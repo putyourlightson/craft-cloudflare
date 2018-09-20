@@ -237,10 +237,39 @@ class CloudflareService extends Component
         }
     }
 
+
+    /**
+     * Get Cloudflare's base API URL.
+     *
+     * @return string
+     */
+
     public function getApiBaseUrl(): string
     {
         return $this->apiBaseUrl;
     }
+
+
+    /**
+     * Get `true` if Cloudlfare API credentials have been saved.
+     *
+     * @return boolean
+     */
+
+    public function isConfigured(): boolean
+    {
+        return $this->isConfigured;
+    }
+
+
+    /**
+     * Quietly handle an exception from the Cloudflare API.
+     *
+     * @param array     $urls
+     * @param Exception $exception
+     * 
+     * @return array    [ 'result' => [] ]
+     */
 
     private function handleApiException($urls, $exception)
     {
@@ -269,8 +298,6 @@ class CloudflareService extends Component
 
             return (object) [ 'result' => [] ];
         }
-
-        return $responseBody;
     }
 
 }

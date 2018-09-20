@@ -111,7 +111,7 @@ class Cloudflare extends Plugin
             }
         );
 
-        if (Cloudflare::$plugin->settings->purgeEntryUrls || Cloudflare::$plugin->settings->purgeAssetUrls)
+        if ($this->cloudflare->isConfigured() && Cloudflare::$plugin->settings->purgeEntryUrls || Cloudflare::$plugin->settings->purgeAssetUrls)
         {
             Event::on(
                 Elements::class,

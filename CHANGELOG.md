@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.1 - 2018-09-20
+### Fixed
+- Missing API credentials won't affect element save/delete actions.
+
 ## 0.2.0 - 2018-05-08
 ### Added
 - Craft 3 version initial release. Many thanks to Mo, all mistakes mine.
