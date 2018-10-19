@@ -46,6 +46,11 @@ class CloudflareService extends Component
     protected $isConfigured;
 
     /**
+    * @var stdClass
+    */
+    protected $responseItems;
+
+    /**
      * Initializes the service.
      *
      * @return void
@@ -86,7 +91,7 @@ class CloudflareService extends Component
      * Get a list of zones (domains) available for the provided Cloudflare account.
      * https://api.cloudflare.com/#zone-list-zones
      *
-     * @return array Cloudflare's response
+     * @return array zones from response.result (combined if there was pagination)
      */
 
     public function getZones()
@@ -96,11 +101,51 @@ class CloudflareService extends Component
             return;
         }
 
-        Craft::trace('Getting zones.', __METHOD__);
+        $this->responseItems = [];
 
-        try
+        $currentPage = 0;
+        $totalPages  = 1; // temporary
+        $perPage     = 50;
+
+        while ($currentPage < $totalPages)
         {
-            $response = $this->client->get('zones');
+            $currentPage++;
+
+            if ($response = $this->getPagedZones($currentPage, $perPage))
+            {
+                if (count($response->result) > 0)
+                {
+                    $totalRecords = $response->result_info->total_count;
+                    $totalPages   = ceil($totalRecords / $perPage);
+
+                    $this->responseItems = array_merge($this->responseItems, $response->result);
+                }
+                else 
+                {
+                    return [];
+                }
+            }
+        }
+
+        return $this->responseItems;
+    }
+
+
+    /**
+     * Fetch zones via API, which returns paginated results.
+     *
+     * @param integer $page
+     * @param integer $perPage
+     * @return void
+     */
+
+    private function getPagedZones($page = 1, $perPage = 50)
+    {
+        Craft::trace('Getting zones (page ' . $page . ').', __METHOD__);
+
+        try 
+        {
+            $response = $this->client->get('zones?per_page=' . $perPage);
 
             if ( ! $response->getStatusCode() == 200)
             {
