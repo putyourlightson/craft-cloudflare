@@ -50,10 +50,8 @@ class CloudflareVariable
     {
         $options = array();
 
-        if ($zoneResponse = $this->getZones())
+        if ($zones = $this->getZones())
         {
-            $zones = $zoneResponse->result;
-
             foreach ($zones as $zone)
             {
                 $options[$zone->id] = $zone->name;
