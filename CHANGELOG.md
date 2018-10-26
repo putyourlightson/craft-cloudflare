@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.2 - 2018-10-26
+### Fixed
+- Prevented plugin from interfering with console commands.
+### Improved
+- Configuration options can now display more than 20 zones.
+
 ## 0.2.1 - 2018-09-20
 ### Fixed
 - Missing API credentials won't affect element save/delete actions.
