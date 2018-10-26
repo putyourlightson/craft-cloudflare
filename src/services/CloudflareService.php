@@ -65,8 +65,15 @@ class CloudflareService extends Component
         // set the Cloudflare API base URL
         $this->apiBaseUrl = 'https://api.cloudflare.com/client/v4/';
 
-        $apiKey = ! empty(Craft::$app->request->getParam('apiKey')) ? Craft::$app->request->getParam('apiKey') : $this->settings->apiKey;
-        $email = ! empty(Craft::$app->request->getParam('email')) ? Craft::$app->request->getParam('email') : $this->settings->email;
+        $apiKey = $this->settings->apiKey;
+        $email  = $this->settings->email;
+
+        if (Craft::$app->request->getIsSiteRequest()) 
+        {
+            // Check for parameters if relevant, like when we're first testing the credentials from the Settings page.
+            $apiKey = ! empty(Craft::$app->request->getParam('apiKey')) ? Craft::$app->request->getParam('apiKey') : $this->settings->apiKey;
+            $email  = ! empty(Craft::$app->request->getParam('email')) ? Craft::$app->request->getParam('email') : $this->settings->email;
+        }
 
         $this->isConfigured = ! empty($apiKey) && ! empty($email);
 
