@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.3 - 2018-11-02
+### Fixed
+- Fixed missed purges due to doubled-up element site URLs (`https://foo.com/https://foo.com/element`).
+
 ## 0.2.2 - 2018-10-26
 ### Fixed
 - Prevented plugin from interfering with console commands.

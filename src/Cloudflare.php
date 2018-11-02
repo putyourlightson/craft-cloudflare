@@ -152,8 +152,15 @@ class Cloudflare extends Plugin
                     {
                         if ($isClearableEntry || $isClearableAsset)
                         {
+                            $elementUrl = $event->element->url;
+
+                            if (strpos($elementUrl, '//') === false)
+                            {
+                                $elementUrl = UrlHelper::siteUrl($elementUrl);
+                            }
+                            
                             Cloudflare::$plugin->cloudflareService->purgeUrls([
-                                UrlHelper::siteUrl($event->element->url)
+                                $elementUrl
                             ]);
                         }
 
