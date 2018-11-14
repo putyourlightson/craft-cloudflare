@@ -29,6 +29,34 @@ As long as the URL points to the right local path, Composer will maintain a symb
 
 After you've installed the Cloudflare plugin, visit _Settings_ → _Cloudflare_ and provide the details that'll allow it to work.
 
+You can also create a `config/cloudflare.php` file if you'd like to define or override settings that way:
+
+```php
+<?php
+
+return [
+    'apiKey' => '',
+    'email' => 'you@yourdomain.com',
+    'zone' => '', // zone ID
+    'purgeEntryUrls' => false,
+    'purgeAssetUrls' => true,
+];
+```
+
+If you'd like to use environment variables, you can do that too:
+
+```php
+<?php
+
+return [
+    'apiKey' => env('CLOUDFLARE_API_KEY'),
+    'email' => env('CLOUDFLARE_EMAIL'),
+    'zone' => env('CLOUDFLARE_ZONE_ID'), // zone ID
+    'purgeEntryUrls' => env('CLOUDFLARE_PURGE_ENTRY_URLS', false),
+    'purgeAssetUrls' => env('CLOUDFLARE_PURGE_ASSET_URLS', true),
+];
+```
+
 ### Cloudflare API Key
 
 Provide the Global API Key you'll find in _My Profile_ in Cloudflare's control panel.
