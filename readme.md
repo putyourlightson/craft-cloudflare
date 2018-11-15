@@ -49,11 +49,11 @@ If you'd like to use environment variables, you can do that too:
 <?php
 
 return [
-    'apiKey' => env('CLOUDFLARE_API_KEY'),
-    'email' => env('CLOUDFLARE_EMAIL'),
-    'zone' => env('CLOUDFLARE_ZONE_ID'), // zone ID
-    'purgeEntryUrls' => env('CLOUDFLARE_PURGE_ENTRY_URLS', false),
-    'purgeAssetUrls' => env('CLOUDFLARE_PURGE_ASSET_URLS', true),
+    'apiKey' => getenv('CLOUDFLARE_API_KEY'),
+    'email' => getenv('CLOUDFLARE_EMAIL'),
+    'zone' => getenv('CLOUDFLARE_ZONE_ID'), // zone ID
+    'purgeEntryUrls' => getenv('CLOUDFLARE_PURGE_ENTRY_URLS', false),
+    'purgeAssetUrls' => getenv('CLOUDFLARE_PURGE_ASSET_URLS', true),
 ];
 ```
 
