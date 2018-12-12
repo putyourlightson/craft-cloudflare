@@ -1,8 +1,13 @@
-# Cloudflare Plugin for Craft CMS 3
+![Cloudflare](resources/hero.svg)
 
-Purge Cloudflare caches from Craft.
+<h1 align="center">Cloudflare Craft CMS 3 Plugin</h1>
+<h4 align="center">Purge <a href="https://www.cloudflare.com/">Cloudflare</a> caches from Craft.</h4>
+
+---
 
 **This is the updated Craft 3 plugin. [Craft 2 version here](https://github.com/workingconcept/cloudflare-craft-plugin/tree/craft-2).**
+
+---
 
 ## Overview
 
@@ -153,3 +158,7 @@ Feature requests and pull requests welcome! Please just mind your formatting and
 - Handle bulk Element operations efficiently. (There could be a lot of Cloudflare requests.)
 - Give rules and non-widget cache-clearing tools a proper home.
 - See if it's possible to dig deeper into how Craft clears its own caches and mirror the approach so we rely less on manually-specified rules.
+
+---
+
+This plugin is brought to you by [Working Concept](https://workingconcept.com), which has no affiliation with [Cloudflare](https://www.cloudflare.com/).

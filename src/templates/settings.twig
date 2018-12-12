@@ -33,8 +33,9 @@
       id:           'apiKey',
       required:     true,
       name:         'apiKey',
+      class:        'code',
       value:        settings.apiKey,
-      placeholder:  'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      placeholder:  '••••••••••••••••••••••••••••••••',
       autofocus:    true,
       errors:       settings.getErrors( 'apiKey' ),
       instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.' | translate( 'cloudflare' )
@@ -45,6 +46,7 @@
       id:           'email',
       required:     true,
       name:         'email',
+      class:        'code',
       value:        settings.email,
       placeholder:  currentUser.email,
       autofocus:    true,
