@@ -3,7 +3,7 @@
 <h1 align="center">Cloudflare Craft CMS 3 Plugin</h1>
 <h4 align="center">Purge <a href="https://www.cloudflare.com/">Cloudflare</a> caches from Craft.</h4>
 
-<p align="center"><a href="https://scrutinizer-ci.com/g/workingconcept/cloudflare-craft-plugin/">https://scrutinizer-ci.com/g/workingconcept/cloudflare-craft-plugin/badges/quality-score.png?b=master</a></p>
+<p align="center"><a href="https://scrutinizer-ci.com/g/workingconcept/cloudflare-craft-plugin/"><img src="https://scrutinizer-ci.com/g/workingconcept/cloudflare-craft-plugin/badges/quality-score.png?b=master"></a></p>
 
 ---
 
