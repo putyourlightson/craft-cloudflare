@@ -26,7 +26,7 @@ class DefaultController extends Controller
 
     public function actionFetchZones()
     {
-        return $this->asJson(Cloudflare::$plugin->cloudflareService->getZones());
+        return $this->asJson(Cloudflare::$plugin->cloudflare->getZones());
     }
 
     /**
@@ -54,7 +54,7 @@ class DefaultController extends Controller
         // split lines into array items
         $urls = explode("\n", $urls);
 
-        $response = Cloudflare::$plugin->cloudflareService->purgeUrls($urls);
+        $response = Cloudflare::$plugin->cloudflare->purgeUrls($urls);
 
         if ($request->isAjax)
         {
@@ -81,7 +81,7 @@ class DefaultController extends Controller
      */
     public function actionPurgeAll()
     {
-        $response = Cloudflare::$plugin->cloudflareService->purgeZoneCache();
+        $response = Cloudflare::$plugin->cloudflare->purgeZoneCache();
 
         if (isset($response->success) && $response->success)
         {
@@ -108,7 +108,7 @@ class DefaultController extends Controller
      */
     public function actionSaveRules()
     {
-        Cloudflare::$plugin->rulesService->saveRules();
+        Cloudflare::$plugin->rules->saveRules();
         Craft::$app->session->setNotice(Craft::t('cloudflare', 'Cloudflare rules saved.'));
 
         return Craft::$app->controller->redirect(UrlHelper::cpUrl('cloudflare/rules'));

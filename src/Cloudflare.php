@@ -18,8 +18,6 @@ use workingconcept\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
 
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\services\Dashboard;
@@ -111,15 +109,15 @@ class Cloudflare extends Plugin
             }
         );
 
-        if ($this->cloudflare->isConfigured() && Cloudflare::$plugin->settings->purgeEntryUrls || Cloudflare::$plugin->settings->purgeAssetUrls)
+        if ($this->cloudflare->isConfigured() && ($this->getSettings()->purgeEntryUrls || $this->getSettings()->purgeAssetUrls))
         {
             Event::on(
                 Elements::class,
                 Elements::EVENT_AFTER_SAVE_ELEMENT,
                 function(ElementEvent $event) {
 
-                    $isClearableEntry = Cloudflare::$plugin->settings->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
-                    $isClearableAsset = Cloudflare::$plugin->settings->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
+                    $isClearableEntry = $this->getSettings()->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
+                    $isClearableAsset = $this->getSettings()->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
 
                     if (
                         ! $event->isNew && ! empty($event->element->url) // not new, has URL
@@ -134,13 +132,13 @@ class Cloudflare extends Plugin
                                 $elementUrl = UrlHelper::siteUrl($elementUrl);
                             }
                             
-                            Cloudflare::$plugin->cloudflareService->purgeUrls([
+                            Cloudflare::$plugin->cloudflare->purgeUrls([
                                 $elementUrl
                             ]);
                         }
 
                         // honor any explicit rules that match this URL
-                        Cloudflare::$plugin->rulesService->purgeCachesForUrl($event->element->url);
+                        Cloudflare::$plugin->rules->purgeCachesForUrl($event->element->url);
                     }
                 }
             );
@@ -150,8 +148,8 @@ class Cloudflare extends Plugin
                 Elements::EVENT_AFTER_DELETE_ELEMENT,
                 function(ElementEvent $event) {
 
-                    $isClearableEntry = Cloudflare::$plugin->settings->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
-                    $isClearableAsset = Cloudflare::$plugin->settings->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
+                    $isClearableEntry = $this->getSettings()->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
+                    $isClearableAsset = $this->getSettings()->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
 
                     if (
                         ! $event->isNew && ! empty($event->element->url) // not new, has URL
@@ -166,13 +164,13 @@ class Cloudflare extends Plugin
                                 $elementUrl = UrlHelper::siteUrl($elementUrl);
                             }
                             
-                            Cloudflare::$plugin->cloudflareService->purgeUrls([
+                            Cloudflare::$plugin->cloudflare->purgeUrls([
                                 $elementUrl
                             ]);
                         }
 
                         // honor any explicit rules that match this URL
-                        Cloudflare::$plugin->rulesService->purgeCachesForUrl($event->element->url);
+                        Cloudflare::$plugin->rules->purgeCachesForUrl($event->element->url);
                     }
                 }
             );

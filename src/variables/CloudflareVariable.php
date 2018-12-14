@@ -28,17 +28,17 @@ class CloudflareVariable
      */
     public function apiBaseUrl()
     {
-        return Cloudflare::$plugin->cloudflareService->getApiBaseUrl();
+        return Cloudflare::$plugin->cloudflare->getApiBaseUrl();
     }
 
     /**
      * Returns the zones.
      *
-     * @return \stdClass
+     * @return array
      */
     public function getZones()
     {
-        return Cloudflare::$plugin->cloudflareService->getZones();
+        return Cloudflare::$plugin->cloudflare->getZones();
     }
 
     /**
@@ -46,9 +46,9 @@ class CloudflareVariable
      *
      * @return array
      */
-    public function getZoneOptions()
+    public function getZoneOptions(): array
     {
-        $options = array();
+        $options = [];
 
         if ($zones = $this->getZones())
         {
@@ -64,11 +64,11 @@ class CloudflareVariable
     /**
      * Returns the rules.
      *
-     * @return \stdClass
+     * @return array
      */
     public function getRulesForTable()
     {
-        return Cloudflare::$plugin->rulesService->getRulesForTable();
+        return Cloudflare::$plugin->rules->getRulesForTable();
     }
 
 
