@@ -28,7 +28,6 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\ElementEvent;
 use craft\services\Elements;
 use craft\helpers\UrlHelper;
-
 use yii\base\Event;
 
 /**
@@ -38,7 +37,7 @@ use yii\base\Event;
  * @package   Cloudflare
  * @since     1.0.0
  *
- * @property  CloudflareService $cloudflareService
+ * @property  CloudflareService $cloudflare
  */
 class Cloudflare extends Plugin
 {
