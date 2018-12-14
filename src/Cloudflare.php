@@ -38,6 +38,7 @@ use yii\base\Event;
  * @since     1.0.0
  *
  * @property  CloudflareService $cloudflare
+ * @property  RulesService $rules
  */
 class Cloudflare extends Plugin
 {
