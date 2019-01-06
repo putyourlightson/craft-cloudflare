@@ -235,11 +235,10 @@ class CloudflareService extends Component
      * https://api.cloudflare.com/#zone-purge-individual-files-by-url-and-cache-tags
      *
      * @param  array  $urls  array of absolute URLs
-     * @param  array  $tags  array of tags
      *
      * @return mixed|null  API response data or null
      */
-    public function purgeUrls(array $urls = [], array $tags = []): stdClass
+    public function purgeUrls(array $urls = [])
     {
         if ( ! $this->getClient())
         {
