@@ -39,6 +39,7 @@ class DefaultController extends Controller
      * a string with each item on its own line.
      *
      * @return mixed
+     * @throws craft\errors\MissingComponentException without a valid session.
      */
     public function actionPurgeUrls()
     {
@@ -53,7 +54,7 @@ class DefaultController extends Controller
 
         if (empty($urls))
         {
-            Craft::$app->session->setError(Craft::t(
+            Craft::$app->getSession()->setError(Craft::t(
                 'cloudflare',
                 'Failed to purge empty or invalid URLs.'
             ));
@@ -73,14 +74,14 @@ class DefaultController extends Controller
 
         if (isset($response->success) && $response->success)
         {
-            Craft::$app->session->setNotice(Craft::t(
+            Craft::$app->getSession()->setNotice(Craft::t(
                 'cloudflare',
                 'URL(s) purged.'
             ));
         }
         else
         {
-            Craft::$app->session->setError(Craft::t(
+            Craft::$app->getSession()->setError(Craft::t(
                 'cloudflare',
                 'Failed to purge URL(s).'
             ));
@@ -92,6 +93,7 @@ class DefaultController extends Controller
     /**
      * Purge entire Cloudflare zone cache.
      * @return mixed
+     * @throws craft\errors\MissingComponentException without a valid session.
      */
     public function actionPurgeAll()
     {
@@ -99,14 +101,14 @@ class DefaultController extends Controller
 
         if (isset($response->success) && $response->success)
         {
-            Craft::$app->session->setNotice(Craft::t(
+            Craft::$app->getSession()->setNotice(Craft::t(
                 'cloudflare',
                 'Cloudflare cache purged.'
             ));
         }
         else
         {
-            Craft::$app->session->setError(Craft::t(
+            Craft::$app->getSession()->setError(Craft::t(
                 'cloudflare',
                 'Failed to purge Cloudflare cache.'
             ));
@@ -125,12 +127,13 @@ class DefaultController extends Controller
     /**
      * Save our Craft-URL-specific purge rules.
      * @return mixed
+     * @throws craft\errors\MissingComponentException without a valid session.
      */
     public function actionSaveRules()
     {
         Cloudflare::$plugin->rules->saveRules();
 
-        Craft::$app->session->setNotice(Craft::t(
+        Craft::$app->getSession()->setNotice(Craft::t(
             'cloudflare',
             'Cloudflare rules saved.'
         ));

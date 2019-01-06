@@ -237,7 +237,7 @@ class CloudflareService extends Component
      * @param  array  $urls  array of absolute URLs
      * @param  array  $tags  array of tags
      *
-     * @return mixed  API response object or null
+     * @return mixed|null  API response data or null
      */
     public function purgeUrls(array $urls = [], array $tags = []): stdClass
     {
@@ -446,7 +446,8 @@ class CloudflareService extends Component
          */
         if (
             $request->getIsAjax() &&
-            ! empty($request->getParam($key))
+            ! empty($request->getParam($key)) &&
+            is_string($request->getParam($key))
         )
         {
             return $request->getParam($key);

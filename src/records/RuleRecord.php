@@ -10,9 +10,6 @@
 
 namespace workingconcept\cloudflare\records;
 
-use workingconcept\cloudflare\Cloudflare;
-
-use Craft;
 use craft\db\ActiveRecord;
 
 /**
@@ -33,7 +30,7 @@ class RuleRecord extends ActiveRecord
         return '{{%cloudflare_rules}}';
     }
 
-    protected function defineAttributes()
+    protected function defineAttributes(): array
     {
         return array(
             'trigger'     => array(AttributeType::String, 'required' => true),
