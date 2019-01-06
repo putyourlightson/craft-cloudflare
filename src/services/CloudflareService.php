@@ -263,11 +263,11 @@ class CloudflareService extends Component
         try
         {
             $response = $this->getClient()->delete(sprintf(
-                'zones/%s/purge_cache',
-                Cloudflare::$plugin->getSettings()->zone
-            ), [
-                'body' => json_encode(['files' => $urls])
-            ]);
+                    'zones/%s/purge_cache',
+                    Cloudflare::$plugin->getSettings()->zone
+                ),
+                [ 'body' => json_encode(['files' => $urls]) ]
+            );
 
             $responseBody = json_decode($response->getBody());
 
