@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.5 - 2019-01-05
+### Fixed
+- Removed perilous trailing comma from CloudflareService. (Thanks @jkorff!)
+
 ## 0.2.4 - 2019-01-05
 ### Fixed
 - Settings "Verify Credentials" AJAX works again after bug introduced in 0.2.2 ([#10](https://github.com/workingconcept/cloudflare-craft-plugin/issues/10)).
