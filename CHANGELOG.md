@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.6 - 2019-01-05
+### Fixed
+- Fixed console exception thrown checking for post params when they don't exist.
+
 ## 0.2.5 - 2019-01-05
 ### Fixed
 - Removed perilous trailing comma from CloudflareService. (Thanks @jkorff!)

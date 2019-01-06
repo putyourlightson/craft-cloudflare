@@ -67,7 +67,7 @@ class DefaultController extends Controller
 
         $response = Cloudflare::$plugin->cloudflare->purgeUrls($urls);
 
-        if ($request->isAjax)
+        if ($request->getIsAjax())
         {
             return $this->asJson($response);
         }

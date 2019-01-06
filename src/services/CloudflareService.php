@@ -16,6 +16,7 @@ use workingconcept\cloudflare\Cloudflare;
 
 use Craft;
 use craft\base\Component;
+use craft\console\Application as ConsoleApplication;
 use GuzzleHttp\Client;
 use stdClass;
 
@@ -437,13 +438,15 @@ class CloudflareService extends Component
      */
     private function _getApiSetting($key)
     {
-        $request = Craft::$app->getRequest();
+        $request   = Craft::$app->getRequest();
+        $isConsole = Craft::$app instanceof ConsoleApplication;
 
         /**
          * Check post params if we're in the control panel, where we use AJAX
          * for initially checking new parameters.
          */
         if (
+            ! $isConsole &&
             $request->getIsAjax() &&
             ! empty($request->getParam($key)) &&
             is_string($request->getParam($key))
