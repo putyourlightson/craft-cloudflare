@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.4 - 2019-01-05
+### Fixed
+- Settings "Verify Credentials" AJAX works again after bug introduced in 0.2.2 ([#10](https://github.com/workingconcept/cloudflare-craft-plugin/issues/10)).
+- Restored proper logging ([#10](https://github.com/workingconcept/cloudflare-craft-plugin/issues/10)).
+- Made various code improvements to benefit readability and sanity.
+### Changed
+- Slightly changed CloudflareService API to improve clarity and efficiency. **If you had custom code interacting with the `apiBaseUrl`, `client`, or `isConfigured` properties, please use `getApiBaseUrl()`, `getClient()`, and `isConfigured()` respectively.
+- After initial setup (or re-saving Settings), only URLs in the selected zone name (domain) will be purged. This will prevent API calls in environments with base URLs that aren't on the Cloudflare zone.
+- Updated Composer requirements to include PHP 7 and the JSON extension.
+
 ## 0.2.3 - 2018-11-02
 ### Fixed
 - Fixed missed purges due to doubled-up element site URLs (`https://foo.com/https://foo.com/element`).

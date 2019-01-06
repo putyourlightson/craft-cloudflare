@@ -54,11 +54,6 @@ class Cloudflare extends Plugin
     public $hasCpSettings = true;
 
     /**
-     * @var bool
-     */
-    public $hasCpSection = false;
-
-    /**
      * @var string
      */
     public $t9nCategory = 'cloudflare';
@@ -100,46 +95,33 @@ class Cloudflare extends Plugin
             }
         );
 
-        // register the actions
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function(RegisterUrlRulesEvent $event) {
-                $event->rules['cloudflare/rules'] = ['template' => 'cloudflare/rules'];
-            }
-        );
+        if (Craft::$app->getRequest()->getIsCpRequest())
+        {
+            // register the actions
+            Event::on(
+                UrlManager::class,
+                UrlManager::EVENT_REGISTER_CP_URL_RULES,
+                function(RegisterUrlRulesEvent $event) {
+                    $event->rules['cloudflare/rules'] = [
+                        'template' => 'cloudflare/rules'
+                    ];
+                }
+            );
+        }
 
-        if ($this->cloudflare->isConfigured() && ($this->getSettings()->purgeEntryUrls || $this->getSettings()->purgeAssetUrls))
+        if (
+            $this->cloudflare->isConfigured() &&
+            ($this->getSettings()->purgeEntryUrls || $this->getSettings()->purgeAssetUrls)
+        )
         {
             Event::on(
                 Elements::class,
                 Elements::EVENT_AFTER_SAVE_ELEMENT,
                 function(ElementEvent $event) {
-
-                    $isClearableEntry = $this->getSettings()->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
-                    $isClearableAsset = $this->getSettings()->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
-
-                    if (
-                        ! $event->isNew && ! empty($event->element->url) // not new, has URL
-                    )
-                    {
-                        if ($isClearableEntry || $isClearableAsset)
-                        {
-                            $elementUrl = $event->element->url;
-
-                            if (strpos($elementUrl, '//') === false)
-                            {
-                                $elementUrl = UrlHelper::siteUrl($elementUrl);
-                            }
-                            
-                            Cloudflare::$plugin->cloudflare->purgeUrls([
-                                $elementUrl
-                            ]);
-                        }
-
-                        // honor any explicit rules that match this URL
-                        Cloudflare::$plugin->rules->purgeCachesForUrl($event->element->url);
-                    }
+                    $this->_handleElementChange(
+                        $event->isNew,
+                        $event->element
+                    );
                 }
             );
 
@@ -147,31 +129,10 @@ class Cloudflare extends Plugin
                 Elements::class,
                 Elements::EVENT_AFTER_DELETE_ELEMENT,
                 function(ElementEvent $event) {
-
-                    $isClearableEntry = $this->getSettings()->purgeEntryUrls && is_a($event->element, 'craft\elements\Entry');
-                    $isClearableAsset = $this->getSettings()->purgeAssetUrls && is_a($event->element, 'craft\elements\Asset');
-
-                    if (
-                        ! $event->isNew && ! empty($event->element->url) // not new, has URL
-                    )
-                    {
-                        if ($isClearableEntry || $isClearableAsset)
-                        {
-                            $elementUrl = $event->element->url;
-
-                            if (strpos($elementUrl, '//') === false)
-                            {
-                                $elementUrl = UrlHelper::siteUrl($elementUrl);
-                            }
-                            
-                            Cloudflare::$plugin->cloudflare->purgeUrls([
-                                $elementUrl
-                            ]);
-                        }
-
-                        // honor any explicit rules that match this URL
-                        Cloudflare::$plugin->rules->purgeCachesForUrl($event->element->url);
-                    }
+                    $this->_handleElementChange(
+                        $event->isNew,
+                        $event->element
+                    );
                 }
             );
         }
@@ -182,9 +143,27 @@ class Cloudflare extends Plugin
                 '{name} plugin loaded',
                 ['name' => $this->name]
             ),
-            __METHOD__
+            'cloudflare'
         );
     }
+
+    /**
+     * Store the selected Cloudflare Zone's base URL for later comparison.
+     *
+     * @return bool
+     */
+    public function beforeSaveSettings(): bool
+    {
+        $settings = $this->getSettings();
+
+        if ($zoneInfo = $this->cloudflare->getZoneById($settings->zone))
+        {
+            $settings->zoneName = $zoneInfo->name;
+        }
+
+        return true;
+    }
+
 
     // Protected Methods
     // =========================================================================
@@ -207,6 +186,58 @@ class Cloudflare extends Plugin
             [
                 'settings' => $this->getSettings()
             ]
+        );
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * @param bool $isNew
+     * @param \craft\base\Element|null $element
+     *
+     * @throws \yii\base\Exception
+     */
+    private function _handleElementChange(bool $isNew, $element)
+    {
+        /**
+         * Bail if we don't have an Element or an Element URL to work with.
+         */
+        if ($element === null || $element->getUrl() === null)
+        {
+            return;
+        }
+
+        $isClearableEntry = $this->getSettings()->purgeEntryUrls &&
+            is_a($element, \craft\elements\Entry::class);
+
+        $isClearableAsset = $this->getSettings()->purgeAssetUrls &&
+            is_a($element, \craft\elements\Asset::class);
+
+        if (! $isNew && ($isClearableEntry || $isClearableAsset))
+        {
+            $elementUrl = $element->getUrl();
+
+            /**
+             * Try making relative URLs absolute.
+             */
+            if (strpos($elementUrl, '//') === false)
+            {
+                $elementUrl = UrlHelper::siteUrl($elementUrl);
+            }
+
+            $this->cloudflare->purgeUrls([
+                $elementUrl
+            ]);
+        }
+
+        /**
+         * Honor any explicit rules that match this URL, regardless
+         * of whatever Element it is.
+         */
+        $this->rules->purgeCachesForUrl(
+            $element->getUrl()
         );
     }
 

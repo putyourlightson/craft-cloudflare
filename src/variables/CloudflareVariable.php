@@ -12,8 +12,6 @@ namespace workingconcept\cloudflare\variables;
 
 use workingconcept\cloudflare\Cloudflare;
 
-use Craft;
-
 /**
  * @author    Working Concept
  * @package   Cloudflare

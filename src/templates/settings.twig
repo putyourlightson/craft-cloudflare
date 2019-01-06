@@ -9,10 +9,10 @@
   {% set extraJs %}
   window.__CLOUDFLARE_PLUGIN = {
     messages: {
-        credentialVerificationFailed: "{{ 'Could not verify API credentials' | translate('cloudflare') }}",
+        credentialVerificationFailed: "{{ 'Could not verify API credentials.' | translate('cloudflare') }}",
         noCredentialsEntered:         "{{ 'Please enter an API key and email address first.' | translate('cloudflare') }}",
-        purgeUrlsFailed:              "{{ 'Could not purge URLs' | translate('cloudflare') }}",
-        purgeUrlsSucceeded:           "{{ 'Successfully purged URLs' | translate('cloudflare') }}"
+        purgeUrlsFailed:              "{{ 'Could not purge URLs.' | translate('cloudflare') }}",
+        purgeUrlsSucceeded:           "{{ 'Successfully purged URLs.' | translate('cloudflare') }}"
     },
     actions: {
         fetchZones: "{{ settings.fetchZonesActionUri }}",

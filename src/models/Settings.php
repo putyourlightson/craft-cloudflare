@@ -2,19 +2,44 @@
 
 namespace workingconcept\cloudflare\models;
 
-use workingconcept\cloudflare\Cloudflare;
-
-use Craft;
 use craft\base\Model;
 
 class Settings extends Model
 {
+    /**
+     * @var string
+     */
     public $apiKey = '';
+
+    /**
+     * @var string
+     */
     public $email = '';
+
+    /**
+     * @var string
+     */
     public $zone = '';
+
+    /**
+     * @var bool
+     */
     public $purgeEntryUrls = false;
+
+    /**
+     * @var bool
+     */
     public $purgeAssetUrls = true;
+
+    /**
+     * @var string
+     */
     public $userServiceKey = '';
+
+    /**
+     * @var string|null
+     */
+    public $zoneName;
 
     /**
      * Action URI to fetch zones
@@ -44,17 +69,16 @@ class Settings extends Model
      */
     public $saveRulesActionUri = 'cloudflare/default/save-rules';
 
-    public function rules()
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
     {
         return [
-            ['apiKey', 'string'],
-            ['email', 'string'],
-            ['zone', 'string'],
-            ['purgeEntryUrls', 'boolean'],
+            [['apiKey', 'email', 'zone', 'zoneName', 'userServiceKey'], 'string'],
+            [['purgeEntryUrls', 'purgeAssetUrls'], 'boolean'],
             ['purgeEntryUrls', 'default', 'value' => false],
-            ['purgeAssetUrls', 'boolean'],
             ['purgeAssetUrls', 'default', 'value' => true],
-            ['userServiceKey', 'string'],
         ];
     }
 }

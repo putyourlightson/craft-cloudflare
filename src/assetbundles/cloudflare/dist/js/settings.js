@@ -30,13 +30,13 @@ verifyCredentialsButton.addEventListener('click', event => {
         {apiKey, email},
         (response, statusText, request) => {
             // check for errors
-            if (statusText === 'error' || !response || !response.hasOwnProperty('result')) {
+            if (statusText === 'error' || !response) {
                 alert(window.__CLOUDFLARE_PLUGIN.messages.credentialVerificationFailed);
 
                 verifyContainer.classList.remove('success');
                 verifyContainer.classList.add('fail');
 
-                console.error('Credential verification failed:', response);
+                console.error('Credential verification failed with response: ', response);
 
                 return false;
             }
@@ -46,8 +46,8 @@ verifyCredentialsButton.addEventListener('click', event => {
                 .forEach(option => option.remove());
 
             // append zone options from Cloudflare
-            for (let i = 0; i < response.result.length; i++) {
-                const row    = response.result[i];
+            for (let i = 0; i < response.length; i++) {
+                const row    = response[i];
                 const option = document.createElement('option');
 
                 option.value       = row.id;
@@ -78,7 +78,7 @@ if (purgeUrlsButton) {
             {urls},
             (response, statusText, request) => {
                 if (statusText === 'error') {
-                    console.error('Purge URLs failed:', response);
+                    console.error('URL purge failed with response:', response);
                     return alert(window.__CLOUDFLARE_PLUGIN.messages.purgeUrlsFailed);
                 }
 
