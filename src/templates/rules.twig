@@ -16,11 +16,11 @@
             addRowLabel: 'Add Rule',
             cols: {
                 0: { heading: 'URL Trigger Pattern', type: 'singleline' },
-                1: { heading: 'Clear URLs', type: 'multiline' },
+                1: { heading: 'Clear URLs (one per line)', type: 'multiline' },
             },
             rows: craft.cloudflare.getRulesForTable,
             errors: '',
-            instructions: "Specify URL patterns on the left (can include `*`, like `blog/*`) that, when updated, will clear the URLs listed on the right (like `blog`). Right cannot use wildcards, but can also be relative."
+            instructions: "Specify URI patterns on the left (can include `*`, like `blog/*`) that, when updated, will clear the URLs listed on the right (like `blog`). Right cannot use wildcards, but can be relative."
         }) }}
 
         <input type="submit" class="btn submit" value="Save">

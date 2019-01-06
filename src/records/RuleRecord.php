@@ -16,6 +16,12 @@ use craft\db\ActiveRecord;
  * @author    Working Concept
  * @package   Cloudflare
  * @since     1.0.0
+ *
+ * @property string $trigger     URI pattern applied to saved Entries and Assets
+ *                               that will purge supplied URLs when matched.
+ * @property string $urlsToClear JSON array of absolute URLs to be cleared.
+ * @property bool   $refresh     Whether to automatically re-cache purged URLs.
+ *                               (not implemented)
  */
 class RuleRecord extends ActiveRecord
 {
@@ -25,18 +31,9 @@ class RuleRecord extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%cloudflare_rules}}';
-    }
-
-    protected function defineAttributes(): array
-    {
-        return array(
-            'trigger'     => array(AttributeType::String, 'required' => true),
-            'urlsToClear' => array(AttributeType::String, 'required' => true),
-            'refresh'     => array(AttributeType::Bool, 'default' => false, 'required' => false),
-        );
     }
 
 }

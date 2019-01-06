@@ -45,6 +45,8 @@ class RulesService extends Component {
     }
 
     /**
+     * Get supplied rules from the CP view and save them to the database.
+     *
      * @return void
      */
     public function saveRules()
