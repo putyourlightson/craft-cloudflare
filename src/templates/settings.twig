@@ -27,19 +27,20 @@
 
   {% set zoneOptions = craft.cloudflare.getZoneOptions %}
 
-  {{ forms.textField( {
-      first: true,
+  {{ forms.autosuggestField({
+      first:        true,
       label:        'Cloudflare API Key' | translate( 'cloudflare' ),
       id:           'apiKey',
       required:     true,
       name:         'apiKey',
+      type:         'password',
       class:        'code',
       value:        settings.apiKey,
-      placeholder:  '••••••••••••••••••••••••••••••••',
       autofocus:    true,
       errors:       settings.getErrors( 'apiKey' ),
-      instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.' | translate( 'cloudflare' )
-  } ) }}
+      instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.' | translate( 'cloudflare' ),
+      suggestions:  craft.cp.getEnvSuggestions(),
+  }) }}
 
   {{ forms.textField( {
       label:        'Cloudflare Account Email' | translate( 'cloudflare' ),

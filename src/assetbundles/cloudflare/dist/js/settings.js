@@ -10,11 +10,12 @@ const zoneSelect            = document.getElementById('settings-zone'),
     verifyCredentialsButton = document.getElementById('settings-cf-test'),
     purgeUrlsButton         = document.getElementById('settings-purge-urls'),
     purgeUrlsField          = document.getElementById('settings-urls'),
-    apiKeyField             = document.getElementById('settings-apiKey'),
     emailField              = document.getElementById('settings-email');
 
 verifyCredentialsButton.addEventListener('click', event => {
     event.preventDefault();
+    
+    const apiKeyField = document.getElementById('settings-apiKey');
 
     const apiKey = apiKeyField.value,
         email  = emailField.value;

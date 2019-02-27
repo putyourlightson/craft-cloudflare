@@ -452,10 +452,10 @@ class CloudflareService extends Component
             is_string($request->getParam($key))
         )
         {
-            return $request->getParam($key);
+            return Craft::parseEnv($request->getParam($key));
         }
 
-        return Cloudflare::$plugin->getSettings()->{$key} ?? null;
+        return Craft::parseEnv(Cloudflare::$plugin->getSettings()->{$key}) ?? null;
     }
 
     /**

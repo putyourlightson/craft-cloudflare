@@ -1,5 +1,9 @@
 # Cloudflare Changelog
 
+## 0.2.7 - 2019-02-26
+### Added
+- Environment variables can now be used for the control panel's API Key setting.
+
 ## 0.2.6 - 2019-01-05
 ### Fixed
 - Fixed console exception thrown checking for post params when they don't exist.
