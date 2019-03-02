@@ -26,8 +26,7 @@
   {% do view.registerAssetBundle("workingconcept\\cloudflare\\assetbundles\\cloudflare\\CloudflareAsset") %}
 
   {% set zoneOptions = craft.cloudflare.getZoneOptions %}
-
-  {{ forms.autosuggestField({
+  {% set apiKeyFieldSettings = {
       first:        true,
       label:        'Cloudflare API Key' | translate( 'cloudflare' ),
       id:           'apiKey',
@@ -39,8 +38,14 @@
       autofocus:    true,
       errors:       settings.getErrors( 'apiKey' ),
       instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.' | translate( 'cloudflare' ),
-      suggestions:  craft.cp.getEnvSuggestions(),
-  }) }}
+  } %}
+
+  {% if isCraft31 %}
+    {% set apiKeyFieldSettings = apiKeyFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+    {{ forms.autosuggestField(apiKeyFieldSettings) }}
+  {% else %}
+    {{ forms.passwordField(apiKeyFieldSettings) }}
+  {% endif %}
 
   {{ forms.textField( {
       label:        'Cloudflare Account Email' | translate( 'cloudflare' ),

@@ -2,7 +2,7 @@
     "name": "workingconcept/craft-cloudflare",
     "description": "Purge Cloudflare caches from Craft.",
     "type": "craft-plugin",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "keywords": [
         "craft",
         "cms",

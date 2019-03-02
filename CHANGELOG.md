@@ -1,5 +1,9 @@
 # Cloudflare Changelog
 
+## 0.2.8 - 2019-03-02
+### Fixed
+- Fixed Craft < 3.1 compatibility for API Key setting.
+
 ## 0.2.7 - 2019-02-26
 ### Added
 - Environment variables can now be used for the control panel's API Key setting.

@@ -440,22 +440,26 @@ class CloudflareService extends Component
     {
         $request   = Craft::$app->getRequest();
         $isConsole = Craft::$app instanceof ConsoleApplication;
+        $isCraft31 = version_compare(Craft::$app->getVersion(), '3.1', '>=');
 
         /**
          * Check post params if we're in the control panel, where we use AJAX
          * for initially checking new parameters.
          */
-        if (
-            ! $isConsole &&
+        $usePost = ! $isConsole &&
             $request->getIsAjax() &&
             ! empty($request->getParam($key)) &&
-            is_string($request->getParam($key))
-        )
+            is_string($request->getParam($key));
+
+        $settingValue = $usePost ? $request->getParam($key) : 
+            Cloudflare::$plugin->getSettings()->{$key} ?? null;
+
+        if ($isCraft31 && $settingValue)
         {
-            return Craft::parseEnv($request->getParam($key));
+            return Craft::parseEnv($settingValue);
         }
 
-        return Craft::parseEnv(Cloudflare::$plugin->getSettings()->{$key}) ?? null;
+        return $settingValue;
     }
 
     /**

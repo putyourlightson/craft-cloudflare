@@ -184,7 +184,8 @@ class Cloudflare extends Plugin
         return Craft::$app->view->renderTemplate(
             'cloudflare/settings',
             [
-                'settings' => $this->getSettings()
+                'settings'  => $this->getSettings(),
+                'isCraft31' => version_compare(Craft::$app->getVersion(), '3.1', '>='),
             ]
         );
     }
