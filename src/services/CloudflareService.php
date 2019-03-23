@@ -338,33 +338,54 @@ class CloudflareService extends Component
         /**
          * Collect only URLs that have the ability to be cleared.
          */
-        $totalUrls = count($urls);
-
-        for ($i=0; $i < $totalUrls; $i++)
-        {
-            $isInZone = false;
-
-            /**
-             * Provided string is a valid URL.
-             */
-            $isValid = filter_var($urls[$i], FILTER_VALIDATE_URL) !== false;
-
-            /**
-             * If we've stored the zone name (FQDN) locally, make sure the URL
-             * uses it since it otherwise won't be cleared.
-             */
-            if ($includeZoneCheck)
+        array_walk($urls, function($url) use ($includeZoneCheck) {
+            if ($this->_isPurgeableUrl($url, $includeZoneCheck))
             {
-                $isInZone = stripos($urls[$i], $cfDomainName) !== false;
+                $cleanUrls[] = $url;
             }
+        });
 
-            if ($isValid && (! $includeZoneCheck || $isInZone))
+        return $cleanUrls;
+    }
+
+    /**
+     * Make sure the supplied URL is something Cloudflare will be able to purge.
+     *
+     * @param string $url              URL to be checked.
+     * @param bool   $includeZoneCheck Whether or not to ensure that the URL
+     *                                 exists on the zone this site is
+     *                                 configured to use.
+     *
+     * @return bool `true` if the URL is worth sending to Cloudflare
+     */
+    private function _isPurgeableUrl($url, $includeZoneCheck): bool
+    {
+        $cfDomainName = Cloudflare::$plugin->getSettings()->zoneName;
+
+        /**
+         * Provided string is a valid URL.
+         */
+        if (filter_var($url, FILTER_VALIDATE_URL) === false)
+        {
+            return false;
+        }
+
+        /**
+         * If we've stored the zone name (FQDN) locally, make sure the URL
+         * uses it since it otherwise won't be cleared.
+         */
+        if ($includeZoneCheck)
+        {
+            $urlParts = parse_url($url);
+            $urlDomain = $urlParts['domain']; // base domain only, without subdomains
+
+            if (stripos($urlDomain, $cfDomainName) === false)
             {
-                $cleanUrls[] = $urls[$i];
+                return false; // base domain doesn't match Cloudflare zone
             }
         }
 
-        return $cleanUrls;
+        return true;
     }
 
     /**
