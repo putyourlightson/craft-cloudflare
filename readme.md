@@ -100,6 +100,18 @@ You can manually purge individual URLs or the entire zone, either from the plugi
 
 You can use the previously-mentioned _Automatically Purge Entry URLs_ and _Automatically Purge Asset URLs_ settings to proactively clear caches on specific URLs immediately after actions are taken in the control panel. You can also use simple pattern rules to clear specific URLs. (Read on.)
 
+## Console Utility
+
+Clear your entire zone cache or specific URLs from the console! Useful for deployments.
+
+```shell
+# purge entire zone
+./craft cloudflare/purge/purge-all
+
+# purge comma-separated list of urls
+./craft cloudflare/purge/purge-urls https://foo.com/wombat.jpg,https://cdn.foo.com/stoat.jpg
+```
+
 ## Rule-Based Purging
 
 This timid feature is hidden at /admin/cloudflare/rules, where you can add rows to a table that define simple rules for clearing specific URLs. If you've cached your blog index, for example, at `/blog`, and you post a new entry at `/blog/my-new-entry`, you're going to want your index purged so the new post shows up. In this case, you'd add a URL Trigger Pattern of `blog/*`, and `blog` in the Clear URLs column. (You can list a new relative URL on each line, just know that Cloudflare will only accept up to 30 of them.)
