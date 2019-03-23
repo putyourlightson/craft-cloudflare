@@ -77,7 +77,11 @@ class UrlHelper
          */
         if ($includeZoneCheck)
         {
-            $urlDomain = self::getBaseDomainFromUrl($url);
+            if ( ! $urlDomain = self::getBaseDomainFromUrl($url))
+            {
+                // bail if we couldn't even get a base domain
+                return false;
+            }
 
             if (strtolower($urlDomain) !== strtolower($cfDomainName))
             {
