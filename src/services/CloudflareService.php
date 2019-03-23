@@ -19,6 +19,7 @@ use craft\base\Component;
 use craft\console\Application as ConsoleApplication;
 use GuzzleHttp\Client;
 use stdClass;
+use workingconcept\cloudflare\helpers\UrlHelper;
 
 /**
  * @author    Working Concept
@@ -246,7 +247,7 @@ class CloudflareService extends Component
             return null;
         }
 
-        $urls = $this->_prepUrls($urls);
+        $urls = UrlHelper::prepUrls($urls);
 
         // don't do anything if URLs are missing
         if (count($urls) === 0)
@@ -317,76 +318,6 @@ class CloudflareService extends Component
 
     // Private Methods
     // =========================================================================
-
-    /**
-     * Only return URLs that can be sent to Cloudflare.
-     *
-     * @param array $urls Array of URL strings to be cleared.
-     * @return array Validated, trimmed values only.
-     */
-    private function _prepUrls($urls = []): array
-    {
-        $cleanUrls        = []; // to be populated
-        $cfDomainName     = Cloudflare::$plugin->getSettings()->zoneName;
-        $includeZoneCheck = $cfDomainName !== null;
-
-        /**
-         * First trim leading+trailing whitespace, just in case.
-         */
-        $urls = array_map('trim', $urls);
-
-        /**
-         * Collect only URLs that have the ability to be cleared.
-         */
-        array_walk($urls, function($url) use ($includeZoneCheck) {
-            if ($this->_isPurgeableUrl($url, $includeZoneCheck))
-            {
-                $cleanUrls[] = $url;
-            }
-        });
-
-        return $cleanUrls;
-    }
-
-    /**
-     * Make sure the supplied URL is something Cloudflare will be able to purge.
-     *
-     * @param string $url              URL to be checked.
-     * @param bool   $includeZoneCheck Whether or not to ensure that the URL
-     *                                 exists on the zone this site is
-     *                                 configured to use.
-     *
-     * @return bool `true` if the URL is worth sending to Cloudflare
-     */
-    private function _isPurgeableUrl($url, $includeZoneCheck): bool
-    {
-        $cfDomainName = Cloudflare::$plugin->getSettings()->zoneName;
-
-        /**
-         * Provided string is a valid URL.
-         */
-        if (filter_var($url, FILTER_VALIDATE_URL) === false)
-        {
-            return false;
-        }
-
-        /**
-         * If we've stored the zone name (FQDN) locally, make sure the URL
-         * uses it since it otherwise won't be cleared.
-         */
-        if ($includeZoneCheck)
-        {
-            $urlParts = parse_url($url);
-            $urlDomain = $urlParts['domain']; // base domain only, without subdomains
-
-            if (stripos($urlDomain, $cfDomainName) === false)
-            {
-                return false; // base domain doesn't match Cloudflare zone
-            }
-        }
-
-        return true;
-    }
 
     /**
      * Fetch zones via API, which returns paginated results.

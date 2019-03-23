@@ -1,6 +1,8 @@
 # Cloudflare Changelog
 
 ## 0.2.9 - 2019-03-23
+### Added
+- Added `craft cloudflare/purge/purge-all` and `craft cloudflare/purge/purge-urls` console commands for clearing zone and individual URL caches.
 ### Changed
 - Can now auto-purge zone subdomain URLs, useful for CDN-hosted Assets.
 ### Fixed

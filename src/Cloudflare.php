@@ -17,6 +17,7 @@ use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
 
 use Craft;
+use craft\console\Application as ConsoleApplication;
 use craft\base\Plugin;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
@@ -135,6 +136,11 @@ class Cloudflare extends Plugin
                     );
                 }
             );
+        }
+
+        if (Craft::$app instanceof ConsoleApplication)
+        {
+            $this->controllerNamespace = 'workingconcept\cloudflare\console\controllers';
         }
 
         Craft::info(
