@@ -1,5 +1,11 @@
 # Cloudflare Changelog
 
+## 0.2.9 - 2019-03-23
+### Changed
+- Can now auto-purge zone subdomain URLs, useful for CDN-hosted Assets.
+### Fixed
+- Fixed trivial yet unsightly padding issue resulting from a Craft CSS update.
+
 ## 0.2.8 - 2019-03-02
 ### Fixed
 - Fixed Craft < 3.1 compatibility for API Key setting.
