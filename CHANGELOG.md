@@ -3,8 +3,10 @@
 ## 0.2.9 - 2019-03-23
 ### Added
 - Added `craft cloudflare/purge/purge-all` and `craft cloudflare/purge/purge-urls` console commands for clearing zone and individual URL caches.
+
 ### Changed
 - Can now auto-purge zone subdomain URLs, useful for CDN-hosted Assets.
+
 ### Fixed
 - Fixed trivial yet unsightly padding issue resulting from a Craft CSS update.
 
@@ -29,6 +31,7 @@
 - Settings "Verify Credentials" AJAX works again after bug introduced in 0.2.2 ([#10](https://github.com/workingconcept/cloudflare-craft-plugin/issues/10)).
 - Restored proper logging ([#10](https://github.com/workingconcept/cloudflare-craft-plugin/issues/10)).
 - Made various code improvements to benefit readability and sanity.
+
 ### Changed
 - Slightly changed CloudflareService API to improve clarity and efficiency. **If you had custom code interacting with the `apiBaseUrl`, `client`, or `isConfigured` properties, please use `getApiBaseUrl()`, `getClient()`, and `isConfigured()` respectively.
 - After initial setup (or re-saving Settings), only URLs in the selected zone name (domain) will be purged. This will prevent API calls in environments with base URLs that aren't on the Cloudflare zone.
@@ -41,6 +44,7 @@
 ## 0.2.2 - 2018-10-26
 ### Fixed
 - Prevented plugin from interfering with console commands.
+
 ### Improved
 - Configuration options can now display more than 20 zones.
 
@@ -59,6 +63,7 @@
 ## 0.1.3 - 2017-09-26
 ### Added
 - Exposed automatic Asset and Entry URL purge in settings.
+
 ### Improved
 - Improved log messages for failed URL purges."
 
