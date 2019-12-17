@@ -10,16 +10,18 @@
 
 namespace workingconcept\cloudflare\services;
 
+use workingconcept\cloudflare\Cloudflare;
+use workingconcept\cloudflare\models\Settings;
+use workingconcept\cloudflare\helpers\UrlHelper;
+
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
-use workingconcept\cloudflare\Cloudflare;
 
 use Craft;
 use craft\base\Component;
 use craft\console\Application as ConsoleApplication;
-use GuzzleHttp\Client;
 use stdClass;
-use workingconcept\cloudflare\helpers\UrlHelper;
 
 /**
  * @author    Working Concept
@@ -51,6 +53,8 @@ class CloudflareService extends Component
      */
     private $_client;
 
+    private $_connectionErrors;
+
 
     // Public Methods
     // =========================================================================
@@ -67,12 +71,7 @@ class CloudflareService extends Component
         {
             $this->_client = new Client([
                 'base_uri' => self::API_BASE_URL,
-                'headers' => [
-                    'X-Auth-Key'   => $this->_getApiSetting('apiKey'),
-                    'X-Auth-Email' => $this->_getApiSetting('email'),
-                    'Content-Type' => 'application/json',
-                    'Accept'       => 'application/json'
-                ],
+                'headers' => $this->_getClientHeaders(),
                 'verify' => false,
                 'debug' => false
             ]);
@@ -82,14 +81,149 @@ class CloudflareService extends Component
     }
 
     /**
-     * Returns true if we're ready to make REST API calls.
+     * Returns true if we've got the settings to make REST API calls.
      *
      * @return bool
      */
     public function isConfigured(): bool
     {
-        return $this->_getApiSetting('apiKey') !== null &&
-            $this->_getApiSetting('email') !== null;
+        $authType = $this->_getApiSetting('authType');
+
+        $hasKey = $this->_getApiSetting('apiKey') !== null
+            && $this->_getApiSetting('email') !== null;
+
+        $hasToken = $this->_getApiSetting('apiToken') !== null;
+
+        return ($authType === Settings::AUTH_TYPE_KEY && $hasKey)
+            || ($authType === Settings::AUTH_TYPE_TOKEN && $hasToken);
+    }
+
+    /**
+     * Returns true if provided credentials can successfully make API calls.
+     */
+    public function verifyConnection(): bool
+    {
+        if ($this->getClient() === null)
+        {
+            return false;
+        }
+
+        $authType = $this->_getApiSetting('authType');
+
+        if ($authType === Settings::AUTH_TYPE_KEY)
+        {
+            try
+            {
+                // quick request
+                $response = $this->getClient()->get('zones?per_page=1');
+                $responseContents = json_decode(
+                    $response->getBody()->getContents(),
+                    false
+                );
+
+                // should be 200 response containing `"success": true`
+                $success = $response->getStatusCode() === 200
+                    && $responseContents->success;
+
+                if ($success)
+                {
+                    return true;
+                }
+
+                if (isset($responseContents->errors))
+                {
+                    $this->_connectionErrors = $responseContents->errors;
+
+                    Craft::info(sprintf(
+                        'Connection test failed: %s',
+                        json_encode($responseContents->errors)
+                    ), 'cloudflare');
+                }
+                else
+                {
+                    Craft::info('Connection test failed.', 'cloudflare');
+                }
+            }
+            catch (RequestException $exception)
+            {
+                // if there is a response, we'll use it's body, otherwise we default to the request URI
+                $reason = ( $exception->hasResponse()
+                    ? $exception->getResponse()->getBody()->getContents()
+                    : $exception->getRequest()->getUri()
+                );
+
+                if (($data = json_decode($reason, false)) && isset($data->errors))
+                {
+                    $this->_connectionErrors = $data->errors;
+                }
+
+                Craft::info(sprintf(
+                    'Connection test failed with exception: %s',
+                    $reason
+                ), 'cloudflare');
+            }
+        }
+        elseif ($authType === Settings::AUTH_TYPE_TOKEN)
+        {
+            try {
+                // quick request
+                $response = $this->getClient()->get('user/tokens/verify');
+                $responseContents = json_decode(
+                    $response->getBody()->getContents(),
+                    false
+                );
+
+                // should be 200 response containing `"success": true`
+                $success = $response->getStatusCode() === 200
+                    && $responseContents->success;
+
+                // TODO: confirm cache_purge:edit and zone:read permissions
+
+                if ($success)
+                {
+                    return true;
+                }
+
+                if (isset($responseContents->errors))
+                {
+                    $this->_connectionErrors = $responseContents;
+
+                    Craft::info(sprintf(
+                        'Connection test failed: %s',
+                        json_encode($responseContents->errors)
+                    ), 'cloudflare');
+                }
+                else
+                {
+                    Craft::info('Connection test failed.', 'cloudflare');
+                }
+            }
+            catch (RequestException $exception)
+            {
+                // if there is a response, we'll use its body, otherwise default to the request URI
+                $reason = ( $exception->hasResponse()
+                    ? $exception->getResponse()->getBody()->getContents()
+                    : $exception->getRequest()->getUri()
+                );
+
+                if (($data = json_decode($reason, false)) && isset($data->errors))
+                {
+                    $this->_connectionErrors = $data->errors;
+                }
+
+                Craft::info(sprintf(
+                    'Connection test failed with exception: %s',
+                    $reason
+                ), 'cloudflare');
+            }
+        }
+
+        return false;
+    }
+
+    public function getConnectionErrors()
+    {
+        return $this->_connectionErrors;
     }
 
     /**
@@ -127,7 +261,7 @@ class CloudflareService extends Component
                         $response->result
                     );
                 }
-                else 
+                else
                 {
                     return [];
                 }
@@ -172,7 +306,7 @@ class CloudflareService extends Component
         ),
         'cloudflare');
 
-        return json_decode($response->getBody())
+        return json_decode($response->getBody(), false)
             ->result;
     }
 
@@ -200,7 +334,7 @@ class CloudflareService extends Component
                 ]
             );
 
-            $responseBody = json_decode($response->getBody());
+            $responseBody = json_decode($response->getBody(), false);
 
             if ( ! $response->getStatusCode() == 200)
             {
@@ -271,7 +405,7 @@ class CloudflareService extends Component
                 [ 'body' => json_encode(['files' => $urls]) ]
             );
 
-            $responseBody = json_decode($response->getBody());
+            $responseBody = json_decode($response->getBody(), false);
 
             if ( ! $response->getStatusCode() == 200)
             {
@@ -339,7 +473,7 @@ class CloudflareService extends Component
             $page
         ), 'cloudflare');
 
-        try 
+        try
         {
             $response = $this->getClient()->get(sprintf(
                 'zones?per_page=%d',
@@ -360,7 +494,7 @@ class CloudflareService extends Component
 
             Craft::info('Retrieved zones.', 'cloudflare');
 
-            return json_decode($response->getBody());
+            return json_decode($response->getBody(), false);
         }
         catch (RequestException $exception)
         {
@@ -382,9 +516,42 @@ class CloudflareService extends Component
     }
 
     /**
-     * Get either of the credentials needed to connect to the REST API.
+     * Returns request headers for the relevant authorization type.
      *
-     * @param string $key `apiKey` or `email`
+     * @return array
+     */
+    private function _getClientHeaders(): array
+    {
+        $authType = $this->_getApiSetting('authType');
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Accept'       => 'application/json'
+        ];
+
+        if ($authType === Settings::AUTH_TYPE_KEY)
+        {
+            $headers['X-Auth-Key'] = $this->_getApiSetting('apiKey');
+            $headers['X-Auth-Email'] = $this->_getApiSetting('email');
+        }
+        elseif ($authType === Settings::AUTH_TYPE_TOKEN)
+        {
+            $headers['Authorization'] = sprintf(
+                'Bearer %s',
+                $this->_getApiSetting('apiToken')
+            );
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Returns settings needed to connect to the REST API. Checks request
+     * parameters if we're in the control panel checking unsaved settings.
+     *
+     * Also parses environment variables.
+     *
+     * @param string $key `apiKey`, `email`, or `apiToken`
      *
      * @return string|null
      */
@@ -403,7 +570,7 @@ class CloudflareService extends Component
             ! empty($request->getParam($key)) &&
             is_string($request->getParam($key));
 
-        $settingValue = $usePost ? $request->getParam($key) : 
+        $settingValue = $usePost ? $request->getParam($key) :
             Cloudflare::$plugin->getSettings()->{$key} ?? null;
 
         if ($isCraft31 && $settingValue)
@@ -419,12 +586,12 @@ class CloudflareService extends Component
      *
      * @param array  $urls
      * @param mixed  $exception (ClientException or RequestException)
-     * 
+     *
      * @return \stdClass with populated `result` property array
      */
     private function _handleApiException($urls, $exception): \stdClass
     {
-        if ($responseBody = json_decode($exception->getResponse()->getBody()))
+        if ($responseBody = json_decode($exception->getResponse()->getBody(), false))
         {
             $message = "URL purge failed.\n";
             $message .= '- urls: ' . implode($urls, ',') . "\n";

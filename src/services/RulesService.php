@@ -53,7 +53,10 @@ class RulesService extends Component {
     {
         RuleRecord::deleteAll();
 
-        if ($rulesFromPost = Craft::$app->request->getBodyParam('rules'))
+        $request = Craft::$app->getRequest();
+        $currentSiteId = Craft::$app->getSites()->getCurrentSite()->id;
+
+        if ($rulesFromPost = $request->getBodyParam('rules'))
         {
             foreach ($rulesFromPost as $row)
             {
@@ -65,7 +68,7 @@ class RulesService extends Component {
                 $individualUrls = explode("\n", $urlsToClear);
                 $individualUrls = array_map('trim', $individualUrls);
 
-                $ruleRecord->siteId      = Craft::$app->sites->currentSite->id;
+                $ruleRecord->siteId      = $currentSiteId;
                 $ruleRecord->trigger     = trim($trigger);
                 $ruleRecord->urlsToClear = json_encode($individualUrls);
 

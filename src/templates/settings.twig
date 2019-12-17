@@ -8,79 +8,124 @@
 {# @formatter:off #}
 {% set extraJs %}
 window.__CLOUDFLARE_PLUGIN = {
-messages: {
-    credentialVerificationFailed: "{{ 'Could not verify API credentials.' | translate('cloudflare') }}",
-    noCredentialsEntered:         "{{ 'Please enter an API key and email address first.' | translate('cloudflare') }}",
-    purgeUrlsFailed:              "{{ 'Could not purge URLs.' | translate('cloudflare') }}",
-    purgeUrlsSucceeded:           "{{ 'Successfully purged URLs.' | translate('cloudflare') }}"
-},
-actions: {
-    fetchZones: "{{ settings.fetchZonesActionUri }}",
-    purgeUrls:  "{{ settings.purgeUrlsActionUri }}"
-}
+    messages: {
+        credentialVerificationFailed: "{{ 'Could not verify API credentials.'|t('cloudflare') }}",
+        credentialsMissing: "{{ 'Please enter required API credentials.'|t('cloudflare') }}",
+        purgeUrlsFailed: "{{ 'Could not purge URLs.'|t('cloudflare') }}",
+        purgeUrlsSucceeded: "{{ 'Successfully purged URLs.'|t('cloudflare') }}"
+    },
+    actions: {
+        verifyCredentials: "{{ settings.verifyCredentialsUri }}",
+        fetchZones: "{{ settings.fetchZonesActionUri }}",
+        purgeUrls:  "{{ settings.purgeUrlsActionUri }}"
+    }
 };
 {% endset %}
 {# @formatter:on #}
 
+
 {% js extraJs %}
 {% do view.registerAssetBundle("workingconcept\\cloudflare\\assetbundles\\cloudflare\\CloudflareAsset") %}
 
-{% set zoneOptions = craft.cloudflare.getZoneOptions %}
-{% set apiKeyFieldSettings = {
-    first:        true,
-    label:        'Cloudflare API Key' | translate( 'cloudflare' ),
-    id:           'apiKey',
-    required:     true,
-    name:         'apiKey',
-    type:         'password',
-    class:        'code',
-    value:        settings.apiKey,
-    autofocus:    true,
-    errors:       settings.getErrors( 'apiKey' ),
-    instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.' | translate( 'cloudflare' ),
-} %}
-
-{% if isCraft31 %}
-    {% set apiKeyFieldSettings = apiKeyFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
-    {{ forms.autosuggestField(apiKeyFieldSettings) }}
-{% else %}
-    {{ forms.passwordField(apiKeyFieldSettings) }}
-{% endif %}
-
-{{ forms.textField( {
-    label:        'Cloudflare Account Email' | translate( 'cloudflare' ),
-    id:           'email',
-    required:     true,
-    name:         'email',
-    class:        'code',
-    value:        settings.email,
-    placeholder:  currentUser.email,
-    autofocus:    true,
-    errors:       settings.getErrors( 'email' ),
-    instructions: 'Specify which account email should be used for API requests.' | translate( 'cloudflare' )
+{{ forms.selectField({
+    label: 'Authentication Type'|t('cloudflare'),
+    id: 'authType',
+    first: true,
+    required: true,
+    name: 'authType',
+    options: [
+        { label: 'Key', value: 'key' },
+        { label: 'Token', value: 'token' },
+    ],
+    value: settings.authType,
+    autofocus: true,
+    errors: settings.getErrors('zone'),
+    toggle: true,
+    targetPrefix: 'fields-api-',
+    instructions: 'Choose whether you\'ll be using an account-level key or scope-limited token.'|t('cloudflare')
 }) }}
 
+<div id="fields-api-token"{% if not (settings.authType == 'token') %} class="hidden"{% endif %}>
+    {% set apiTokenFieldSettings = {
+        label: 'Cloudflare API Token'|t('cloudflare'),
+        id: 'apiToken',
+        required: true,
+        name: 'apiToken',
+        type: 'password',
+        class: 'code',
+        value: settings.apiToken,
+        errors: settings.getErrors('apiToken'),
+        instructions: 'Add your API token. It must include at least `cache_purge:edit` and `zone:read` permissions.'|t('cloudflare'),
+    } %}
+
+    {% if isCraft31 %}
+        {% set apiTokenFieldSettings = apiTokenFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+        {{ forms.autosuggestField(apiTokenFieldSettings) }}
+    {% else %}
+        {{ forms.passwordField(apiTokenFieldSettings) }}
+    {% endif %}
+</div>
+
+<div id="fields-api-key"{% if not (settings.authType == 'key' or settings.authType is empty) %} class="hidden"{% endif %}>
+    {% set zoneOptions = craft.cloudflare.getZoneOptions %}
+    {% set apiKeyFieldSettings = {
+        label: 'Cloudflare API Key'|t('cloudflare'),
+        id:  'apiKey',
+        required: true,
+        name: 'apiKey',
+        type: 'password',
+        class: 'code',
+        value: settings.apiKey,
+        autofocus: true,
+        errors: settings.getErrors('apiKey'),
+        instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.'|t('cloudflare'),
+    } %}
+
+    {% if isCraft31 %}
+        {% set apiKeyFieldSettings = apiKeyFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+        {{ forms.autosuggestField(apiKeyFieldSettings) }}
+    {% else %}
+        {{ forms.passwordField(apiKeyFieldSettings) }}
+    {% endif %}
+
+    {{ forms.textField( {
+        label: 'Cloudflare Account Email'|t('cloudflare'),
+        id: 'email',
+        required: true,
+        name: 'email',
+        class: 'code',
+        value: settings.email,
+        placeholder: currentUser.email,
+        autofocus: true,
+        errors: settings.getErrors('email'),
+        instructions: 'Specify which account email should be used for API requests.'|t('cloudflare')
+    }) }}
+</div>
+
+<br>
+
 <div class="cloudflare-verify{% if zoneOptions | length %} success{% endif %}">
-    <a class="btn" id="cf-test">{{ 'Verify Credentials' | translate( 'cloudflare' ) }}</a>
+    <a class="btn" id="cf-test">{{ 'Verify Credentials'|t('cloudflare') }}</a>
+    <div id="credential-spinner" class="spinner hidden"></div>
 </div>
 
 <div>
     {{ forms.selectField({
-        label:        'Cloudflare Zone' | translate( 'cloudflare' ),
-        id:           'zone',
-        required:     true,
-        name:         'zone',
-        options:      zoneOptions,
-        value:        settings.zone,
-        autofocus:    true,
-        errors:       settings.getErrors( 'zone' ),
-        instructions: 'Specify which Cloudflare Zone is utilized by this site.' | translate( 'cloudflare' )
+        label: 'Cloudflare Zone'|t('cloudflare'),
+        id: 'zone',
+        required: true,
+        name: 'zone',
+        options: zoneOptions,
+        value: settings.zone,
+        autofocus: true,
+        errors: settings.getErrors('zone'),
+        instructions: 'Specify which Cloudflare Zone is utilized by this site.'|t('cloudflare')
     }) }}
 
     <hr>
 
     {{ forms.lightswitchField({
-        label: 'Automatically Purge Entry URLs' | translate( 'cloudflare' ),
+        label: 'Automatically Purge Entry URLs'|t('cloudflare'),
         id: 'purgeEntryUrls',
         name: 'purgeEntryUrls',
         on: settings.purgeEntryUrls,
@@ -89,7 +134,7 @@ actions: {
     }) }}
 
     {{ forms.lightswitchField({
-        label: 'Automatically Purge Asset URLs' | translate( 'cloudflare' ),
+        label: 'Automatically Purge Asset URLs'|t('cloudflare'),
         id: 'purgeAssetUrls',
         name: 'purgeAssetUrls',
         on: settings.purgeAssetUrls,
@@ -101,23 +146,23 @@ actions: {
         <hr>
 
         {{ forms.textareaField( {
-            label:        'Purge Individual URLs' | translate( 'cloudflare' ),
-            id:           'urls',
-            required:     false,
-            name:         'urls',
-            autofocus:    true,
-            errors:       settings.getErrors( 'urls' ),
-            instructions: 'Add complete URLs, each on its own line, that you\'d like to clear from Cloudflare\'s cache.' | translate( 'cloudflare' )
+            label: 'Purge Individual URLs'|t('cloudflare'),
+            id: 'urls',
+            required: false,
+            name: 'urls',
+            autofocus: true,
+            errors: settings.getErrors('urls'),
+            instructions: 'Add complete URLs, each on its own line, that you\'d like to clear from Cloudflare\'s cache.'|t('cloudflare')
         } ) }}
 
         <a class="btn warning" id="purge-urls">
-            {{- 'Purge URLs' | translate( 'cloudflare' ) -}}
+            {{- 'Purge URLs'|t('cloudflare') -}}
         </a>
 
         <hr>
 
         <a href="{{ actionUrl(settings.purgeAllActionUri) }}" class="btn warning">
-            {{- 'Purge Cloudflare Cache' | translate( 'cloudflare' ) -}}
+            {{- 'Purge Cloudflare Cache'|t('cloudflare') -}}
         </a>
     {% endif %}
 </div>

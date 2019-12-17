@@ -1,0 +1,32 @@
+{
+  "name": "cloudflare-craft-plugin",
+  "version": "0.3.0",
+  "description": "![Cloudflare](resources/hero.svg)",
+  "main": "index.js",
+  "scripts": {
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "npm run development -- --watch",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/workingconcept/cloudflare-craft-plugin.git"
+  },
+  "keywords": [
+    "craftcms",
+    "plugin",
+    "cloudflare"
+  ],
+  "author": "Working Concept Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/workingconcept/cloudflare-craft-plugin/issues"
+  },
+  "homepage": "https://github.com/workingconcept/cloudflare-craft-plugin#readme",
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "laravel-mix": "^5.0.0",
+    "vue-template-compiler": "^2.6.11"
+  }
+}

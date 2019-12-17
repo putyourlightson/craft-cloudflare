@@ -24,6 +24,20 @@ use yii\web\Response;
  */
 class DefaultController extends Controller
 {
+    public function actionVerifyConnection(): Response
+    {
+        $wasSuccessful = Cloudflare::$plugin->cloudflare->verifyConnection();
+        $return = [
+            'success' => $wasSuccessful
+        ];
+
+        if ( ! $wasSuccessful)
+        {
+            $return['errors'] = Cloudflare::$plugin->cloudflare->getConnectionErrors();
+        }
+
+        return $this->asJson($return);
+    }
 
     /**
      * Returns all available zones on the configured account.

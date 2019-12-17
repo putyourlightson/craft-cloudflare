@@ -17,6 +17,7 @@ use craft\db\ActiveRecord;
  * @package   Cloudflare
  * @since     1.0.0
  *
+ * @property int    $siteId      Site ID to which rule(s) should apply.
  * @property string $trigger     URI pattern applied to saved Entries and Assets
  *                               that will purge supplied URLs when matched.
  * @property string $urlsToClear JSON array of absolute URLs to be cleared.
@@ -25,6 +26,9 @@ use craft\db\ActiveRecord;
  */
 class RuleRecord extends ActiveRecord
 {
+    // Public Properties
+    // =========================================================================
+
     // Public Static Methods
     // =========================================================================
 

@@ -1,5 +1,9 @@
 # Cloudflare Changelog
 
+## 0.3.0 - Unreleased
+### Added
+- Added support for API Tokens.
+
 ## 0.2.9 - 2019-03-23
 ### Added
 - Added `craft cloudflare/purge/purge-all` and `craft cloudflare/purge/purge-urls` console commands for clearing zone and individual URL caches.
