@@ -14,7 +14,11 @@ use craft\helpers\UrlHelper;
  *
  * @package workingconcept\cloudflare
  */
-class RulesService extends Component {
+class RulesService extends Component
+{
+
+    // Public Methods
+    // =========================================================================
 
     /**
      * Returns all rules for a table.

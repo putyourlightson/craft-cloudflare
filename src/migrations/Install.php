@@ -31,6 +31,7 @@ class Install extends Migration
      */
     public $driver;
 
+
     // Public Methods
     // =========================================================================
 
@@ -52,8 +53,8 @@ class Install extends Migration
     }
 
    /**
-     * @inheritdoc
-     */
+    * @inheritdoc
+    */
     public function safeDown()
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
@@ -61,6 +62,7 @@ class Install extends Migration
 
         return true;
     }
+
 
     // Protected Methods
     // =========================================================================

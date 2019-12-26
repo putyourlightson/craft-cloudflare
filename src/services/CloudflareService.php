@@ -40,8 +40,8 @@ class CloudflareService extends Component
     // =========================================================================
 
     /**
-    * @var stdClass
-    */
+     * @var stdClass
+     */
     protected $responseItems;
 
 
@@ -113,8 +113,7 @@ class CloudflareService extends Component
 
         $authType = $this->_getApiSetting('authType');
         $testUri = $authType === Settings::AUTH_TYPE_KEY ?
-            'zones?per_page=1' :
-            'user/tokens/verify';
+            'zones?per_page=1' : 'user/tokens/verify';
 
         try
         {

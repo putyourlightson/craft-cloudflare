@@ -10,10 +10,8 @@
 
 namespace workingconcept\cloudflare\assetbundles\Cloudflare;
 
-use Craft;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
-use craft\web\assets\vue\VueAsset;
 
 /**
  * @author    Working Concept
@@ -22,28 +20,30 @@ use craft\web\assets\vue\VueAsset;
  */
 class CloudflareAsset extends AssetBundle
 {
-	// Public Methods
-	// =========================================================================
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		$this->sourcePath = "@workingconcept/cloudflare/assetbundles/cloudflare/dist";
+    // Public Methods
+    // =========================================================================
 
-		$this->depends = [
-			CpAsset::class,
-		];
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $this->sourcePath
+            = "@workingconcept/cloudflare/assetbundles/cloudflare/dist";
 
-		$this->js = [
-			'js/settings.js',
-		];
+        $this->depends = [
+            CpAsset::class,
+        ];
 
-		$this->css = [
-			'css/settings.css',
-		];
+        $this->js = [
+            'js/settings.js',
+        ];
 
-		parent::init();
-	}
+        $this->css = [
+            'css/settings.css',
+        ];
+
+        parent::init();
+    }
 }
