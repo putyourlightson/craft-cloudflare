@@ -1,6 +1,6 @@
 # Cloudflare Changelog
 
-## 0.3.0 - Unreleased
+## 0.3.0 - 2019-12-26
 ### Added
 - Added support for API Tokens.
 
