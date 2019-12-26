@@ -27,7 +27,7 @@ class RulesService extends Component {
 
         foreach ($rules as $rule)
         {
-            $data["{$rule->id}"] = [
+            $data[(string)$rule->id] = [
                 0 => $rule->trigger,
                 1 => implode("\n", json_decode($rule->urlsToClear))
             ];
@@ -48,6 +48,7 @@ class RulesService extends Component {
      * Get supplied rules from the CP view and save them to the database.
      *
      * @return void
+     * @throws \craft\errors\SiteNotFoundException
      */
     public function saveRules()
     {

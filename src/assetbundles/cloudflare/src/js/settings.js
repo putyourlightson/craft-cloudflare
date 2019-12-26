@@ -1,22 +1,14 @@
 'use strict';
 
-/*
- global window,
- Craft
- */
+/** global Craft */
+/** global window */
 
 const credentialSpinner = document.getElementById('settings-credential-spinner');
-
 const zoneSelect = document.getElementById('settings-zone');
-
 const verifyContainer = document.querySelector('.cloudflare-verify');
 const verifyCredentialsButton = document.getElementById('settings-cf-test');
 const purgeUrlsButton = document.getElementById('settings-purge-urls');
 const purgeUrlsField = document.getElementById('settings-urls');
-const authTypeField = document.getElementById('settings-authType');
-const apiTokenField = document.getElementById('settings-apiToken');
-const apiKeyField = document.getElementById('settings-apiKey');
-const emailField = document.getElementById('settings-email');
 
 verifyCredentialsButton.addEventListener('click', event => {
     event.preventDefault();
@@ -27,13 +19,12 @@ verifyCredentialsButton.addEventListener('click', event => {
         return alert(window.__CLOUDFLARE_PLUGIN.messages.credentialsMissing);
     }
 
-    const selectedZoneId = zoneSelect.querySelector('option:checked') ? zoneSelect.querySelector('option:checked').value : false;
     showSpinner();
 
     Craft.postActionRequest(
         window.__CLOUDFLARE_PLUGIN.actions.verifyCredentials,
         settings,
-        (response, statusText, request) => {
+        (response, statusText) => {
             hideSpinner();
 
             // check for errors
@@ -48,7 +39,7 @@ verifyCredentialsButton.addEventListener('click', event => {
                 return false;
             }
 
-            if (response.success == false) {
+            if (response.success === false) {
                 verifyContainer.classList.remove('success');
                 verifyContainer.classList.add('fail');
 
@@ -70,7 +61,7 @@ function fetchZones() {
     Craft.postActionRequest(
         window.__CLOUDFLARE_PLUGIN.actions.fetchZones,
         settings,
-        (response, statusText, request) => {
+        (response, statusText) => {
             hideSpinner();
 
             // check for errors
@@ -133,11 +124,11 @@ function getAuthSettings() {
     const authType = authTypeField.value || false;
     const apiToken = apiTokenField.value || false;
     const apiKey = apiKeyField.value || false,
-        email  = emailField.value || false;
+        email = emailField.value || false;
 
     // make sure required fields exist
     if (
-        (authType === 'key' && !apiKey || !email)
+        (authType === 'key' && (!apiKey || !email))
         || (authType === 'token' && ! apiToken)
     ) {
         return false;

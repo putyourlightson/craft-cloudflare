@@ -53,7 +53,10 @@ class CloudflareService extends Component
      */
     private $_client;
 
-    private $_connectionErrors;
+    /**
+     * @var array
+     */
+    private $_connectionErrors = [];
 
 
     // Public Methods
@@ -109,119 +112,67 @@ class CloudflareService extends Component
         }
 
         $authType = $this->_getApiSetting('authType');
+        $testUri = $authType === Settings::AUTH_TYPE_KEY ?
+            'zones?per_page=1' :
+            'user/tokens/verify';
 
-        if ($authType === Settings::AUTH_TYPE_KEY)
+        try
         {
-            try
+            $response = $this->getClient()->get($testUri);
+            $responseContents = json_decode(
+                $response->getBody()->getContents(),
+                false
+            );
+
+            // should be 200 response containing `"success": true`
+            $success = $response->getStatusCode() === 200
+                && $responseContents->success;
+
+            if ($success)
             {
-                // quick request
-                $response = $this->getClient()->get('zones?per_page=1');
-                $responseContents = json_decode(
-                    $response->getBody()->getContents(),
-                    false
-                );
-
-                // should be 200 response containing `"success": true`
-                $success = $response->getStatusCode() === 200
-                    && $responseContents->success;
-
-                if ($success)
-                {
-                    return true;
-                }
-
-                if (isset($responseContents->errors))
-                {
-                    $this->_connectionErrors = $responseContents->errors;
-
-                    Craft::info(sprintf(
-                        'Connection test failed: %s',
-                        json_encode($responseContents->errors)
-                    ), 'cloudflare');
-                }
-                else
-                {
-                    Craft::info('Connection test failed.', 'cloudflare');
-                }
+                return true;
             }
-            catch (RequestException $exception)
-            {
-                // if there is a response, we'll use it's body, otherwise we default to the request URI
-                $reason = ( $exception->hasResponse()
-                    ? $exception->getResponse()->getBody()->getContents()
-                    : $exception->getRequest()->getUri()
-                );
 
-                if (($data = json_decode($reason, false)) && isset($data->errors))
-                {
-                    $this->_connectionErrors = $data->errors;
-                }
+            if (isset($responseContents->errors))
+            {
+                $this->_connectionErrors = $responseContents->errors;
 
                 Craft::info(sprintf(
-                    'Connection test failed with exception: %s',
-                    $reason
+                    'Connection test failed: %s',
+                    json_encode($responseContents->errors)
                 ), 'cloudflare');
+            }
+            else
+            {
+                Craft::info('Connection test failed.', 'cloudflare');
             }
         }
-        elseif ($authType === Settings::AUTH_TYPE_TOKEN)
+        catch (RequestException $exception)
         {
-            try {
-                // quick request
-                $response = $this->getClient()->get('user/tokens/verify');
-                $responseContents = json_decode(
-                    $response->getBody()->getContents(),
-                    false
-                );
+            // if there is a response, we'll use its body, otherwise default to the request URI
+            $reason = ( $exception->hasResponse()
+                ? $exception->getResponse()->getBody()->getContents()
+                : $exception->getRequest()->getUri()
+            );
 
-                // should be 200 response containing `"success": true`
-                $success = $response->getStatusCode() === 200
-                    && $responseContents->success;
-
-                // TODO: confirm cache_purge:edit and zone:read permissions
-
-                if ($success)
-                {
-                    return true;
-                }
-
-                if (isset($responseContents->errors))
-                {
-                    $this->_connectionErrors = $responseContents;
-
-                    Craft::info(sprintf(
-                        'Connection test failed: %s',
-                        json_encode($responseContents->errors)
-                    ), 'cloudflare');
-                }
-                else
-                {
-                    Craft::info('Connection test failed.', 'cloudflare');
-                }
-            }
-            catch (RequestException $exception)
+            if (($data = json_decode($reason, false)) && isset($data->errors))
             {
-                // if there is a response, we'll use its body, otherwise default to the request URI
-                $reason = ( $exception->hasResponse()
-                    ? $exception->getResponse()->getBody()->getContents()
-                    : $exception->getRequest()->getUri()
-                );
-
-                if (($data = json_decode($reason, false)) && isset($data->errors))
-                {
-                    $this->_connectionErrors = $data->errors;
-                }
-
-                Craft::info(sprintf(
-                    'Connection test failed with exception: %s',
-                    $reason
-                ), 'cloudflare');
+                $this->_connectionErrors = $data->errors;
             }
+
+            Craft::info(sprintf(
+                'Connection test failed with exception: %s',
+                $reason
+            ), 'cloudflare');
         }
 
         return false;
     }
 
-    public function getConnectionErrors()
+    /**
+     * @return array
+     */
+    public function getConnectionErrors(): array
     {
         return $this->_connectionErrors;
     }
@@ -285,17 +236,36 @@ class CloudflareService extends Component
             return null;
         }
 
-        $response = $this->getClient()->get(sprintf(
-            'zones/%s',
-            $zoneId
-        ));
-
-        if ( ! $response->getStatusCode() == 200)
+        try
         {
-            Craft::info(sprintf(
-                'Request failed: %s',
-                $response->getBody()
-            ), 'cloudflare');
+            $response = $this->getClient()->get(sprintf(
+                'zones/%s',
+                $zoneId
+            ));
+
+            if ( ! $response->getStatusCode() == 200)
+            {
+                Craft::info(sprintf(
+                    'Request failed: %s',
+                    $response->getBody()
+                ), 'cloudflare');
+
+                return null;
+            }
+        }
+        catch(RequestException $exception)
+        {
+            // if there is a response, we'll use it's body, otherwise we default to the request URI
+            $reason = ( $exception->hasResponse()
+                ? $exception->getResponse()->getBody()
+                : $exception->getRequest()->getUri()
+            );
+
+            Craft::info(
+                'Zone request failed: ' . $reason,
+                'cloudflare'
+
+            );
 
             return null;
         }
