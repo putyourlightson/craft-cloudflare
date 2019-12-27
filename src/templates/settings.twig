@@ -142,7 +142,7 @@ window.__CLOUDFLARE_PLUGIN = {
         instructions: "Enable to attempt to purge Asset URLs whenever they're saved or deleted."
     }) }}
 
-    {% if settings.apiKey and settings.email and settings.zone %}
+    {% if isConfigured %}
         <hr>
 
         {{ forms.textareaField( {

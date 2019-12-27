@@ -11,8 +11,8 @@
 namespace workingconcept\cloudflare;
 
 use workingconcept\cloudflare\helpers\ConfigHelper;
-use workingconcept\cloudflare\services\CloudflareService;
-use workingconcept\cloudflare\services\RulesService;
+use workingconcept\cloudflare\services\Api;
+use workingconcept\cloudflare\services\Rules;
 use workingconcept\cloudflare\variables\CloudflareVariable;
 use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
@@ -37,8 +37,8 @@ use yii\base\Event;
  * @package   Cloudflare
  * @since     1.0.0
  *
- * @property  CloudflareService $cloudflare
- * @property  RulesService      $rules
+ * @property  Api   $api
+ * @property  Rules $rules
  */
 class Cloudflare extends Plugin
 {
@@ -73,8 +73,8 @@ class Cloudflare extends Plugin
         self::$plugin = $this;
 
         $this->setComponents([
-            'cloudflare' => CloudflareService::class,
-            'rules'      => RulesService::class
+            'api'   => Api::class,
+            'rules' => Rules::class
         ]);
 
         // register the widget
@@ -164,7 +164,7 @@ class Cloudflare extends Plugin
         $settings = $this->getSettings();
 
         // save the human-friendly zone name if we have one
-        if ($zoneInfo = $this->cloudflare->getZoneById($settings->zone))
+        if ($zoneInfo = $this->api->getZoneById($settings->zone))
         {
             $settings->zoneName = $zoneInfo->name;
         }
@@ -206,7 +206,8 @@ class Cloudflare extends Plugin
             'cloudflare/settings',
             [
                 'settings'  => $this->getSettings(),
-                'isCraft31' => version_compare(Craft::$app->getVersion(), '3.1', '>='),
+                'isConfigured' => ConfigHelper::isConfigured(),
+                'isCraft31' => ConfigHelper::isCraft31()
             ]
         );
     }
@@ -249,7 +250,7 @@ class Cloudflare extends Plugin
                 $elementUrl = UrlHelper::siteUrl($elementUrl);
             }
 
-            $this->cloudflare->purgeUrls([
+            $this->api->purgeUrls([
                 $elementUrl
             ]);
         }

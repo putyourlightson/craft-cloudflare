@@ -26,14 +26,14 @@ class DefaultController extends Controller
 {
     public function actionVerifyConnection(): Response
     {
-        $wasSuccessful = Cloudflare::$plugin->cloudflare->verifyConnection();
+        $wasSuccessful = Cloudflare::$plugin->api->verifyConnection();
         $return = [
             'success' => $wasSuccessful
         ];
 
         if ( ! $wasSuccessful)
         {
-            $return['errors'] = Cloudflare::$plugin->cloudflare->getConnectionErrors();
+            $return['errors'] = Cloudflare::$plugin->api->getConnectionErrors();
         }
 
         return $this->asJson($return);
@@ -45,7 +45,7 @@ class DefaultController extends Controller
      */
     public function actionFetchZones(): Response
     {
-        return $this->asJson(Cloudflare::$plugin->cloudflare->getZones());
+        return $this->asJson(Cloudflare::$plugin->api->getZones());
     }
 
     /**
@@ -79,7 +79,7 @@ class DefaultController extends Controller
         // split lines into array items
         $urls = explode("\n", $urls);
 
-        $response = Cloudflare::$plugin->cloudflare->purgeUrls($urls);
+        $response = Cloudflare::$plugin->api->purgeUrls($urls);
 
         if ($request->getIsAjax())
         {
@@ -111,7 +111,7 @@ class DefaultController extends Controller
      */
     public function actionPurgeAll()
     {
-        $response = Cloudflare::$plugin->cloudflare->purgeZoneCache();
+        $response = Cloudflare::$plugin->api->purgeZoneCache();
 
         if (isset($response->success) && $response->success)
         {
@@ -140,8 +140,11 @@ class DefaultController extends Controller
 
     /**
      * Save our Craft-URL-specific purge rules.
+     *
      * @return mixed
-     * @throws craft\errors\MissingComponentException without a valid session.
+     *
+     * @throws craft\errors\MissingComponentException without a valid session
+     * @throws \craft\errors\SiteNotFoundException
      */
     public function actionSaveRules()
     {

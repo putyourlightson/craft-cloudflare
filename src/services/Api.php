@@ -21,14 +21,13 @@ use GuzzleHttp\Exception\RequestException;
 
 use Craft;
 use craft\base\Component;
-use stdClass;
 
 /**
  * @author    Working Concept
  * @package   Cloudflare
  * @since     1.0.0
  */
-class CloudflareService extends Component
+class Api extends Component
 {
     // Constants
     // =========================================================================
@@ -40,7 +39,7 @@ class CloudflareService extends Component
     // =========================================================================
 
     /**
-     * @var stdClass
+     * @var array
      */
     protected $responseItems;
 
@@ -72,7 +71,7 @@ class CloudflareService extends Component
     {
         if ($this->_client === null && ConfigHelper::isConfigured())
         {
-            $this->_client = new Client([
+            $this->_client = Craft::createGuzzleClient([
                 'base_uri' => self::API_BASE_URL,
                 'headers' => $this->_getClientHeaders(),
                 'verify' => false,
@@ -132,11 +131,7 @@ class CloudflareService extends Component
         }
         catch (RequestException $exception)
         {
-            // if there is a response, we'll use its body, otherwise default to the request URI
-            $reason = ( $exception->hasResponse()
-                ? $exception->getResponse()->getBody()->getContents()
-                : $exception->getRequest()->getUri()
-            );
+            $reason = $this->_getExceptionReason($exception);
 
             if (($data = json_decode($reason, false)) && isset($data->errors))
             {

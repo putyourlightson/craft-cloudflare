@@ -117,8 +117,15 @@ class Settings extends Model
             [['authType'], 'in', 'range' => [self::AUTH_TYPE_KEY, self::AUTH_TYPE_TOKEN]],
             [['apiKey', 'email', 'apiToken', 'zone', 'zoneName', 'userServiceKey'], 'string'],
             [['purgeEntryUrls', 'purgeAssetUrls'], 'boolean'],
+            ['zone', 'required'],
             ['purgeEntryUrls', 'default', 'value' => false],
             ['purgeAssetUrls', 'default', 'value' => true],
+            [['apiKey', 'email'], 'required', 'when' => static function ($model) {
+                return $model->authType === self::AUTH_TYPE_KEY;
+            }],
+            ['apiToken', 'required', 'when' => static function ($model) {
+                return $model->authType === self::AUTH_TYPE_TOKEN;
+            }],
         ];
     }
 }

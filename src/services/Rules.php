@@ -14,7 +14,7 @@ use craft\helpers\UrlHelper;
  *
  * @package workingconcept\cloudflare
  */
-class RulesService extends Component
+class Rules extends Component
 {
 
     // Public Methods
@@ -33,7 +33,7 @@ class RulesService extends Component
         {
             $data[(string)$rule->id] = [
                 0 => $rule->trigger,
-                1 => implode("\n", json_decode($rule->urlsToClear))
+                1 => implode("\n", json_decode($rule->urlsToClear, true))
             ];
         }
 
@@ -95,21 +95,23 @@ class RulesService extends Component
 
         foreach ($relatedRules as $rule)
         {
-            $urlsToPurge = array_merge($urlsToPurge, json_decode($rule->urlsToClear));
+            $clearList = json_decode($rule->urlsToClear, true);
+
+            foreach ($clearList as $clearUrl)
+            {
+                $urlsToPurge[] = UrlHelper::siteUrl($clearUrl);
+            }
         }
 
+        $numRules = count($urlsToPurge);
+
         // max limit for Cloudflare API
-        if (count($urlsToPurge) > 30)
+        if ($numRules > 30)
         {
             // TODO: say or do something here!
         }
 
-        for ($i = 0; $i < count($urlsToPurge); $i++)
-        {
-            $urlsToPurge[$i] = UrlHelper::siteUrl($urlsToPurge[$i]);
-        }
-
-        Cloudflare::$plugin->cloudflare->purgeUrls($urlsToPurge);
+        Cloudflare::$plugin->api->purgeUrls($urlsToPurge);
     }
 
     /**

@@ -20,23 +20,13 @@ use workingconcept\cloudflare\Cloudflare;
 class CloudflareVariable
 {
     /**
-     * Returns the CloudFlare API base URL.
-     *
-     * @return string
-     */
-    public function apiBaseUrl(): string
-    {
-        return Cloudflare::$plugin->cloudflare->getApiBaseUrl();
-    }
-
-    /**
      * Returns the zones.
      *
      * @return array|null
      */
     public function getZones()
     {
-        return Cloudflare::$plugin->cloudflare->getZones();
+        return Cloudflare::$plugin->api->getZones();
     }
 
     /**

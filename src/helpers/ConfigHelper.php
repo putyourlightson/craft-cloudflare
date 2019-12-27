@@ -45,9 +45,8 @@ class ConfigHelper
      */
     public static function getParsedSetting($key)
     {
-        $request   = Craft::$app->getRequest();
+        $request = Craft::$app->getRequest();
         $isConsole = Craft::$app instanceof ConsoleApplication;
-        $isCraft31 = version_compare(Craft::$app->getVersion(), '3.1', '>=');
 
         /**
          * Check post params if we're in the control panel, where we use AJAX
@@ -61,11 +60,22 @@ class ConfigHelper
         $settingValue = $usePost ? $request->getParam($key) :
             Cloudflare::$plugin->getSettings()->{$key} ?? null;
 
-        if ($isCraft31 && $settingValue)
+        if (self::isCraft31() && $settingValue)
         {
+            /** @scrutinizer ignore-call */
             return Craft::parseEnv($settingValue);
         }
 
         return $settingValue;
+    }
+
+    /**
+     * Returns `true` if Craft version is 3.1 or greater.
+     *
+     * @return bool
+     */
+    public static function isCraft31(): bool
+    {
+        return version_compare(Craft::$app->getVersion(), '3.1', '>=');
     }
 }
