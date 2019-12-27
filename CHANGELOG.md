@@ -6,6 +6,7 @@
 - Fixed missing credentials alert in Settings when verifying an API Token without key settings present.
 - Optimized and refactored code.
 - Improved Settings validation.
+- Fixed widget icon.
 
 ### Changed
 - The `cloudflare` service is now `api`.
