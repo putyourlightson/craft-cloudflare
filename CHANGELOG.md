@@ -1,6 +1,6 @@
 # Cloudflare Changelog
 
-## 0.4.0 - Unreleased
+## 0.4.0 - 2019-12-26
 ### Fixed
 - Settings no longer throw an exception if saved with an invalid API Key.
 - Fixed missing credentials alert in Settings when verifying an API Token without key settings present.
