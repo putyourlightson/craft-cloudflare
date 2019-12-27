@@ -49,18 +49,11 @@ class QuickPurge extends Widget
     /**
      * Returns the widget's icon path.
      *
-     * @return string|null
+     * @return string
      */
-    public static function icon()
+    public static function icon(): string
     {
-        $iconPath = Craft::getAlias("@workingconcept/cloudflare/assetbundles/quickpurgewidget/dist/img/quickpurge-icon.svg");
-
-        if ( ! $iconPath)
-        {
-            return null;
-        }
-
-        return $iconPath;
+        return Craft::getAlias("@workingconcept/cloudflare/assetbundles/quickpurgewidget/dist/img/quickpurge-icon.svg");
     }
 
     /**
