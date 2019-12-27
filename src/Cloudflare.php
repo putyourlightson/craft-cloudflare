@@ -10,6 +10,7 @@
 
 namespace workingconcept\cloudflare;
 
+use workingconcept\cloudflare\helpers\ConfigHelper;
 use workingconcept\cloudflare\services\CloudflareService;
 use workingconcept\cloudflare\services\RulesService;
 use workingconcept\cloudflare\variables\CloudflareVariable;
@@ -111,7 +112,7 @@ class Cloudflare extends Plugin
         }
 
         if (
-            $this->cloudflare->isConfigured() &&
+            ConfigHelper::isConfigured() &&
             ($this->getSettings()->purgeEntryUrls || $this->getSettings()->purgeAssetUrls)
         )
         {

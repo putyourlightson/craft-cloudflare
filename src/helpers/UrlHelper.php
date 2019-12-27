@@ -13,6 +13,8 @@ use Craft;
 
 class UrlHelper
 {
+    // Public Methods
+    // =========================================================================
 
     /**
      * Only return URLs that can be sent to Cloudflare.
@@ -22,7 +24,6 @@ class UrlHelper
      */
     public static function prepUrls($urls = []): array
     {
-        $cleanUrls        = []; // to be populated
         $cfDomainName     = Cloudflare::$plugin->getSettings()->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
 
@@ -31,17 +32,9 @@ class UrlHelper
          */
         $urls = array_map('trim', $urls);
 
-        /**
-         * Collect only URLs that have the ability to be cleared.
-         */
-        array_walk($urls, function($url) use ($includeZoneCheck, &$cleanUrls) {
-            if (self::isPurgeableUrl($url, $includeZoneCheck))
-            {
-                $cleanUrls[] = $url;
-            }
+        return array_filter($urls, static function($url) use ($includeZoneCheck) {
+            return self::isPurgeableUrl($url, $includeZoneCheck);
         });
-
-        return $cleanUrls;
     }
 
     /**

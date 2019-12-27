@@ -24,7 +24,7 @@ class CloudflareVariable
      *
      * @return string
      */
-    public function apiBaseUrl()
+    public function apiBaseUrl(): string
     {
         return Cloudflare::$plugin->cloudflare->getApiBaseUrl();
     }
@@ -34,7 +34,7 @@ class CloudflareVariable
      *
      * @return array
      */
-    public function getZones()
+    public function getZones(): array
     {
         return Cloudflare::$plugin->cloudflare->getZones();
     }
@@ -64,12 +64,14 @@ class CloudflareVariable
      *
      * @return array
      */
-    public function getRulesForTable()
+    public function getRulesForTable(): array
     {
         return Cloudflare::$plugin->rules->getRulesForTable();
     }
 
-
+    /**
+     * @return bool|\craft\base\Model|null
+     */
     public function getSettings()
     {
         return Cloudflare::$plugin->getSettings();

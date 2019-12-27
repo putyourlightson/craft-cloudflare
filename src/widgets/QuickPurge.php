@@ -15,6 +15,7 @@ use workingconcept\cloudflare\assetbundles\quickpurgewidget\QuickPurgeWidgetAsse
 
 use Craft;
 use craft\base\Widget;
+use workingconcept\cloudflare\helpers\ConfigHelper;
 
 /**
  * Cloudflare Widget
@@ -50,7 +51,7 @@ class QuickPurge extends Widget
      *
      * @return string
      */
-    public static function iconPath()
+    public static function iconPath(): string
     {
         return Craft::getAlias("@workingconcept/cloudflare/assetbundles/quickpurgewidget/dist/img/quickpurge-icon.svg");
     }
@@ -60,7 +61,7 @@ class QuickPurge extends Widget
      *
      * @return int
      */
-    public static function maxColspan()
+    public static function maxColspan(): int
     {
         return 1;
     }
@@ -70,7 +71,8 @@ class QuickPurge extends Widget
      *
      * @return string
      */
-    public function getTitle(): string {
+    public function getTitle(): string
+    {
         return Craft::t('cloudflare', 'Cloudflare Purge');
     }
 
@@ -90,7 +92,8 @@ class QuickPurge extends Widget
         return Craft::$app->getView()->renderTemplate(
             'cloudflare/widget',
             [
-                'settings' => Cloudflare::$plugin->getSettings()
+                'settings' => Cloudflare::$plugin->getSettings(),
+                'isConfigured' => ConfigHelper::isConfigured()
             ]
         );
     }

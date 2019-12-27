@@ -11,6 +11,7 @@
 namespace workingconcept\cloudflare\services;
 
 use workingconcept\cloudflare\Cloudflare;
+use workingconcept\cloudflare\helpers\ConfigHelper;
 use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\helpers\UrlHelper;
 
@@ -20,7 +21,6 @@ use GuzzleHttp\Exception\RequestException;
 
 use Craft;
 use craft\base\Component;
-use craft\console\Application as ConsoleApplication;
 use stdClass;
 
 /**
@@ -70,7 +70,7 @@ class CloudflareService extends Component
      */
     public function getClient()
     {
-        if ($this->_client === null && $this->isConfigured())
+        if ($this->_client === null && ConfigHelper::isConfigured())
         {
             $this->_client = new Client([
                 'base_uri' => self::API_BASE_URL,
@@ -84,25 +84,9 @@ class CloudflareService extends Component
     }
 
     /**
-     * Returns true if we've got the settings to make REST API calls.
+     * Returns true if provided credentials can successfully make API calls.
      *
      * @return bool
-     */
-    public function isConfigured(): bool
-    {
-        $authType = $this->_getApiSetting('authType');
-
-        $hasKey = $this->_getApiSetting('apiKey') !== null
-            && $this->_getApiSetting('email') !== null;
-
-        $hasToken = $this->_getApiSetting('apiToken') !== null;
-
-        return ($authType === Settings::AUTH_TYPE_KEY && $hasKey)
-            || ($authType === Settings::AUTH_TYPE_TOKEN && $hasToken);
-    }
-
-    /**
-     * Returns true if provided credentials can successfully make API calls.
      */
     public function verifyConnection(): bool
     {
@@ -111,7 +95,7 @@ class CloudflareService extends Component
             return false;
         }
 
-        $authType = $this->_getApiSetting('authType');
+        $authType = ConfigHelper::getParsedSetting('authType');
         $testUri = $authType === Settings::AUTH_TYPE_KEY ?
             'zones?per_page=1' : 'user/tokens/verify';
 
@@ -204,12 +188,12 @@ class CloudflareService extends Component
                 if (count($response->result) > 0)
                 {
                     $totalRecords = $response->result_info->total_count;
-                    $totalPages   = ceil($totalRecords / $perPage);
+                    $totalPages = ceil($totalRecords / $perPage);
 
-                    $this->responseItems = array_merge(
-                        $this->responseItems,
-                        $response->result
-                    );
+                    foreach ($response->result as $item)
+                    {
+                        $this->responseItems[] = $item;
+                    }
                 }
                 else
                 {
@@ -226,7 +210,7 @@ class CloudflareService extends Component
      * https://api.cloudflare.com/#zone-zone-details
      *
      * @param string $zoneId
-     * @return \stdClass|null
+     * @return object|null
      */
     public function getZoneById($zoneId)
     {
@@ -254,26 +238,22 @@ class CloudflareService extends Component
         }
         catch(RequestException $exception)
         {
-            // if there is a response, we'll use it's body, otherwise we default to the request URI
-            $reason = ( $exception->hasResponse()
-                ? $exception->getResponse()->getBody()
-                : $exception->getRequest()->getUri()
-            );
-
-            Craft::info(
-                'Zone request failed: ' . $reason,
+            Craft::info(sprintf(
+                    'Zone request failed: %s',
+                    $this->_getExceptionReason($exception)
+                ),
                 'cloudflare'
-
             );
 
             return null;
         }
 
         Craft::info(sprintf(
-            'Retrieved zone #%s',
-            $zoneId
-        ),
-        'cloudflare');
+                'Retrieved zone #%s',
+                $zoneId
+            ),
+            'cloudflare'
+        );
 
         return json_decode($response->getBody(), false)
             ->result;
@@ -283,7 +263,7 @@ class CloudflareService extends Component
      * Purge the entire zone cache.
      * https://api.cloudflare.com/#zone-purge-all-files
      *
-     * @return \stdClass|null Cloudflare's response
+     * @return object|null Cloudflare's response
      */
     public function purgeZoneCache()
     {
@@ -324,13 +304,13 @@ class CloudflareService extends Component
         }
         catch(RequestException $exception)
         {
-            // if there is a response, we'll use it's body, otherwise we default to the request URI
-            $reason = ( $exception->hasResponse()
-                ? $exception->getResponse()->getBody()
-                : $exception->getRequest()->getUri()
+            Craft::info(sprintf(
+                    'Request failed: %s',
+                    $this->_getExceptionReason($exception)
+                ),
+                'cloudflare'
             );
 
-            Craft::info('Request failed: ' . $reason, 'cloudflare');
             return (object) [ 'result' => [] ];
         }
     }
@@ -467,15 +447,9 @@ class CloudflareService extends Component
         }
         catch (RequestException $exception)
         {
-            // if there is a response, we'll use it's body, otherwise we default to the request URI
-            $reason = ( $exception->hasResponse()
-                ? $exception->getResponse()->getBody()
-                : $exception->getRequest()->getUri()
-            );
-
             Craft::info(sprintf(
                 'Request failed: %s',
-                $reason
+                $this->_getExceptionReason($exception)
             ), 'cloudflare');
 
             return (object) [
@@ -491,7 +465,7 @@ class CloudflareService extends Component
      */
     private function _getClientHeaders(): array
     {
-        $authType = $this->_getApiSetting('authType');
+        $authType = ConfigHelper::getParsedSetting('authType');
 
         $headers = [
             'Content-Type' => 'application/json',
@@ -500,14 +474,14 @@ class CloudflareService extends Component
 
         if ($authType === Settings::AUTH_TYPE_KEY)
         {
-            $headers['X-Auth-Key'] = $this->_getApiSetting('apiKey');
-            $headers['X-Auth-Email'] = $this->_getApiSetting('email');
+            $headers['X-Auth-Key'] = ConfigHelper::getParsedSetting('apiKey');
+            $headers['X-Auth-Email'] = ConfigHelper::getParsedSetting('email');
         }
         elseif ($authType === Settings::AUTH_TYPE_TOKEN)
         {
             $headers['Authorization'] = sprintf(
                 'Bearer %s',
-                $this->_getApiSetting('apiToken')
+                ConfigHelper::getParsedSetting('apiToken')
             );
         }
 
@@ -515,39 +489,20 @@ class CloudflareService extends Component
     }
 
     /**
-     * Returns settings needed to connect to the REST API. Checks request
-     * parameters if we're in the control panel checking unsaved settings.
+     * Returns a string for the request exception that can be used for logging.
      *
-     * Also parses environment variables.
+     * @param  \GuzzleHttp\Exception\RequestException  $exception
      *
-     * @param string $key `apiKey`, `email`, or `apiToken`
-     *
-     * @return string|null
+     * @return string
      */
-    private function _getApiSetting($key)
+    private function _getExceptionReason(RequestException $exception): string
     {
-        $request   = Craft::$app->getRequest();
-        $isConsole = Craft::$app instanceof ConsoleApplication;
-        $isCraft31 = version_compare(Craft::$app->getVersion(), '3.1', '>=');
-
-        /**
-         * Check post params if we're in the control panel, where we use AJAX
-         * for initially checking new parameters.
-         */
-        $usePost = ! $isConsole &&
-            $request->getIsAjax() &&
-            ! empty($request->getParam($key)) &&
-            is_string($request->getParam($key));
-
-        $settingValue = $usePost ? $request->getParam($key) :
-            Cloudflare::$plugin->getSettings()->{$key} ?? null;
-
-        if ($isCraft31 && $settingValue)
+        if ($exception->hasResponse())
         {
-            return Craft::parseEnv($settingValue);
+            return $exception->getResponse()->getBody()->getContents();
         }
 
-        return $settingValue;
+        return $exception->getRequest()->getUri();
     }
 
     /**
@@ -563,7 +518,7 @@ class CloudflareService extends Component
         if ($responseBody = json_decode($exception->getResponse()->getBody(), false))
         {
             $message = "URL purge failed.\n";
-            $message .= '- urls: ' . implode($urls, ',') . "\n";
+            $message .= '- urls: ' . implode(',', $urls) . "\n";
 
             foreach ($responseBody->errors as $error)
             {
@@ -575,14 +530,9 @@ class CloudflareService extends Component
             return (object) [ 'result' => [] ];
         }
 
-        $reason = ( $exception->hasResponse()
-            ? $exception->getResponse()->getBody()
-            : $exception->getRequest()->getUri()
-        );
-
         Craft::info(sprintf(
             'Request failed: %s',
-            $reason
+            $this->_getExceptionReason($exception)
         ), 'cloudflare');
 
         return (object) [ 'result' => [] ];
