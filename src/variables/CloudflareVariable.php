@@ -32,9 +32,9 @@ class CloudflareVariable
     /**
      * Returns the zones.
      *
-     * @return array
+     * @return array|null
      */
-    public function getZones(): array
+    public function getZones()
     {
         return Cloudflare::$plugin->cloudflare->getZones();
     }
