@@ -12,7 +12,6 @@ namespace workingconcept\cloudflare\widgets;
 
 use workingconcept\cloudflare\assetbundles\Cloudflare\CloudflareAsset;
 use workingconcept\cloudflare\Cloudflare;
-use workingconcept\cloudflare\assetbundles\quickpurgewidget\QuickPurgeWidgetAsset;
 
 use Craft;
 use craft\base\Widget;
