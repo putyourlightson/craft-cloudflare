@@ -1,5 +1,18 @@
 # Cloudflare Changelog
 
+## 0.4.1 - Unreleased
+### Added
+- The `zone` setting will now be parsed for environment variables.
+
+### Changed
+- All control panel interactions are now asynchronous.
+- The dashboard widget and settings page will both ask for confirmation before purging the entire zone.
+- Updated the readme.
+
+### Fixed
+- It’s now possible to set the Cloudflare zone ID from a static config file.
+- Purge attempts from the control panel now correctly report success or failure and log details to the browser console.
+
 ## 0.4.0 - 2019-12-26
 ### Fixed
 - Settings no longer throw an exception if saved with an invalid API Key.

@@ -3,6 +3,7 @@
 namespace workingconcept\cloudflare\models;
 
 use craft\base\Model;
+use Craft;
 
 class Settings extends Model
 {
@@ -109,6 +110,16 @@ class Settings extends Model
     // =========================================================================
 
     /**
+     * Returns `true` if the Cloudflare zone ID is set in a static config file.
+     *
+     * @return bool
+     */
+    public function zoneIsStatic(): bool
+    {
+        return isset($this->_getStaticConfig()['zone']);
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules(): array
@@ -127,5 +138,14 @@ class Settings extends Model
                 return $model->authType === self::AUTH_TYPE_TOKEN;
             }],
         ];
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    private function _getStaticConfig(): array
+    {
+        return Craft::$app->getConfig()->getConfigFromFile('cloudflare');
     }
 }

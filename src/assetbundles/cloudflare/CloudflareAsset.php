@@ -37,11 +37,11 @@ class CloudflareAsset extends AssetBundle
         ];
 
         $this->js = [
-            'js/settings.js',
+            'js/cp.js',
         ];
 
         $this->css = [
-            'css/settings.css',
+            'css/cp.css',
         ];
 
         parent::init();

@@ -39,7 +39,7 @@ class ConfigHelper
      *
      * Also parses environment variables.
      *
-     * @param string $key `apiKey`, `email`, or `apiToken`
+     * @param string $key `apiKey`, `email`, `apiToken`, or `zone`
      *
      * @return string|null
      */

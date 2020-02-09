@@ -1,1 +1,112 @@
-!function(e){var t={};function n(r){if(t[r])return t[r].exports;var i=t[r]={i:r,l:!1,exports:{}};return e[r].call(i.exports,i,i.exports,n),i.l=!0,i.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var i in e)n.d(r,i,function(t){return e[t]}.bind(null,i));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="/",n(n.s=0)}([function(e,t,n){e.exports=n(1)},function(e,t,n){"use strict";var r=document.getElementById("settings-credential-spinner"),i=document.getElementById("settings-zone"),s=document.querySelector(".cloudflare-verify"),o=document.getElementById("settings-cf-test"),a=document.getElementById("settings-purge-urls"),c=document.getElementById("settings-urls");function l(){s.classList.remove("success"),s.classList.remove("fail"),r.classList.remove("hidden")}function u(){r.classList.add("hidden")}function d(){var e=document.getElementById("settings-authType"),t=document.getElementById("settings-apiToken"),n=document.getElementById("settings-apiKey"),r=document.getElementById("settings-email"),i=e.value||!1,s=t.value||!1,o=n.value||!1,a=r.value||!1;return!(!("key"!==i||o&&a)||"token"===i&&!s)&&("key"===i?{authType:i,apiKey:o,email:a}:"token"===i&&{authType:i,apiToken:s})}o.addEventListener("click",(function(e){e.preventDefault();var t=d();if(!1===t)return alert(window.__CLOUDFLARE_PLUGIN.messages.credentialsMissing);l(),Craft.postActionRequest(window.__CLOUDFLARE_PLUGIN.actions.verifyCredentials,t,(function(e,t){return u(),"error"!==t&&e?!1===e.success?(s.classList.remove("success"),s.classList.add("fail"),console.error("Credential verification failed with response: ",e),!1):void function(){var e=d(),t=!!i.querySelector("option:checked")&&i.querySelector("option:checked").value;l(),Craft.postActionRequest(window.__CLOUDFLARE_PLUGIN.actions.fetchZones,e,(function(e,n){if(u(),"error"===n||!e)return alert(window.__CLOUDFLARE_PLUGIN.messages.credentialVerificationFailed),s.classList.remove("success"),s.classList.add("fail"),console.error("Credential verification failed with response: ",e),!1;Array.from(i.querySelectorAll("option")).forEach((function(e){return e.remove()}));for(var r=0;r<e.length;r++){var o=e[r],a=document.createElement("option");a.value=o.id,a.textContent=o.name,i.appendChild(a)}t&&(i.value=t),s.classList.remove("fail"),s.classList.add("success")}))}():(alert(window.__CLOUDFLARE_PLUGIN.messages.credentialVerificationFailed),s.classList.remove("success"),s.classList.add("fail"),console.error("Credential verification failed with response: ",e),!1)}))})),a&&a.addEventListener("click",(function(e){e.preventDefault();var t=c.value;Craft.postActionRequest(window.__CLOUDFLARE_PLUGIN.actions.purgeUrls,{urls:t},(function(e,t,n){return"error"===t?(console.error("URL purge failed with response:",e),alert(window.__CLOUDFLARE_PLUGIN.messages.purgeUrlsFailed)):(c.value="",alert(window.__CLOUDFLARE_PLUGIN.messages.purgeUrlsSucceeded))}))}))}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "/";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./src/assetbundles/cloudflare/src/js/settings.js":
+/*!********************************************************!*\
+  !*** ./src/assetbundles/cloudflare/src/js/settings.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/mattstein/Projects/cloudflare-craft-plugin/src/assetbundles/cloudflare/src/js/settings.js'");
+
+/***/ }),
+
+/***/ 0:
+/*!**************************************************************!*\
+  !*** multi ./src/assetbundles/cloudflare/src/js/settings.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! /Users/mattstein/Projects/cloudflare-craft-plugin/src/assetbundles/cloudflare/src/js/settings.js */"./src/assetbundles/cloudflare/src/js/settings.js");
+
+
+/***/ })
+
+/******/ });

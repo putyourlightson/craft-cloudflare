@@ -164,7 +164,9 @@ class Cloudflare extends Plugin
         $settings = $this->getSettings();
 
         // save the human-friendly zone name if we have one
-        if ($zoneInfo = $this->api->getZoneById($settings->zone))
+        if ($zoneInfo = $this->api->getZoneById(
+            ConfigHelper::getParsedSetting('zone')
+        ))
         {
             $settings->zoneName = $zoneInfo->name;
         }

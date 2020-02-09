@@ -270,12 +270,10 @@ class Api extends Component
         try
         {
             $response = $this->getClient()->delete(sprintf(
-                'zones/%s/purge_cache',
-                Cloudflare::$plugin->getSettings()->zone
-            ),
-                [
-                    'body' => json_encode(['purge_everything' => true])
-                ]
+                    'zones/%s/purge_cache',
+                    ConfigHelper::getParsedSetting('zone')
+                ),
+                [ 'body' => json_encode([ 'purge_everything' => true ]) ]
             );
 
             $responseBody = json_decode($response->getBody(), false);
@@ -283,11 +281,15 @@ class Api extends Component
             if ( ! $response->getStatusCode() == 200)
             {
                 Craft::info(sprintf(
-                    'Request failed: %s',
+                    'Zone purge request failed: %s',
                     json_encode($responseBody)
                 ), 'cloudflare');
 
-                return (object) [ 'result' => [] ];
+                return (object) [
+                    'success' => false,
+                    'message' => $response->getBody()->getContents(),
+                    'result' => []
+                ];
             }
 
             Craft::info(sprintf(
@@ -297,16 +299,13 @@ class Api extends Component
 
             return $responseBody;
         }
+        catch(ClientException $exception)
+        {
+            return $this->_handleApiException($exception, 'zone purge');
+        }
         catch(RequestException $exception)
         {
-            Craft::info(sprintf(
-                    'Request failed: %s',
-                    $this->_getExceptionReason($exception)
-                ),
-                'cloudflare'
-            );
-
-            return (object) [ 'result' => [] ];
+            return $this->_handleApiException($exception, 'zone purge');
         }
     }
 
@@ -330,23 +329,18 @@ class Api extends Component
         // don't do anything if URLs are missing
         if (count($urls) === 0)
         {
-            Craft::info(
-                'No valid URLs provided for purge.',
-                'cloudflare'
+            return $this->_failureResponse(
+                'Cannot purge; no valid URLs.'
             );
-
-            return (object) [
-                'result' => []
-            ];
         }
 
         try
         {
             $response = $this->getClient()->delete(sprintf(
                     'zones/%s/purge_cache',
-                    Cloudflare::$plugin->getSettings()->zone
+                    ConfigHelper::getParsedSetting('zone')
                 ),
-                [ 'body' => json_encode(['files' => $urls]) ]
+                [ 'body' => json_encode([ 'files' => $urls ]) ]
             );
 
             $responseBody = json_decode($response->getBody(), false);
@@ -359,6 +353,8 @@ class Api extends Component
                 ), 'cloudflare');
 
                 return (object) [
+                    'success' => false,
+                    'message' => $response->getBody()->getContents(),
                     'result' => []
                 ];
             }
@@ -375,11 +371,11 @@ class Api extends Component
         }
         catch(ClientException $exception)
         {
-            return $this->_handleApiException($urls, $exception);
+            return $this->_handleApiException($exception, 'URL purge', $urls);
         }
         catch(RequestException $exception)
         {
-            return $this->_handleApiException($urls, $exception);
+            return $this->_handleApiException($exception, 'URL purge', $urls);
         }
     }
 
@@ -396,6 +392,47 @@ class Api extends Component
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Quietly handle an exception from the Cloudflare API.
+     *
+     * @param mixed  $exception (ClientException or RequestException)
+     * @param string $action    human-friendly description of the attempted action
+     * @param array  $urls      related URLs (if relevant)
+     *
+     * @return \stdClass with populated `result` property array
+     */
+    private function _handleApiException($exception, $action, $urls = []): \stdClass
+    {
+        if ($responseBody = json_decode($exception->getResponse()->getBody(), false))
+        {
+            $message = "${action} failed.\n";
+
+            if ($urls)
+            {
+                $message .= '- urls: ' . implode(',', $urls) . "\n";
+            }
+
+            foreach ($responseBody->errors as $error)
+            {
+                $message .= "- error code {$error->code}: " . $error->message . "\n";
+            }
+
+            Craft::info($message, 'cloudflare');
+
+            return (object) [
+                'success' => false,
+                'errors' => $responseBody->errors ?? [],
+                'result' => []
+            ];
+        }
+
+        // return a more generic failure if we don’t have better details
+        return $this->_failureResponse(sprintf(
+            'Request failed: %s',
+            $this->_getExceptionReason($exception)
+        ));
+    }
 
     /**
      * Fetch zones via API, which returns paginated results.
@@ -426,14 +463,10 @@ class Api extends Component
 
             if ( ! $response->getStatusCode() == 200)
             {
-                Craft::info(sprintf(
+                return $this->_failureResponse(sprintf(
                     'Request failed: %s',
                     $response->getBody()
-                ), 'cloudflare');
-
-                return (object) [
-                    'result' => []
-                ];
+                ));
             }
 
             Craft::info('Retrieved zones.', 'cloudflare');
@@ -442,14 +475,10 @@ class Api extends Component
         }
         catch (RequestException $exception)
         {
-            Craft::info(sprintf(
+            return $this->_failureResponse(sprintf(
                 'Request failed: %s',
                 $this->_getExceptionReason($exception)
-            ), 'cloudflare');
-
-            return (object) [
-                'result' => []
-            ];
+            ));
         }
     }
 
@@ -484,6 +513,25 @@ class Api extends Component
     }
 
     /**
+     * Log message and return standard failure response.
+     *
+     * @param $message
+     *
+     * @return object
+     */
+    private function _failureResponse($message)
+    {
+        Craft::error($message, 'cloudflare');
+
+        return (object) [
+            'success' => false,
+            'message' => $message,
+            'result' => []
+        ];
+    }
+
+
+    /**
      * Returns a string for the request exception that can be used for logging.
      *
      * @param  \GuzzleHttp\Exception\RequestException  $exception
@@ -498,39 +546,6 @@ class Api extends Component
         }
 
         return $exception->getRequest()->getUri();
-    }
-
-    /**
-     * Quietly handle an exception from the Cloudflare API.
-     *
-     * @param array  $urls
-     * @param mixed  $exception (ClientException or RequestException)
-     *
-     * @return \stdClass with populated `result` property array
-     */
-    private function _handleApiException($urls, $exception): \stdClass
-    {
-        if ($responseBody = json_decode($exception->getResponse()->getBody(), false))
-        {
-            $message = "URL purge failed.\n";
-            $message .= '- urls: ' . implode(',', $urls) . "\n";
-
-            foreach ($responseBody->errors as $error)
-            {
-                $message .= "- error code {$error->code}: " . $error->message . "\n";
-            }
-
-            Craft::info($message, 'cloudflare');
-
-            return (object) [ 'result' => [] ];
-        }
-
-        Craft::info(sprintf(
-            'Request failed: %s',
-            $this->_getExceptionReason($exception)
-        ), 'cloudflare');
-
-        return (object) [ 'result' => [] ];
     }
 
 }

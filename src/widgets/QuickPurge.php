@@ -10,6 +10,7 @@
 
 namespace workingconcept\cloudflare\widgets;
 
+use workingconcept\cloudflare\assetbundles\Cloudflare\CloudflareAsset;
 use workingconcept\cloudflare\Cloudflare;
 use workingconcept\cloudflare\assetbundles\quickpurgewidget\QuickPurgeWidgetAsset;
 
@@ -53,7 +54,7 @@ class QuickPurge extends Widget
      */
     public static function icon(): string
     {
-        return Craft::getAlias("@workingconcept/cloudflare/assetbundles/quickpurgewidget/dist/img/quickpurge-icon.svg");
+        return Craft::getAlias("@workingconcept/cloudflare/assetbundles/cloudflare/dist/img/quickpurge-icon.svg");
     }
 
     /**
@@ -87,7 +88,7 @@ class QuickPurge extends Widget
 
     public function getBodyHtml()
     {
-        Craft::$app->getView()->registerAssetBundle(QuickPurgeWidgetAsset::class);
+        Craft::$app->getView()->registerAssetBundle(CloudflareAsset::class);
 
         return Craft::$app->getView()->renderTemplate(
             'cloudflare/widget',

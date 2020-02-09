@@ -26,6 +26,8 @@ class DefaultController extends Controller
 {
     public function actionVerifyConnection(): Response
     {
+        $this->requireAcceptsJson();
+
         $wasSuccessful = Cloudflare::$plugin->api->verifyConnection();
         $return = [
             'success' => $wasSuccessful
@@ -54,88 +56,51 @@ class DefaultController extends Controller
      *
      * @return mixed
      * @throws craft\errors\MissingComponentException without a valid session.
+     * @throws \yii\web\BadRequestHttpException
      */
     public function actionPurgeUrls()
     {
-        $request  = Craft::$app->getRequest();
-        $urls     = $request->getBodyParam('urls');
-        $referrer = $request->getReferrer();
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
 
-        if ($referrer === null)
-        {
-            $referrer = UrlHelper::cpUrl('settings/plugins/cloudflare');
-        }
+        $request = Craft::$app->getRequest();
+        $session = Craft::$app->getSession();
+
+        $urls = $request->getBodyParam('urls');
 
         if (empty($urls))
         {
-            Craft::$app->getSession()->setError(Craft::t(
+            $session->setError(Craft::t(
                 'cloudflare',
                 'Failed to purge empty or invalid URLs.'
             ));
 
-            return $this->redirect($referrer);
+            return $this->asErrorJson(
+                'Failed to purge empty or invalid URLs.'
+            );
         }
 
         // split lines into array items
         $urls = explode("\n", $urls);
-
         $response = Cloudflare::$plugin->api->purgeUrls($urls);
 
-        if ($request->getIsAjax())
-        {
-            return $this->asJson($response);
-        }
-
-        if (isset($response->success) && $response->success)
-        {
-            Craft::$app->getSession()->setNotice(Craft::t(
-                'cloudflare',
-                'URL(s) purged.'
-            ));
-        }
-        else
-        {
-            Craft::$app->getSession()->setError(Craft::t(
-                'cloudflare',
-                'Failed to purge URL(s).'
-            ));
-        }
-
-        return $this->redirect($referrer);
+        return $this->asJson($response);
     }
 
     /**
      * Purge entire Cloudflare zone cache.
+     *
      * @return mixed
-     * @throws craft\errors\MissingComponentException without a valid session.
+     * @throws \yii\web\BadRequestHttpException
      */
     public function actionPurgeAll()
     {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
         $response = Cloudflare::$plugin->api->purgeZoneCache();
 
-        if (isset($response->success) && $response->success)
-        {
-            Craft::$app->getSession()->setNotice(Craft::t(
-                'cloudflare',
-                'Cloudflare cache purged.'
-            ));
-        }
-        else
-        {
-            Craft::$app->getSession()->setError(Craft::t(
-                'cloudflare',
-                'Failed to purge Cloudflare cache.'
-            ));
-        }
-
-        $referrer = Craft::$app->request->getReferrer();
-
-        if ($referrer === null)
-        {
-            $referrer = UrlHelper::cpUrl('settings/plugins/cloudflare');
-        }
-
-        return $this->redirect($referrer);
+        return $this->asJson($response);
     }
 
     /**

@@ -1,3 +1,4 @@
+{# @formatter:off #}
 {% import "_includes/forms" as forms %}
 
 {##
@@ -5,24 +6,24 @@
 # to translate text on the clientside. Therefore, all messages are passed to a global object.
 # Additionally, the action URLs are fetched from the plugin settings so they can be modified with a single change.
 #}
-{# @formatter:off #}
-{% set extraJs %}
-window.__CLOUDFLARE_PLUGIN = {
+{% set extraJs %}window.__CLOUDFLARE_PLUGIN = {
     messages: {
         credentialVerificationFailed: "{{ 'Could not verify API credentials.'|t('cloudflare') }}",
         credentialsMissing: "{{ 'Please enter required API credentials.'|t('cloudflare') }}",
         purgeUrlsFailed: "{{ 'Could not purge URLs.'|t('cloudflare') }}",
-        purgeUrlsSucceeded: "{{ 'Successfully purged URLs.'|t('cloudflare') }}"
+        purgeUrlsSucceeded: "{{ 'Successfully purged URLs.'|t('cloudflare') }}",
+        purgeAllFailed: "{{ 'Could not purge zone.'|t('cloudflare') }}",
+        purgeAllSucceeded: "{{ 'Successfully purged zone.'|t('cloudflare') }}"
     },
     actions: {
         verifyCredentials: "{{ settings.verifyCredentialsUri }}",
         fetchZones: "{{ settings.fetchZonesActionUri }}",
-        purgeUrls:  "{{ settings.purgeUrlsActionUri }}"
+        purgeUrls: "{{ settings.purgeUrlsActionUri }}",
+        purgeAll: "{{ settings.purgeAllActionUri }}"
     }
 };
 {% endset %}
 {# @formatter:on #}
-
 
 {% js extraJs %}
 {% do view.registerAssetBundle("workingconcept\\cloudflare\\assetbundles\\cloudflare\\CloudflareAsset") %}
@@ -110,17 +111,32 @@ window.__CLOUDFLARE_PLUGIN = {
 </div>
 
 <div>
-    {{ forms.selectField({
-        label: 'Cloudflare Zone'|t('cloudflare'),
-        id: 'zone',
-        required: true,
-        name: 'zone',
-        options: zoneOptions,
-        value: settings.zone,
-        autofocus: true,
-        errors: settings.getErrors('zone'),
-        instructions: 'Specify which Cloudflare Zone is utilized by this site.'|t('cloudflare')
-    }) }}
+    {% if not settings.zoneIsStatic() %}
+        {{ forms.selectField({
+            label: 'Cloudflare Zone'|t('cloudflare'),
+            id: 'zone',
+            required: true,
+            name: 'zone',
+            options: zoneOptions,
+            value: settings.zone,
+            autofocus: true,
+            errors: settings.getErrors('zone'),
+            instructions: 'Specify which Cloudflare Zone is utilized by this site.'|t('cloudflare')
+        }) }}
+    {% else %}
+        {{ forms.textField( {
+            label: 'Zone ID'|t('cloudflare'),
+            id: 'zone',
+            required: true,
+            name: 'zone',
+            class: 'code',
+            value: settings.zone,
+            autofocus: true,
+            errors: settings.getErrors('zone'),
+            disabled: true,
+            instructions: 'The Cloudflare Zone ID utilized by this site. (Hardcoded in static config.)'|t('cloudflare')
+        }) }}
+    {% endif %}
 
     <hr>
 
@@ -130,7 +146,7 @@ window.__CLOUDFLARE_PLUGIN = {
         name: 'purgeEntryUrls',
         on: settings.purgeEntryUrls,
         errors: settings.getErrors('purgeEntryUrls'),
-        instructions: "Enable to attempt to purge Entry URLs whenever they're saved or deleted."
+        instructions: "Enable to attempt to purge Entry URLs whenever they’re saved or deleted."
     }) }}
 
     {{ forms.lightswitchField({
@@ -139,7 +155,7 @@ window.__CLOUDFLARE_PLUGIN = {
         name: 'purgeAssetUrls',
         on: settings.purgeAssetUrls,
         errors: settings.getErrors('purgeAssetUrls'),
-        instructions: "Enable to attempt to purge Asset URLs whenever they're saved or deleted."
+        instructions: "Enable to attempt to purge Asset URLs whenever they’re saved or deleted."
     }) }}
 
     {% if isConfigured %}
@@ -152,16 +168,16 @@ window.__CLOUDFLARE_PLUGIN = {
             name: 'urls',
             autofocus: true,
             errors: settings.getErrors('urls'),
-            instructions: 'Add complete URLs, each on its own line, that you\'d like to clear from Cloudflare\'s cache.'|t('cloudflare')
+            instructions: 'Add complete URLs, each on its own line, that you’d like to purge from Cloudflare’s cache.'|t('cloudflare')
         } ) }}
 
-        <a class="btn warning" id="purge-urls">
+        <a class="btn submit" id="purge-urls">
             {{- 'Purge URLs'|t('cloudflare') -}}
         </a>
 
         <hr>
 
-        <a href="{{ actionUrl(settings.purgeAllActionUri) }}" class="btn warning">
+        <a href="{{ actionUrl(settings.purgeAllActionUri) }}" class="btn submit" id="purge-all">
             {{- 'Purge Cloudflare Cache'|t('cloudflare') -}}
         </a>
     {% endif %}
