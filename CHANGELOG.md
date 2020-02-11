@@ -1,6 +1,6 @@
 # Cloudflare Changelog
 
-## 0.4.1 - Unreleased
+## 0.4.1 - 2020-02-11
 ### Added
 - The `zone` setting will now be parsed for environment variables.
 
