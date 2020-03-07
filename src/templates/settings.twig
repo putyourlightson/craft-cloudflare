@@ -111,10 +111,18 @@
 </div>
 
 <div>
-    {% if not settings.zoneIsStatic() %}
+    {% set hardcodedZone = settings.zoneIsStatic() %}
+    {% set zoneListSupported = settings.canListZones() %}
+
+    {# Offer some secret clues, just in case. #}
+    <!-- canListZones: {{ zoneListSupported ? 'yes' : 'no' }} -->
+    <!-- zoneIsStatic: {{ hardcodedZone ? 'yes' : 'no' }} -->
+
+    {# Hide selection if we don’t have a list or the ID is already hardcoded. #}
+    <div id="zone-id-select"{% if not zoneListSupported or hardcodedZone %} class="hidden"{% endif %}>
         {{ forms.selectField({
             label: 'Cloudflare Zone'|t('cloudflare'),
-            id: 'zone',
+            id: 'zone-select',
             required: true,
             name: 'zone',
             options: zoneOptions,
@@ -123,20 +131,30 @@
             errors: settings.getErrors('zone'),
             instructions: 'Specify which Cloudflare Zone is utilized by this site.'|t('cloudflare')
         }) }}
-    {% else %}
+    </div>
+
+    {% set warningMessage = 'Unable to list zones for selection. You must specify a Zone ID.'|t('cloudflare') %}
+
+    {% if settings.zoneIsStatic() %}
+        {% set warningMessage = 'Zone ID hardcoded in config file.'|t('cloudflare') %}
+    {% endif %}
+
+    {# Hide if a more convenient listing is already supported. #}
+    <div id="zone-id-input"{% if zoneListSupported %} class="hidden"{% endif %}>
         {{ forms.textField( {
-            label: 'Zone ID'|t('cloudflare'),
-            id: 'zone',
+            label: 'Cloudflare Zone ID'|t('cloudflare'),
+            id: 'zone-input',
             required: true,
             name: 'zone',
             class: 'code',
             value: settings.zone,
             autofocus: true,
             errors: settings.getErrors('zone'),
-            disabled: true,
-            instructions: 'The Cloudflare Zone ID utilized by this site. (Hardcoded in static config.)'|t('cloudflare')
+            disabled: settings.zoneIsStatic(),
+            warning: warningMessage,
+            instructions: 'The Cloudflare Zone ID utilized by this site.'|t('cloudflare')
         }) }}
-    {% endif %}
+    </div>
 
     <hr>
 

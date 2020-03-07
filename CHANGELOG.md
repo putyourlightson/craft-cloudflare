@@ -1,5 +1,12 @@
 # Cloudflare Changelog
 
+## Unreleased
+### Fixed
+- Improved zone selection for API tokens that can’t list zones. ([#17](https://github.com/workingconcept/cloudflare-craft-plugin/issues/17))
+
+### Changed
+- Moved documentation to its own site.
+
 ## 0.4.1 - 2020-02-11
 ### Added
 - The `zone` setting will now be parsed for environment variables.

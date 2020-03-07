@@ -3,7 +3,9 @@
 /** global Craft */
 
 const credentialSpinner = document.getElementById('settings-credential-spinner');
-const zoneSelect = document.getElementById('settings-zone');
+const zoneSelect = document.getElementById('settings-zone-select');
+const zoneSelectWrap = document.getElementById('settings-zone-id-select');
+const zoneInputWrap = document.getElementById('settings-zone-id-input')
 const verifyContainer = document.querySelector('.cloudflare-verify');
 const verifyCredentialsButton = document.getElementById('settings-cf-test');
 const purgeUrlsButton = document.getElementById('settings-purge-urls');
@@ -129,6 +131,14 @@ function fetchZones() {
             // restore selection
             if (selectedZoneId) {
                 zoneSelect.value = selectedZoneId;
+            }
+
+            if (response.length === 0) {
+                zoneSelectWrap.classList.add('hidden');
+                zoneInputWrap.classList.remove('hidden');
+            } else {
+                zoneSelectWrap.classList.remove('hidden');
+                zoneInputWrap.classList.add('hidden');
             }
 
             verifyContainer.classList.remove('fail');

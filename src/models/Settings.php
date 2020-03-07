@@ -4,6 +4,7 @@ namespace workingconcept\cloudflare\models;
 
 use craft\base\Model;
 use Craft;
+use workingconcept\cloudflare\Cloudflare;
 
 class Settings extends Model
 {
@@ -117,6 +118,14 @@ class Settings extends Model
     public function zoneIsStatic(): bool
     {
         return isset($this->_getStaticConfig()['zone']);
+    }
+
+    /**
+     * @return bool
+     */
+    public function canListZones(): bool
+    {
+        return Cloudflare::$plugin->api->canListZones();
     }
 
     /**

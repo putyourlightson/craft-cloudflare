@@ -156,6 +156,24 @@ class Api extends Component
     }
 
     /**
+     * @return bool
+     */
+    public function canListZones(): bool
+    {
+        if ( ! $this->getClient())
+        {
+            return false;
+        }
+
+        if ($response = $this->_getPagedZones(0, 2))
+        {
+            return count($response->result) > 0;
+        }
+
+        return false;
+    }
+
+    /**
      * Get a list of zones (domains) available for the provided Cloudflare account.
      * https://api.cloudflare.com/#zone-list-zones
      *
