@@ -51,9 +51,31 @@ class Cloudflare extends Plugin
     public static $plugin;
 
     /**
+     * @var array
+     */
+    public static $supportedElementTypes = [
+        'craft\elements\Asset',
+        'craft\elements\Category',
+        'craft\elements\Entry',
+        'craft\elements\Tag',
+        'craft\commerce\elements\Variant',
+        'craft\commerce\elements\Product',
+    ];
+
+    /**
      * @var bool
      */
     public $hasCpSettings = true;
+
+    /**
+     * @var bool
+     */
+    public $hasCpSection = false;
+
+    /**
+     * @var string
+     */
+    public $schemaVersion = '1.0.0';
 
     /**
      * @var string
@@ -209,7 +231,8 @@ class Cloudflare extends Plugin
             [
                 'settings'  => $this->getSettings(),
                 'isConfigured' => ConfigHelper::isConfigured(),
-                'isCraft31' => ConfigHelper::isCraft31()
+                'isCraft31' => ConfigHelper::isCraft31(),
+                'elementTypes' => $this->_getElementTypeOptions()
             ]
         );
     }
@@ -217,6 +240,71 @@ class Cloudflare extends Plugin
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Returns element types that should be available options for
+     * automatic purging.
+     *
+     * @return array|string[]
+     */
+    private function _getElementTypeOptions(): array
+    {
+        $options = [];
+        $service = Craft::$app->getElements();
+        $elementTypes = $service->getAllElementTypes();
+
+        foreach ($elementTypes as $elementType)
+        {
+            // only make the option available if we support it
+            if ($this->_isSupportedElementType($elementType))
+            {
+                $options[$elementType] = $elementType::pluralDisplayName();
+            }
+        }
+
+        return $options;
+    }
+
+    /**
+     * Returns `true` is the given element type is one we support,
+     * mostly to be sure there’s a chance its element will have a URL.
+     *
+     * @param string $elementType
+     *
+     * @return bool
+     */
+    private function _isSupportedElementType($elementType): bool
+    {
+        $elementType = ConfigHelper::normalizeClassName($elementType);
+        
+        return in_array($elementType, self::$supportedElementTypes, true);
+    }
+
+    /**
+     * Returns `true` if the provided element type is both supported and
+     * enabled for purging in the plugin’s settings.
+     *
+     * @param $elementType
+     *
+     * @return bool
+     */
+    private function _shouldPurgeElementType($elementType): bool
+    {
+        if ( ! $this->_isSupportedElementType($elementType))
+        {
+            return false;
+        }
+
+        $elementType = ConfigHelper::normalizeClassName($elementType);
+        $purgeElements = $this->getSettings()->purgeElements;
+
+        if (empty($purgeElements) || ! is_array($purgeElements))
+        {
+            return false;
+        }
+
+        return in_array($elementType, $purgeElements, true);
+    }
 
     /**
      * @param bool $isNew
@@ -234,13 +322,9 @@ class Cloudflare extends Plugin
             return;
         }
 
-        $isClearableEntry = $this->getSettings()->purgeEntryUrls &&
-            is_a($element, \craft\elements\Entry::class);
+        $className = get_class($element);
 
-        $isClearableAsset = $this->getSettings()->purgeAssetUrls &&
-            is_a($element, \craft\elements\Asset::class);
-
-        if (! $isNew && ($isClearableEntry || $isClearableAsset))
+        if (! $isNew && $this->_shouldPurgeElementType($className))
         {
             $elementUrl = $element->getUrl();
 

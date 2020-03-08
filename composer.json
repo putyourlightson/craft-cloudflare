@@ -44,9 +44,6 @@
     "extra": {
         "name": "Cloudflare",
         "handle": "cloudflare",
-        "schemaVersion": "1.0.0",
-        "hasCpSettings": true,
-        "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/master/CHANGELOG.md",
         "components": {
             "cloudflareService": "workingconcept\\cloudflare\\services\\CloudflareService",

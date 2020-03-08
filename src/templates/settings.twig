@@ -158,22 +158,14 @@
 
     <hr>
 
-    {{ forms.lightswitchField({
-        label: 'Automatically Purge Entry URLs'|t('cloudflare'),
-        id: 'purgeEntryUrls',
-        name: 'purgeEntryUrls',
-        on: settings.purgeEntryUrls,
-        errors: settings.getErrors('purgeEntryUrls'),
-        instructions: "Enable to attempt to purge Entry URLs whenever they’re saved or deleted."
-    }) }}
-
-    {{ forms.lightswitchField({
-        label: 'Automatically Purge Asset URLs'|t('cloudflare'),
-        id: 'purgeAssetUrls',
-        name: 'purgeAssetUrls',
-        on: settings.purgeAssetUrls,
-        errors: settings.getErrors('purgeAssetUrls'),
-        instructions: "Enable to attempt to purge Asset URLs whenever they’re saved or deleted."
+    {{ forms.checkboxGroupField({
+        label: 'Automatically Purge Elements'|t('cloudflare'),
+        id: 'purgeElements',
+        name: 'purgeElements',
+        errors: settings.getErrors('purgeElements'),
+        options: elementTypes,
+        values: settings.purgeElements,
+        instructions: "Select elements whose URLs should automatically be purged when they’re updated."|t('cloudflare')
     }) }}
 
     {% if isConfigured %}

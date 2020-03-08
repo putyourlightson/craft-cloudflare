@@ -53,13 +53,24 @@ class Settings extends Model
 
     /**
      * @var bool  Whether an Entry's URL should be purged after it's saved.
+     * @deprecated
      */
     public $purgeEntryUrls = false;
 
     /**
      * @var bool  Whether an Asset's URL should be purged after it's saved.
+     * @deprecated
      */
     public $purgeAssetUrls = true;
+
+    /**
+     * @var array  List of element type classes that should be purged automatically.
+     * @todo validate selections
+     * @since
+     */
+    public $purgeElements = [
+        'craft\elements\Asset',
+    ];
 
     /**
      * @var string
