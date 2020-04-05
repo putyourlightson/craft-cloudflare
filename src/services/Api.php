@@ -10,7 +10,6 @@
 
 namespace workingconcept\cloudflare\services;
 
-use workingconcept\cloudflare\Cloudflare;
 use workingconcept\cloudflare\helpers\ConfigHelper;
 use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\helpers\UrlHelper;
@@ -153,6 +152,24 @@ class Api extends Component
     public function getConnectionErrors(): array
     {
         return $this->_connectionErrors;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canListZones(): bool
+    {
+        if ( ! $this->getClient())
+        {
+            return false;
+        }
+
+        if ($response = $this->_getPagedZones(0, 2))
+        {
+            return count($response->result) > 0;
+        }
+
+        return false;
     }
 
     /**
