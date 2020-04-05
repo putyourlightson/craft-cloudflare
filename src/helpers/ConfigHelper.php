@@ -78,4 +78,17 @@ class ConfigHelper
     {
         return version_compare(Craft::$app->getVersion(), '3.1', '>=');
     }
+
+    /**
+     * Strips leading slash from namespaced class and returns it.
+     *
+     * @param $class
+     *
+     * @return string
+     */
+    public static function normalizeClassName($class): string
+    {
+        // remove any leading slash
+        return ltrim($class, '\\');
+    }
 }

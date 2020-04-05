@@ -5,6 +5,7 @@ namespace workingconcept\cloudflare\models;
 use craft\base\Model;
 use Craft;
 use workingconcept\cloudflare\Cloudflare;
+use workingconcept\cloudflare\helpers\ConfigHelper;
 
 class Settings extends Model
 {
@@ -52,14 +53,12 @@ class Settings extends Model
     public $zone = '';
 
     /**
-     * @var bool  Whether an Entry's URL should be purged after it's saved.
+     * @var array  List of element type classes that should be purged automatically.
+     * @since 0.5.0
      */
-    public $purgeEntryUrls = false;
-
-    /**
-     * @var bool  Whether an Asset's URL should be purged after it's saved.
-     */
-    public $purgeAssetUrls = true;
+    public $purgeElements = [
+        'craft\elements\Asset',
+    ];
 
     /**
      * @var string
@@ -135,11 +134,9 @@ class Settings extends Model
     {
         return [
             [['authType'], 'in', 'range' => [self::AUTH_TYPE_KEY, self::AUTH_TYPE_TOKEN]],
+            [['purgeElements'], 'each', 'rule' => ['in', 'range' => Cloudflare::$supportedElementTypes]],
             [['apiKey', 'email', 'apiToken', 'zone', 'zoneName', 'userServiceKey'], 'string'],
-            [['purgeEntryUrls', 'purgeAssetUrls'], 'boolean'],
             ['zone', 'required'],
-            ['purgeEntryUrls', 'default', 'value' => false],
-            ['purgeAssetUrls', 'default', 'value' => true],
             [['apiKey', 'email'], 'required', 'when' => static function ($model) {
                 return $model->authType === self::AUTH_TYPE_KEY;
             }],
