@@ -1,6 +1,9 @@
 # Cloudflare Changelog
 
-## Unreleased
+## 0.5.0 - 2020-04-05
+### Added
+- Expanded automatic element URL purge options to include categories, tags, and Commerce variants and products. ([#16](https://github.com/workingconcept/cloudflare-craft-plugin/issues/16))
+
 ### Fixed
 - Improved zone selection for API tokens that can’t list zones. ([#17](https://github.com/workingconcept/cloudflare-craft-plugin/issues/17))
 

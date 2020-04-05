@@ -10,7 +10,6 @@
 
 namespace workingconcept\cloudflare\services;
 
-use workingconcept\cloudflare\Cloudflare;
 use workingconcept\cloudflare\helpers\ConfigHelper;
 use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\helpers\UrlHelper;
