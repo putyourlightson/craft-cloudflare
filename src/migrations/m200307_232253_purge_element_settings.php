@@ -16,7 +16,7 @@ class m200307_232253_purge_element_settings extends Migration
      */
     public function safeUp()
     {
-        $this->_updateSettings();
+        $this->_resaveSettings();
     }
 
     /**
@@ -32,34 +32,38 @@ class m200307_232253_purge_element_settings extends Migration
      * Moves previous `purgeEntryUrls` and `purgeAssetUrls` settings to
      * new `purgeElements` array.
      */
-    private function _updateSettings()
+    private function _resaveSettings()
     {
-        $purgeElements = [];
-        $settings = Cloudflare::$plugin->getSettings();
+        $projectConfig = Craft::$app->getProjectConfig();
+        $settings = $projectConfig->get('plugins.cloudflare.settings');
+        $schemaVersion = $projectConfig->get('plugins.cloudflare.schemaVersion');
 
-        if ( ! empty($settings->purgeElements))
+        if (empty($settings) || version_compare($schemaVersion, '1.0.1', '>='))
         {
+            echo 'No settings to update.';
             return;
         }
 
-        if (isset($settings->purgeEntryUrls) && $settings->purgeEntryUrls)
+        $purgeElements = [];
+
+        if ($settings['purgeEntryUrls'])
         {
             $purgeElements[] = 'craft\elements\Entry';
         }
 
-        if (isset($settings->purgeAssetUrls) && $settings->purgeAssetUrls)
+        if ($settings['purgeAssetUrls'])
         {
             $purgeElements[] = 'craft\elements\Asset';
         }
 
-        if (count($purgeElements))
-        {
-            $settings->purgeElements = $purgeElements;
-        }
+        $settings['purgeElements'] = $purgeElements;
 
-        Craft::$app->getPlugins()->savePluginSettings(
-            Cloudflare::$plugin,
-            $purgeElements
+        unset($settings['purgeEntryUrls'], $settings['purgeAssetUrls']);
+
+        $projectConfig->set(
+            'plugins.cloudflare.settings',
+            $settings,
+            'Migrated previous plugin settings.'
         );
     }
 }

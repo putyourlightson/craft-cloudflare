@@ -75,7 +75,7 @@ class Cloudflare extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+    public $schemaVersion = '1.0.1';
 
     /**
      * @var string
@@ -135,7 +135,7 @@ class Cloudflare extends Plugin
 
         if (
             ConfigHelper::isConfigured() &&
-            ($this->getSettings()->purgeEntryUrls || $this->getSettings()->purgeAssetUrls)
+            ! empty($this->getSettings()->purgeElements)
         )
         {
             Event::on(
