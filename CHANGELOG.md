@@ -1,5 +1,9 @@
 # Cloudflare Changelog
 
+## Unreleased
+### Fixed
+- Fresh plugin installs no longer prevent saving key-based settings. (Fixes [#19](https://github.com/workingconcept/cloudflare-craft-plugin/issues/19).)
+
 ## 0.5.0 - 2020-04-05
 ### Added
 - Expanded automatic element URL purge options to include categories, tags, and Commerce variants and products. ([#16](https://github.com/workingconcept/cloudflare-craft-plugin/issues/16))
