@@ -1,6 +1,6 @@
 # Cloudflare Changelog
 
-## Unreleased
+## 0.5.1 - 2020-04-26
 ### Fixed
 - Fresh plugin installs no longer prevent saving key-based settings. (Fixes [#19](https://github.com/workingconcept/cloudflare-craft-plugin/issues/19).)
 
