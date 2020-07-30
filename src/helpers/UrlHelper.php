@@ -14,7 +14,6 @@ use Pdp;
 
 class UrlHelper
 {
-    private $RZD_URL = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt';
     // Public Methods
     // =========================================================================
 
@@ -101,11 +100,13 @@ class UrlHelper
      */
     public static function getBaseDomainFromUrl($url)
     {
+        $host = parse_url($url, PHP_URL_HOST);
         $manager = new Pdp\Manager(new Pdp\Cache(), new Pdp\CurlHttpClient());
-        $tldCollection = $manager->getTLDs(self::RZD_URL);
-        $domain = $tldCollection->resolve($url);
-
+        $manager->refreshRules();
+        $rules = $manager->getRules();
+        $domain = $rules->resolve($host);
         $registrableDomain = $domain->getRegistrableDomain();
+
         return $registrableDomain;
     }
 
