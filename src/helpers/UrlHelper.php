@@ -10,9 +10,11 @@ namespace workingconcept\cloudflare\helpers;
 
 use workingconcept\cloudflare\Cloudflare;
 use Craft;
+use Pdp;
 
 class UrlHelper
 {
+    private $RZD_URL = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt';
     // Public Methods
     // =========================================================================
 
@@ -99,18 +101,12 @@ class UrlHelper
      */
     public static function getBaseDomainFromUrl($url)
     {
-        $host = parse_url($url, PHP_URL_HOST);
+        $manager = new Pdp\Manager(new Pdp\Cache(), new Pdp\CurlHttpClient());
+        $tldCollection = $manager->getTLDs(self::RZD_URL);
+        $domain = $tldCollection->resolve($url);
 
-        $parts = explode('.', $host);
-        $numParts = count($parts);
-
-        if ($numParts < 2)
-        {
-            return false;
-        }
-
-        // hostname . tld
-        return "{$parts[$numParts-2]}.{$parts[$numParts-1]}";
+        $registrableDomain = $domain->getRegistrableDomain();
+        return $registrableDomain;
     }
 
 }
