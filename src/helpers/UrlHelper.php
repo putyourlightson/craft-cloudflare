@@ -13,9 +13,6 @@ use Craft;
 
 class UrlHelper
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Only return URLs that can be sent to Cloudflare.
      *
@@ -112,5 +109,4 @@ class UrlHelper
         // hostname . tld
         return "{$parts[$numParts-2]}.{$parts[$numParts-1]}";
     }
-
 }

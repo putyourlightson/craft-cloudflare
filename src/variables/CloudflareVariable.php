@@ -66,5 +66,4 @@ class CloudflareVariable
     {
         return Cloudflare::$plugin->getSettings();
     }
-
 }

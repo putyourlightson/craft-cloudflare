@@ -23,17 +23,10 @@ use craft\db\Migration;
  */
 class Install extends Migration
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var string The database driver to use
      */
     public $driver;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -62,10 +55,6 @@ class Install extends Migration
 
         return true;
     }
-
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @return bool

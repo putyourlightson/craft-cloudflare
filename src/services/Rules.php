@@ -8,6 +8,7 @@ use workingconcept\cloudflare\records\RuleRecord;
 use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
+use craft\helpers\Json;
 
 /**
  * Provides a Cloudflare page rule service
@@ -16,10 +17,6 @@ use craft\helpers\UrlHelper;
  */
 class Rules extends Component
 {
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns all rules for a table.
      * @return array
@@ -33,7 +30,7 @@ class Rules extends Component
         {
             $data[(string)$rule->id] = [
                 0 => $rule->trigger,
-                1 => implode("\n", json_decode($rule->urlsToClear, true))
+                1 => implode("\n", Json::decode($rule->urlsToClear))
             ];
         }
 
@@ -75,7 +72,7 @@ class Rules extends Component
 
                 $ruleRecord->siteId      = $currentSiteId;
                 $ruleRecord->trigger     = trim($trigger);
-                $ruleRecord->urlsToClear = json_encode($individualUrls);
+                $ruleRecord->urlsToClear = Json::encode($individualUrls);
 
                 $ruleRecord->save(false);
             }
@@ -95,7 +92,7 @@ class Rules extends Component
 
         foreach ($relatedRules as $rule)
         {
-            $clearList = json_decode($rule->urlsToClear, true);
+            $clearList = Json::decode($rule->urlsToClear);
 
             foreach ($clearList as $clearUrl)
             {
