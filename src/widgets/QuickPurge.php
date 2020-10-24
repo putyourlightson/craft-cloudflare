@@ -10,7 +10,7 @@
 
 namespace workingconcept\cloudflare\widgets;
 
-use workingconcept\cloudflare\assetbundles\Cloudflare\CloudflareAsset;
+use workingconcept\cloudflare\assetbundles\CloudflareAsset;
 use workingconcept\cloudflare\Cloudflare;
 
 use Craft;
@@ -53,7 +53,7 @@ class QuickPurge extends Widget
      */
     public static function icon(): string
     {
-        return Craft::getAlias("@workingconcept/cloudflare/assetbundles/cloudflare/dist/img/quickpurge-icon.svg");
+        return Craft::getAlias("@workingconcept/cloudflare/assetbundles/dist/img/quickpurge-icon.svg");
     }
 
     /**

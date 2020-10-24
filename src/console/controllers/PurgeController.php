@@ -16,9 +16,6 @@ use yii\console\ExitCode;
 
 class PurgeController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Attempt to purge specific URLs.
      * https://www.yiiframework.com/doc/guide/2.0/en/tutorial-console#arguments
@@ -50,10 +47,6 @@ class PurgeController extends Controller
 
         return $this->_handleResult($response);
     }
-
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Handle Cloudflare's API response for console output.
