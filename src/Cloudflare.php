@@ -42,9 +42,6 @@ use yii\base\Event;
  */
 class Cloudflare extends Plugin
 {
-    // Static Properties
-    // =========================================================================
-
     /**
      * @var Cloudflare
      */
@@ -81,10 +78,6 @@ class Cloudflare extends Plugin
      * @var string
      */
     public $t9nCategory = 'cloudflare';
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -209,10 +202,6 @@ class Cloudflare extends Plugin
         return true;
     }
 
-
-    // Protected Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -236,10 +225,6 @@ class Cloudflare extends Plugin
             ]
         );
     }
-
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Returns element types that should be available options for
@@ -349,5 +334,4 @@ class Cloudflare extends Plugin
             $element->getUrl()
         );
     }
-
 }

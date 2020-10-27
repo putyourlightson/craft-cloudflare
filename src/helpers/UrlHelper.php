@@ -14,9 +14,6 @@ use Pdp;
 
 class UrlHelper
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Only return URLs that can be sent to Cloudflare.
      *
@@ -109,5 +106,4 @@ class UrlHelper
 
         return $registrableDomain;
     }
-
 }

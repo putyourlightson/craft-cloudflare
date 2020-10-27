@@ -26,12 +26,6 @@ use craft\db\ActiveRecord;
  */
 class RuleRecord extends ActiveRecord
 {
-    // Public Properties
-    // =========================================================================
-
-    // Public Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -39,5 +33,4 @@ class RuleRecord extends ActiveRecord
     {
         return '{{%cloudflare_rules}}';
     }
-
 }

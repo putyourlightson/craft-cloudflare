@@ -13,13 +13,12 @@ namespace workingconcept\cloudflare\services;
 use workingconcept\cloudflare\helpers\ConfigHelper;
 use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\helpers\UrlHelper;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
-
 use Craft;
 use craft\base\Component;
+use craft\helpers\Json;
 
 /**
  * @author    Working Concept
@@ -28,23 +27,12 @@ use craft\base\Component;
  */
 class Api extends Component
 {
-    // Constants
-    // =========================================================================
-
     const API_BASE_URL = 'https://api.cloudflare.com/client/v4/';
-
-
-    // Public Properties
-    // =========================================================================
 
     /**
      * @var array
      */
     protected $responseItems;
-
-
-    // Private Properties
-    // =========================================================================
 
     /**
      * @var \GuzzleHttp\Client
@@ -55,10 +43,6 @@ class Api extends Component
      * @var array
      */
     private $_connectionErrors = [];
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Get a configured Guzzle client if we have an API key and email. Otherwise
@@ -100,7 +84,7 @@ class Api extends Component
         try
         {
             $response = $this->getClient()->get($testUri);
-            $responseContents = json_decode(
+            $responseContents = Json::decode(
                 $response->getBody()->getContents(),
                 false
             );
@@ -120,7 +104,7 @@ class Api extends Component
 
                 Craft::info(sprintf(
                     'Connection test failed: %s',
-                    json_encode($responseContents->errors)
+                    Json::encode($responseContents->errors)
                 ), 'cloudflare');
             }
             else
@@ -132,7 +116,7 @@ class Api extends Component
         {
             $reason = $this->_getExceptionReason($exception);
 
-            if (($data = json_decode($reason, false)) && isset($data->errors))
+            if (($data = Json::decode($reason, false)) && isset($data->errors))
             {
                 $this->_connectionErrors = $data->errors;
             }
@@ -267,7 +251,7 @@ class Api extends Component
             'cloudflare'
         );
 
-        return json_decode($response->getBody(), false)
+        return Json::decode($response->getBody(), false)
             ->result;
     }
 
@@ -290,16 +274,16 @@ class Api extends Component
                     'zones/%s/purge_cache',
                     ConfigHelper::getParsedSetting('zone')
                 ),
-                [ 'body' => json_encode([ 'purge_everything' => true ]) ]
+                [ 'body' => Json::encode([ 'purge_everything' => true ]) ]
             );
 
-            $responseBody = json_decode($response->getBody(), false);
+            $responseBody = Json::decode($response->getBody(), false);
 
             if ( ! $response->getStatusCode() == 200)
             {
                 Craft::info(sprintf(
                     'Zone purge request failed: %s',
-                    json_encode($responseBody)
+                    Json::encode($responseBody)
                 ), 'cloudflare');
 
                 return (object) [
@@ -357,16 +341,16 @@ class Api extends Component
                     'zones/%s/purge_cache',
                     ConfigHelper::getParsedSetting('zone')
                 ),
-                [ 'body' => json_encode([ 'files' => $urls ]) ]
+                [ 'body' => Json::encode([ 'files' => $urls ]) ]
             );
 
-            $responseBody = json_decode($response->getBody(), false);
+            $responseBody = Json::decode($response->getBody(), false);
 
             if ( ! $response->getStatusCode() == 200)
             {
                 Craft::info(sprintf(
                     'Request failed: %s',
-                    json_encode($responseBody)
+                    Json::encode($responseBody)
                 ), 'cloudflare');
 
                 return (object) [
@@ -406,10 +390,6 @@ class Api extends Component
         return self::API_BASE_URL;
     }
 
-
-    // Private Methods
-    // =========================================================================
-
     /**
      * Quietly handle an exception from the Cloudflare API.
      *
@@ -421,7 +401,7 @@ class Api extends Component
      */
     private function _handleApiException($exception, $action, $urls = []): \stdClass
     {
-        if ($responseBody = json_decode($exception->getResponse()->getBody(), false))
+        if ($responseBody = Json::decode($exception->getResponse()->getBody(), false))
         {
             $message = "${action} failed.\n";
 
@@ -488,7 +468,7 @@ class Api extends Component
 
             Craft::info('Retrieved zones.', 'cloudflare');
 
-            return json_decode($response->getBody(), false);
+            return Json::decode($response->getBody(), false);
         }
         catch (RequestException $exception)
         {
@@ -547,7 +527,6 @@ class Api extends Component
         ];
     }
 
-
     /**
      * Returns a string for the request exception that can be used for logging.
      *
@@ -564,5 +543,4 @@ class Api extends Component
 
         return $exception->getRequest()->getUri();
     }
-
 }

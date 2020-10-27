@@ -1,5 +1,9 @@
 # Cloudflare Changelog
 
+## 0.6.0 - 2020-10-24
+### Fixed
+- Fixed PSR-4 namespacing for Composer 2.
+
 ## 0.5.1 - 2020-04-26
 ### Fixed
 - Fresh plugin installs no longer prevent saving key-based settings. (Fixes [#19](https://github.com/workingconcept/cloudflare-craft-plugin/issues/19).)

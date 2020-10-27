@@ -5,13 +5,9 @@ namespace workingconcept\cloudflare\models;
 use craft\base\Model;
 use Craft;
 use workingconcept\cloudflare\Cloudflare;
-use workingconcept\cloudflare\helpers\ConfigHelper;
 
 class Settings extends Model
 {
-    // Constants
-    // =========================================================================
-
     /**
      * REST API calls will be authenticated using older X-Auth-Key and
      * X-Auth-Email headers.
@@ -22,10 +18,6 @@ class Settings extends Model
      * REST API calls will be authenticated using a bearer token.
      */
     const AUTH_TYPE_TOKEN = 'token';
-
-
-    // Public Properties
-    // =========================================================================
 
     /**
      * @var string  Type of API authentication to use.
@@ -105,10 +97,6 @@ class Settings extends Model
      */
     public $verifyCredentialsUri = 'cloudflare/default/verify-connection';
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns `true` if the Cloudflare zone ID is set in a static config file.
      *
@@ -145,10 +133,6 @@ class Settings extends Model
             }],
         ];
     }
-
-
-    // Private Methods
-    // =========================================================================
 
     private function _getStaticConfig(): array
     {
