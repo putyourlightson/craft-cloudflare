@@ -10,6 +10,7 @@ namespace workingconcept\cloudflare\helpers;
 
 use workingconcept\cloudflare\Cloudflare;
 use Craft;
+use Pdp;
 
 class UrlHelper
 {
@@ -93,15 +94,12 @@ class UrlHelper
     public static function getBaseDomainFromUrl(string $url)
     {
         $host = parse_url($url, PHP_URL_HOST);
+        $manager = new Pdp\Manager(new Pdp\Cache(), new Pdp\CurlHttpClient());
+        $manager->refreshRules();
+        $rules = $manager->getRules();
+        $domain = $rules->resolve($host);
+        $registrableDomain = $domain->getRegistrableDomain();
 
-        $parts = explode('.', $host);
-        $numParts = count($parts);
-
-        if ($numParts < 2) {
-            return false;
-        }
-
-        // hostname . tld
-        return "{$parts[$numParts-2]}.{$parts[$numParts-1]}";
+        return $registrableDomain;
     }
 }

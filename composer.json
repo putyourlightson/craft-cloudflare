@@ -21,13 +21,18 @@
             "homepage": "https://workingconcept.com"
         },
         {
-            "name":  "Mo",
+            "name": "Mo",
             "email": "m@9dev.de"
         }
     ],
+    "scripts": {
+        "post-install-cmd": "\\Pdp\\Installer::updateLocalCache",
+        "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
+    },
     "require": {
         "php": "^7.2.0",
-        "craftcms/cms": "^3.6.0-beta.1"
+        "craftcms/cms": "^3.6.0-beta.1",
+        "jeremykendall/php-domain-parser": "^5.6"
     },
     "require-dev": {
         "vlucas/phpdotenv": "^3.4",
@@ -47,7 +52,7 @@
     ],
     "autoload": {
         "psr-4": {
-          "workingconcept\\cloudflare\\": "src/"
+            "workingconcept\\cloudflare\\": "src/"
         }
     },
     "config": {
