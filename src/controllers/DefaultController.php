@@ -16,6 +16,8 @@ use Craft;
 use craft\web\Controller;
 use craft\helpers\UrlHelper;
 use yii\web\Response;
+use yii\web\BadRequestHttpException;
+use craft\errors\SiteNotFoundException;
 
 /**
  * @author    Working Concept
@@ -24,6 +26,11 @@ use yii\web\Response;
  */
 class DefaultController extends Controller
 {
+    /**
+     * Checks whether the supplied credentials can connect to the Cloudflare account.
+     * @return Response
+     * @throws BadRequestHttpException
+     */
     public function actionVerifyConnection(): Response
     {
         $this->requireAcceptsJson();
@@ -33,8 +40,7 @@ class DefaultController extends Controller
             'success' => $wasSuccessful
         ];
 
-        if ( ! $wasSuccessful)
-        {
+        if ( ! $wasSuccessful) {
             $return['errors'] = Cloudflare::$plugin->api->getConnectionErrors();
         }
 
@@ -51,12 +57,12 @@ class DefaultController extends Controller
     }
 
     /**
-     * Have Cloudflare purge URL caches passed via `urls` GET/POST parameter,
+     * Have Cloudflare purge URL caches passed via `urls` parameter,
      * a string with each item on its own line.
      *
      * @return mixed
      * @throws craft\errors\MissingComponentException without a valid session.
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionPurgeUrls()
     {
@@ -91,7 +97,7 @@ class DefaultController extends Controller
      * Purge entire Cloudflare zone cache.
      *
      * @return mixed
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionPurgeAll()
     {
@@ -109,7 +115,7 @@ class DefaultController extends Controller
      * @return mixed
      *
      * @throws craft\errors\MissingComponentException without a valid session
-     * @throws \craft\errors\SiteNotFoundException
+     * @throws SiteNotFoundException
      */
     public function actionSaveRules()
     {

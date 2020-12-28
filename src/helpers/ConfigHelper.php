@@ -16,7 +16,7 @@ use workingconcept\cloudflare\models\Settings;
 class ConfigHelper
 {
     /**
-     * Returns true if we've got the settings to make REST API calls.
+     * Returns true if we’ve got the settings to make REST API calls.
      *
      * @return bool
      */
@@ -35,7 +35,7 @@ class ConfigHelper
 
     /**
      * Returns settings needed to connect to the REST API. Checks request
-     * parameters if we're in the control panel checking unsaved settings.
+     * parameters if we’re in the control panel checking unsaved settings.
      *
      * Also parses environment variables.
      *
@@ -43,7 +43,7 @@ class ConfigHelper
      *
      * @return string|null
      */
-    public static function getParsedSetting($key)
+    public static function getParsedSetting($key): ?string
     {
         $request = Craft::$app->getRequest();
         $isConsole = Craft::$app instanceof ConsoleApplication;
@@ -60,8 +60,7 @@ class ConfigHelper
         $settingValue = $usePost ? $request->getParam($key) :
             Cloudflare::$plugin->getSettings()->{$key} ?? null;
 
-        if (self::isCraft31() && $settingValue)
-        {
+        if (self::isCraft31() && $settingValue) {
             /** @scrutinizer ignore-call */
             return Craft::parseEnv($settingValue);
         }

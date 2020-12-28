@@ -11,6 +11,7 @@
 namespace workingconcept\cloudflare\variables;
 
 use workingconcept\cloudflare\Cloudflare;
+use craft\base\Model;
 
 /**
  * @author    Working Concept
@@ -24,7 +25,7 @@ class CloudflareVariable
      *
      * @return array|null
      */
-    public function getZones()
+    public function getZones(): ?array
     {
         return Cloudflare::$plugin->api->getZones();
     }
@@ -38,10 +39,8 @@ class CloudflareVariable
     {
         $options = [];
 
-        if ($zones = $this->getZones())
-        {
-            foreach ($zones as $zone)
-            {
+        if ($zones = $this->getZones()) {
+            foreach ($zones as $zone) {
                 $options[$zone->id] = $zone->name;
             }
         }
@@ -60,7 +59,7 @@ class CloudflareVariable
     }
 
     /**
-     * @return bool|\craft\base\Model|null
+     * @return bool|Model|null
      */
     public function getSettings()
     {
