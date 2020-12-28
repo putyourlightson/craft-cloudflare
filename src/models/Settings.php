@@ -63,41 +63,6 @@ class Settings extends Model
     public $zoneName;
 
     /**
-     * Action URI to fetch zones.
-     *
-     * @var string
-     */
-    public $fetchZonesActionUri = 'cloudflare/default/fetch-zones';
-
-    /**
-     * Action URI to purge URLs.
-     *
-     * @var string
-     */
-    public $purgeUrlsActionUri = 'cloudflare/default/purge-urls';
-
-    /**
-     * Action URI to purge the entire cache.
-     *
-     * @var string
-     */
-    public $purgeAllActionUri = 'cloudflare/default/purge-all';
-
-    /**
-     * Action URI to save Craft URL triggers.
-     *
-     * @var string
-     */
-    public $saveRulesActionUri = 'cloudflare/default/save-rules';
-
-    /**
-     * Action URI to save Craft URL triggers.
-     *
-     * @var string
-     */
-    public $verifyCredentialsUri = 'cloudflare/default/verify-connection';
-
-    /**
      * Returns `true` if the Cloudflare zone ID is set in a static config file.
      *
      * @return bool
@@ -108,6 +73,8 @@ class Settings extends Model
     }
 
     /**
+     * Returns `true` if Cloudflare permissions allow listing zones.
+     *
      * @return bool
      */
     public function canListZones(): bool

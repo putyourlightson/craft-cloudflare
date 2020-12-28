@@ -14,10 +14,8 @@ use workingconcept\cloudflare\Cloudflare;
 
 use Craft;
 use craft\web\Controller;
-use craft\helpers\UrlHelper;
 use yii\web\Response;
 use yii\web\BadRequestHttpException;
-use craft\errors\SiteNotFoundException;
 
 /**
  * @author    Working Concept
@@ -28,6 +26,7 @@ class DefaultController extends Controller
 {
     /**
      * Checks whether the supplied credentials can connect to the Cloudflare account.
+     *
      * @return Response
      * @throws BadRequestHttpException
      */
@@ -49,6 +48,7 @@ class DefaultController extends Controller
 
     /**
      * Returns all available zones on the configured account.
+     *
      * @return Response
      */
     public function actionFetchZones(): Response
@@ -57,8 +57,8 @@ class DefaultController extends Controller
     }
 
     /**
-     * Have Cloudflare purge URL caches passed via `urls` parameter,
-     * a string with each item on its own line.
+     * Purges URLs passed in the `urls` parameter, whose value should be a string
+     * with each URL on its own line.
      *
      * @return mixed
      * @throws craft\errors\MissingComponentException without a valid session.
@@ -94,7 +94,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Purge entire Cloudflare zone cache.
+     * Purges entire Cloudflare zone cache.
      *
      * @return mixed
      * @throws BadRequestHttpException
@@ -107,25 +107,5 @@ class DefaultController extends Controller
         $response = Cloudflare::getInstance()->api->purgeZoneCache();
 
         return $this->asJson($response);
-    }
-
-    /**
-     * Save our Craft-URL-specific purge rules.
-     *
-     * @return mixed
-     *
-     * @throws craft\errors\MissingComponentException without a valid session
-     * @throws SiteNotFoundException
-     */
-    public function actionSaveRules()
-    {
-        Cloudflare::getInstance()->rules->saveRules();
-
-        Craft::$app->getSession()->setNotice(Craft::t(
-            'cloudflare',
-            'Cloudflare rules saved.'
-        ));
-
-        return $this->redirect(UrlHelper::cpUrl('cloudflare/rules'));
     }
 }

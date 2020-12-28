@@ -16,6 +16,7 @@ use workingconcept\cloudflare\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 use Craft;
 use craft\base\Component;
 use craft\helpers\Json;
@@ -71,6 +72,7 @@ class Api extends Component
      * Returns true if provided credentials can successfully make API calls.
      *
      * @return bool
+     * @throws GuzzleException
      */
     public function verifyConnection(): bool
     {
@@ -110,8 +112,7 @@ class Api extends Component
         } catch (RequestException $exception) {
             $reason = $this->_getExceptionReason($exception);
 
-            if (($data = Json::decode($reason, false)) && isset($data->errors))
-            {
+            if (($data = Json::decode($reason, false)) && isset($data->errors)) {
                 $this->_connectionErrors = $data->errors;
             }
 
@@ -125,6 +126,8 @@ class Api extends Component
     }
 
     /**
+     * Returns an array of connection errors.
+     *
      * @return array
      */
     public function getConnectionErrors(): array
@@ -133,7 +136,10 @@ class Api extends Component
     }
 
     /**
+     * Returns `true` if we’re able to list available zones.
+     *
      * @return bool
+     * @throws GuzzleException
      */
     public function canListZones(): bool
     {
@@ -153,6 +159,7 @@ class Api extends Component
      * https://api.cloudflare.com/#zone-list-zones
      *
      * @return array|null zones from response.result (combined if there was pagination)
+     * @throws GuzzleException
      */
     public function getZones(): ?array
     {
@@ -192,6 +199,7 @@ class Api extends Component
      *
      * @param string $zoneId
      * @return object|null
+     * @throws GuzzleException
      */
     public function getZoneById(string $zoneId): ?object
     {
@@ -214,9 +222,7 @@ class Api extends Component
 
                 return null;
             }
-        }
-        catch(RequestException $exception)
-        {
+        } catch(RequestException $exception) {
             Craft::info(sprintf(
                     'Zone request failed: %s',
                     $this->_getExceptionReason($exception)
@@ -241,6 +247,7 @@ class Api extends Component
      * https://api.cloudflare.com/#zone-purge-all-files
      *
      * @return object|null Cloudflare’s response
+     * @throws GuzzleException
      */
     public function purgeZoneCache()
     {
@@ -286,9 +293,10 @@ class Api extends Component
      * Clear specific URLs in Cloudflare’s cache.
      * https://api.cloudflare.com/#zone-purge-individual-files-by-url-and-cache-tags
      *
-     * @param  array  $urls  array of absolute URLs
+     * @param array $urls array of absolute URLs
      *
      * @return mixed|null  API response data or null
+     * @throws GuzzleException
      */
     public function purgeUrls(array $urls = [])
     {
@@ -398,6 +406,7 @@ class Api extends Component
      * @param int $perPage
      *
      * @return \stdClass|null
+     * @throws GuzzleException
      */
     private function _getPagedZones($page = 1, $perPage = 50)
     {

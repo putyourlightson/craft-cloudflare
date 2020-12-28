@@ -5,7 +5,7 @@
 
 {% block content %}
 
-    <form action="{{ actionUrl(craft.cloudflare.settings.saveRulesActionUri) }}" method="post">
+    <form action="{{ actionUrl('cloudflare/rules/save') }}" method="post">
         {{ csrfInput() }}
         {{ forms.editableTableField({
             first: true,

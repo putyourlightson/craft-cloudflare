@@ -16,10 +16,10 @@
         purgeAllSucceeded: "{{ 'Successfully purged zone.'|t('cloudflare') }}"
     },
     actions: {
-        verifyCredentials: "{{ settings.verifyCredentialsUri }}",
-        fetchZones: "{{ settings.fetchZonesActionUri }}",
-        purgeUrls: "{{ settings.purgeUrlsActionUri }}",
-        purgeAll: "{{ settings.purgeAllActionUri }}"
+        verifyCredentials: "cloudflare/default/verify-connection",
+        fetchZones: "cloudflare/default/fetch-zones",
+        purgeUrls: "cloudflare/default/purge-urls",
+        purgeAll: "cloudflare/default/purge-all"
     }
 };
 {% endset %}
@@ -187,7 +187,7 @@
 
         <hr>
 
-        <a href="{{ actionUrl(settings.purgeAllActionUri) }}" class="btn submit" id="purge-all">
+        <a href="{{ actionUrl('cloudflare/default/purge-all') }}" class="btn submit" id="purge-all">
             {{- 'Purge Cloudflare Cache'|t('cloudflare') -}}
         </a>
     {% endif %}
