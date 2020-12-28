@@ -29,7 +29,7 @@ modules:
       projectConfig: {}
       migrations: []
       plugins:
-        snipcart:
+        cloudflare:
           class: '\workingconcept\cloudflare\Cloudflare'
           handle: cloudflare
       cleanup: true
