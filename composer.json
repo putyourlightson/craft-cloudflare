@@ -30,9 +30,8 @@
         "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
     },
     "require": {
-        "php": "^7.0.0",
-        "craftcms/cms": "^3.0.0",
-        "ext-json": "*",
+        "php": "^7.2.0",
+        "craftcms/cms": "^3.6.0"
         "jeremykendall/php-domain-parser": "^5.6"
     },
     "repositories": [
