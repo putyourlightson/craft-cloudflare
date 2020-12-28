@@ -36,6 +36,6 @@ class RulesController extends Controller
             'Cloudflare rules saved.'
         ));
 
-        return $this->redirect(UrlHelper::cpUrl('cloudflare/rules'));
+        return $this->redirect(UrlHelper::cpUrl('utilities/cloudflare-purge'));
     }
 }

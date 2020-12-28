@@ -1,0 +1,77 @@
+{% import "_includes/forms" as forms %}
+
+<h2>{{ 'Purge Cloudflare Caches'|t }}</h2>
+
+{% set extraJs %}window.__CLOUDFLARE_PLUGIN = {
+    messages: {
+        purgeUrlsFailed: "{{ 'Could not purge URLs.'|t('cloudflare') }}",
+        purgeUrlsSucceeded: "{{ 'Successfully purged URLs.'|t('cloudflare') }}",
+        purgeAllFailed: "{{ 'Could not purge zone.'|t('cloudflare') }}",
+        purgeAllSucceeded: "{{ 'Successfully purged zone.'|t('cloudflare') }}"
+    },
+    actions: {
+        purgeUrls: "cloudflare/default/purge-urls",
+        purgeAll: "cloudflare/default/purge-all"
+    }
+    };
+{% endset %}
+{# @formatter:on #}
+
+{% js extraJs %}
+{% do view.registerAssetBundle("workingconcept\\cloudflare\\assetbundles\\CloudflareAsset") %}
+
+{{ forms.textareaField( {
+    label: 'Purge Individual URLs'|t('cloudflare'),
+    id: 'settings-urls',
+    required: false,
+    name: 'urls',
+    autofocus: true,
+    errors: settings.getErrors('urls'),
+    instructions: 'Add complete URLs, each on its own line, that you’d like to purge from Cloudflare’s cache.'|t('cloudflare')
+} ) }}
+
+<a class="btn submit" id="settings-purge-urls">
+    {{- 'Purge URLs'|t('cloudflare') -}}
+</a>
+
+<hr>
+
+<div class="field">
+    <div class="heading" style="margin-bottom: 1rem;">
+        {{ tag('label', {
+            html: 'Purge Zone',
+        }) }}
+
+        {{ tag('div', {
+            class: ['instructions'],
+            html: 'Purge the entire zone for this site.'|md('gfm-comment')|replace('/&amp;(\\w+);/', '&$1;'),
+        }) }}
+    </div>
+
+    <a href="{{ actionUrl('cloudflare/default/purge-all') }}" class="btn submit" id="settings-purge-all">
+        {{- 'Purge Cloudflare Cache'|t('cloudflare') -}}
+    </a>
+</div>
+
+<hr>
+
+<form action="{{ actionUrl('cloudflare/rules/save') }}" method="post">
+    {{ csrfInput() }}
+    {{ forms.editableTableField({
+        first: true,
+        label: 'Cache Clearing Rules'|t,
+        id: 'rules',
+        name: 'rules',
+        value: '',
+        addRowLabel: 'Add Rule',
+        cols: {
+            0: { heading: 'URL Trigger Pattern', type: 'singleline' },
+            1: { heading: 'Clear URLs (one per line)', type: 'multiline' },
+        },
+        rows: craft.cloudflare.getRulesForTable,
+        errors: '',
+        instructions: "Specify URI patterns on the left (can include `*`, like `blog/*`) that, when updated, will clear the URLs listed on the right (like `blog`). Right cannot use wildcards, but can be relative."
+    }) }}
+
+    <input type="submit" class="btn submit" value="{{ 'Save Rules'|t }}">
+</form>

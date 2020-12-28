@@ -29,7 +29,6 @@ Feature requests and pull requests welcome! Please just mind your formatting and
 
 - Extensive production testing.
 - Handle bulk Element operations efficiently. (There could be a lot of Cloudflare requests.)
-- Give rules and non-widget cache-clearing tools a proper home.
 - See if it’s possible to dig deeper into how Craft clears its own caches and mirror the approach so we rely less on manually-specified rules.
 
 ---

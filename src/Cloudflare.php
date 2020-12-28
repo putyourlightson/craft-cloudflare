@@ -13,6 +13,7 @@ namespace workingconcept\cloudflare;
 use workingconcept\cloudflare\helpers\ConfigHelper;
 use workingconcept\cloudflare\services\Api;
 use workingconcept\cloudflare\services\Rules;
+use workingconcept\cloudflare\utilities\PurgeUtility;
 use workingconcept\cloudflare\variables\CloudflareVariable;
 use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
@@ -26,9 +27,12 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\ElementEvent;
 use craft\services\Elements;
+use craft\base\ElementInterface;
 use craft\helpers\UrlHelper;
+use craft\services\Utilities;
 use yii\base\Event;
 use yii\base\Exception;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Class Cloudflare
@@ -86,15 +90,6 @@ class Cloudflare extends Plugin
             'rules' => Rules::class
         ]);
 
-        // register the widget
-        Event::on(
-            Dashboard::class,
-            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            static function (RegisterComponentTypesEvent $event) {
-                $event->types[] = QuickPurgeWidget::class;
-            }
-        );
-
         // register the variable
         Event::on(
             CraftVariable::class,
@@ -107,6 +102,24 @@ class Cloudflare extends Plugin
         );
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
+            // register the widget
+            Event::on(
+                Dashboard::class,
+                Dashboard::EVENT_REGISTER_WIDGET_TYPES,
+                static function (RegisterComponentTypesEvent $event) {
+                    $event->types[] = QuickPurgeWidget::class;
+                }
+            );
+
+            // register the utility
+            Event::on(
+                Utilities::class,
+                Utilities::EVENT_REGISTER_UTILITY_TYPES,
+                function(RegisterComponentTypesEvent $event) {
+                    $event->types[] = PurgeUtility::class;
+                }
+            );
+
             // register the actions
             Event::on(
                 UrlManager::class,
@@ -164,6 +177,7 @@ class Cloudflare extends Plugin
      * Store the selected Cloudflare Zone's base URL for later comparison.
      *
      * @return bool
+     * @throws GuzzleException
      */
     public function beforeSaveSettings(): bool
     {
@@ -278,15 +292,13 @@ class Cloudflare extends Plugin
 
     /**
      * @param bool $isNew
-     * @param \craft\base\ElementInterface|null $element
+     * @param ElementInterface|null $element
      *
-     * @throws Exception
+     * @throws Exception|GuzzleException
      */
     private function _handleElementChange(bool $isNew, $element): void
     {
-        /**
-         * Bail if we don't have an Element or an Element URL to work with.
-         */
+        // bail if we don’t have an Element or an Element URL to work with
         if ($element === null || $element->getUrl() === null) {
             return;
         }

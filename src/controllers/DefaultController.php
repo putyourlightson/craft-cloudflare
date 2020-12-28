@@ -11,11 +11,11 @@
 namespace workingconcept\cloudflare\controllers;
 
 use workingconcept\cloudflare\Cloudflare;
-
 use Craft;
 use craft\web\Controller;
 use yii\web\Response;
 use yii\web\BadRequestHttpException;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * @author    Working Concept
@@ -28,7 +28,7 @@ class DefaultController extends Controller
      * Checks whether the supplied credentials can connect to the Cloudflare account.
      *
      * @return Response
-     * @throws BadRequestHttpException
+     * @throws BadRequestHttpException|GuzzleException
      */
     public function actionVerifyConnection(): Response
     {
@@ -50,6 +50,7 @@ class DefaultController extends Controller
      * Returns all available zones on the configured account.
      *
      * @return Response
+     * @throws GuzzleException
      */
     public function actionFetchZones(): Response
     {
@@ -62,7 +63,7 @@ class DefaultController extends Controller
      *
      * @return mixed
      * @throws craft\errors\MissingComponentException without a valid session.
-     * @throws BadRequestHttpException
+     * @throws BadRequestHttpException|GuzzleException
      */
     public function actionPurgeUrls()
     {
@@ -97,7 +98,7 @@ class DefaultController extends Controller
      * Purges entire Cloudflare zone cache.
      *
      * @return mixed
-     * @throws BadRequestHttpException
+     * @throws BadRequestHttpException|GuzzleException
      */
     public function actionPurgeAll()
     {

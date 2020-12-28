@@ -4,22 +4,15 @@
 {##
 # The __CLOUDFLARE_PLUGIN object is an ugly bridge from Twig to the JavaScript code, since currently there is no way
 # to translate text on the clientside. Therefore, all messages are passed to a global object.
-# Additionally, the action URLs are fetched from the plugin settings so they can be modified with a single change.
 #}
 {% set extraJs %}window.__CLOUDFLARE_PLUGIN = {
     messages: {
         credentialVerificationFailed: "{{ 'Could not verify API credentials.'|t('cloudflare') }}",
         credentialsMissing: "{{ 'Please enter required API credentials.'|t('cloudflare') }}",
-        purgeUrlsFailed: "{{ 'Could not purge URLs.'|t('cloudflare') }}",
-        purgeUrlsSucceeded: "{{ 'Successfully purged URLs.'|t('cloudflare') }}",
-        purgeAllFailed: "{{ 'Could not purge zone.'|t('cloudflare') }}",
-        purgeAllSucceeded: "{{ 'Successfully purged zone.'|t('cloudflare') }}"
     },
     actions: {
         verifyCredentials: "cloudflare/default/verify-connection",
         fetchZones: "cloudflare/default/fetch-zones",
-        purgeUrls: "cloudflare/default/purge-urls",
-        purgeAll: "cloudflare/default/purge-all"
     }
 };
 {% endset %}
@@ -167,28 +160,4 @@
         values: settings.purgeElements,
         instructions: "Select elements whose URLs should automatically be purged when they’re updated."|t('cloudflare')
     }) }}
-
-    {% if isConfigured %}
-        <hr>
-
-        {{ forms.textareaField( {
-            label: 'Purge Individual URLs'|t('cloudflare'),
-            id: 'urls',
-            required: false,
-            name: 'urls',
-            autofocus: true,
-            errors: settings.getErrors('urls'),
-            instructions: 'Add complete URLs, each on its own line, that you’d like to purge from Cloudflare’s cache.'|t('cloudflare')
-        } ) }}
-
-        <a class="btn submit" id="purge-urls">
-            {{- 'Purge URLs'|t('cloudflare') -}}
-        </a>
-
-        <hr>
-
-        <a href="{{ actionUrl('cloudflare/default/purge-all') }}" class="btn submit" id="purge-all">
-            {{- 'Purge Cloudflare Cache'|t('cloudflare') -}}
-        </a>
-    {% endif %}
 </div>
