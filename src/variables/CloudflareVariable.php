@@ -27,7 +27,7 @@ class CloudflareVariable
      */
     public function getZones(): ?array
     {
-        return Cloudflare::$plugin->api->getZones();
+        return Cloudflare::getInstance()->api->getZones();
     }
 
     /**
@@ -55,7 +55,7 @@ class CloudflareVariable
      */
     public function getRulesForTable(): array
     {
-        return Cloudflare::$plugin->rules->getRulesForTable();
+        return Cloudflare::getInstance()->rules->getRulesForTable();
     }
 
     /**
@@ -63,6 +63,6 @@ class CloudflareVariable
      */
     public function getSettings()
     {
-        return Cloudflare::$plugin->getSettings();
+        return Cloudflare::getInstance()->getSettings();
     }
 }

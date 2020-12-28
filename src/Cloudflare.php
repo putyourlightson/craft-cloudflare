@@ -43,11 +43,6 @@ use yii\base\Exception;
 class Cloudflare extends Plugin
 {
     /**
-     * @var Cloudflare
-     */
-    public static $plugin;
-
-    /**
      * @var array
      */
     public static $supportedElementTypes = [
@@ -85,7 +80,6 @@ class Cloudflare extends Plugin
     public function init(): void
     {
         parent::init();
-        self::$plugin = $this;
 
         $this->setComponents([
             'api'   => Api::class,

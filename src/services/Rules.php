@@ -108,7 +108,7 @@ class Rules extends Component
             );
         }
 
-        Cloudflare::$plugin->api->purgeUrls($urlsToPurge);
+        Cloudflare::getInstance()->api->purgeUrls($urlsToPurge);
     }
 
     /**

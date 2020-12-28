@@ -112,7 +112,7 @@ class Settings extends Model
      */
     public function canListZones(): bool
     {
-        return Cloudflare::$plugin->api->canListZones();
+        return Cloudflare::getInstance()->api->canListZones();
     }
 
     /**
