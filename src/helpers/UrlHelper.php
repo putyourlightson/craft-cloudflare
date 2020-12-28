@@ -22,7 +22,7 @@ class UrlHelper
      */
     public static function prepUrls($urls = []): array
     {
-        $cfDomainName = Cloudflare::$plugin->getSettings()->zoneName;
+        $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
 
         /**
@@ -47,7 +47,7 @@ class UrlHelper
      */
     public static function isPurgeableUrl(string $url, bool $includeZoneCheck): bool
     {
-        $cfDomainName = Cloudflare::$plugin->getSettings()->zoneName;
+        $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
 
         /**
          * Provided string is a valid URL.
@@ -62,11 +62,10 @@ class UrlHelper
         }
 
         /**
-         * If we've stored the zone name (FQDN) locally, make sure the URL
+         * If we’ve stored the zone name (FQDN) locally, make sure the URL
          * uses it since it otherwise won't be cleared.
          */
-        if ($includeZoneCheck)
-        {
+        if ($includeZoneCheck) {
             if ( ! $urlDomain = self::getBaseDomainFromUrl($url)) {
                 // bail if we couldn't even get a base domain
                 return false;

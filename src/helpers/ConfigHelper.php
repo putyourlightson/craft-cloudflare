@@ -58,7 +58,7 @@ class ConfigHelper
             is_string($request->getParam($key));
 
         $settingValue = $usePost ? $request->getParam($key) :
-            Cloudflare::$plugin->getSettings()->{$key} ?? null;
+            Cloudflare::getInstance()->getSettings()->{$key} ?? null;
 
         if (self::isCraft31() && $settingValue) {
             /** @scrutinizer ignore-call */

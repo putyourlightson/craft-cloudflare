@@ -35,13 +35,13 @@ class DefaultController extends Controller
     {
         $this->requireAcceptsJson();
 
-        $wasSuccessful = Cloudflare::$plugin->api->verifyConnection();
+        $wasSuccessful = Cloudflare::getInstance()->api->verifyConnection();
         $return = [
             'success' => $wasSuccessful
         ];
 
         if ( ! $wasSuccessful) {
-            $return['errors'] = Cloudflare::$plugin->api->getConnectionErrors();
+            $return['errors'] = Cloudflare::getInstance()->api->getConnectionErrors();
         }
 
         return $this->asJson($return);
@@ -53,7 +53,7 @@ class DefaultController extends Controller
      */
     public function actionFetchZones(): Response
     {
-        return $this->asJson(Cloudflare::$plugin->api->getZones());
+        return $this->asJson(Cloudflare::getInstance()->api->getZones());
     }
 
     /**
@@ -88,7 +88,7 @@ class DefaultController extends Controller
 
         // split lines into array items
         $urls = explode("\n", $urls);
-        $response = Cloudflare::$plugin->api->purgeUrls($urls);
+        $response = Cloudflare::getInstance()->api->purgeUrls($urls);
 
         return $this->asJson($response);
     }
@@ -104,7 +104,7 @@ class DefaultController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $response = Cloudflare::$plugin->api->purgeZoneCache();
+        $response = Cloudflare::getInstance()->api->purgeZoneCache();
 
         return $this->asJson($response);
     }
@@ -119,7 +119,7 @@ class DefaultController extends Controller
      */
     public function actionSaveRules()
     {
-        Cloudflare::$plugin->rules->saveRules();
+        Cloudflare::getInstance()->rules->saveRules();
 
         Craft::$app->getSession()->setNotice(Craft::t(
             'cloudflare',

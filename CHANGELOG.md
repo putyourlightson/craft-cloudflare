@@ -4,6 +4,9 @@
 ### Fixed
 - Added support for multi-level domain suffixes. ([#22](https://github.com/workingconcept/cloudflare-craft-plugin/issues/22)) 
 
+### Removed
+- Removed static `$plugin` variable. Replace instances of `Cloudflare::$plugin` with `Cloudflare::getInstance()`.
+
 ## 0.6.0 - 2020-10-24
 ### Fixed
 - Fixed PSR-4 namespacing for Composer 2.

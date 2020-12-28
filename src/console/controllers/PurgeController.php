@@ -32,7 +32,7 @@ class PurgeController extends Controller
             sprintf('Purging %d %s...', $urlCount, $urlWord) . PHP_EOL
         );
 
-        $response = Cloudflare::$plugin->api->purgeUrls($urls);
+        $response = Cloudflare::getInstance()->api->purgeUrls($urls);
 
         return $this->_handleResult($response);
     }
@@ -45,7 +45,7 @@ class PurgeController extends Controller
     {
         $this->stdout('Purging Cloudflare zone...' . PHP_EOL);
 
-        $response = Cloudflare::$plugin->api->purgeZoneCache();
+        $response = Cloudflare::getInstance()->api->purgeZoneCache();
 
         return $this->_handleResult($response);
     }
