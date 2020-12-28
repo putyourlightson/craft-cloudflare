@@ -26,8 +26,8 @@
         }
     ],
     "require": {
-        "php": "^7.0.0",
-        "craftcms/cms": "^3.0.0"
+        "php": "^7.2.0",
+        "craftcms/cms": "^3.6.0"
     },
     "repositories": [
         {
