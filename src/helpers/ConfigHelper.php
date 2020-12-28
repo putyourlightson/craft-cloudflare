@@ -49,7 +49,7 @@ class ConfigHelper
         $isConsole = Craft::$app instanceof ConsoleApplication;
 
         /**
-         * Check post params if we're in the control panel, where we use AJAX
+         * Check post params if we’re in the control panel, where we use AJAX
          * for initially checking new parameters.
          */
         $usePost = ! $isConsole &&

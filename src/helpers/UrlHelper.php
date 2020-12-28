@@ -25,14 +25,16 @@ class UrlHelper
         $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
 
-        /**
-         * First trim leading+trailing whitespace, just in case.
-         */
+        // trim leading+trailing whitespace
         $urls = array_map('trim', $urls);
 
-        return array_filter($urls, static function($url) use ($includeZoneCheck) {
+        // limit to URLs that can be purged
+        $urls = array_filter($urls, static function($url) use ($includeZoneCheck) {
             return self::isPurgeableUrl($url, $includeZoneCheck);
         });
+
+        // return without duplicates
+        return array_values(array_unique($urls));
     }
 
     /**
@@ -89,7 +91,7 @@ class UrlHelper
      * from the given URL.
      *
      * @param string $url
-     * @return bool|string `false` if the URL's host can't be parsed
+     * @return bool|string `false` if the URL’s host can’t be parsed
      */
     public static function getBaseDomainFromUrl(string $url)
     {
@@ -98,8 +100,7 @@ class UrlHelper
         $manager->refreshRules();
         $rules = $manager->getRules();
         $domain = $rules->resolve($host);
-        $registrableDomain = $domain->getRegistrableDomain();
 
-        return $registrableDomain;
+        return $domain->getRegistrableDomain();
     }
 }

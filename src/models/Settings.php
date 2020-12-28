@@ -40,7 +40,7 @@ class Settings extends Model
     public $apiToken = '';
 
     /**
-     * @var string  This site's related Cloudflare Zone ID.
+     * @var string  This site’s related Cloudflare Zone ID.
      */
     public $zone = '';
 
