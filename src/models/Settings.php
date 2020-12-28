@@ -12,12 +12,12 @@ class Settings extends Model
      * REST API calls will be authenticated using older X-Auth-Key and
      * X-Auth-Email headers.
      */
-    const AUTH_TYPE_KEY = 'key';
+    public const AUTH_TYPE_KEY = 'key';
 
     /**
      * REST API calls will be authenticated using a bearer token.
      */
-    const AUTH_TYPE_TOKEN = 'token';
+    public const AUTH_TYPE_TOKEN = 'token';
 
     /**
      * @var string  Type of API authentication to use.

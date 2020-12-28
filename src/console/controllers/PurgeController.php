@@ -26,9 +26,11 @@ class PurgeController extends Controller
     public function actionPurgeUrls(array $urls): int
     {
         $urlCount = count($urls);
-        $plural = $urlCount == 1 ? '' : 's';
+        $urlWord = $urlCount === 1 ? 'URL' : 'URLs';
 
-        $this->stdout("Purging {$urlCount} URL{$plural}..." . PHP_EOL);
+        $this->stdout(
+            sprintf('Purging %d %s...', $urlCount, $urlWord) . PHP_EOL
+        );
 
         $response = Cloudflare::$plugin->api->purgeUrls($urls);
 
@@ -49,34 +51,31 @@ class PurgeController extends Controller
     }
 
     /**
-     * Handle Cloudflare's API response for console output.
+     * Handle Cloudflare’s API response for console output.
      *
      * @param $response
      * @return int
      */
     private function _handleResult($response): int
     {
-        if ($response === null)
-        {
+        if ($response === null) {
             $this->stdout('✗ Cloudflare plugin not configured' . PHP_EOL);
             return ExitCode::CONFIG;
         }
 
-        if (isset($response->success))
-        {
-            if ($response->success)
-            {
+        if (isset($response->success)) {
+            if ($response->success) {
                 $this->stdout('✓ success' . PHP_EOL);
                 return ExitCode::OK;
             }
 
             $this->stdout('✗ purge failed' . PHP_EOL);
 
-            if (isset($response->errors))
-            {
-                foreach($response->errors as $error)
-                {
-                    $this->stdout("- $error->code: $error->message" . PHP_EOL);
+            if (isset($response->errors)) {
+                foreach($response->errors as $error) {
+                    $this->stdout(
+                        sprintf('- %s: %s', $error->code, $error->message) . PHP_EOL
+                    );
                 }
             }
 

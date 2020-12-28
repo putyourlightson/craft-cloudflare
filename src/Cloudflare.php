@@ -16,7 +16,6 @@ use workingconcept\cloudflare\services\Rules;
 use workingconcept\cloudflare\variables\CloudflareVariable;
 use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
-
 use Craft;
 use craft\console\Application as ConsoleApplication;
 use craft\base\Plugin;
@@ -29,6 +28,7 @@ use craft\events\ElementEvent;
 use craft\services\Elements;
 use craft\helpers\UrlHelper;
 use yii\base\Event;
+use yii\base\Exception;
 
 /**
  * Class Cloudflare
@@ -82,7 +82,7 @@ class Cloudflare extends Plugin
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         self::$plugin = $this;
@@ -112,8 +112,7 @@ class Cloudflare extends Plugin
             }
         );
 
-        if (Craft::$app->getRequest()->getIsCpRequest())
-        {
+        if (Craft::$app->getRequest()->getIsCpRequest()) {
             // register the actions
             Event::on(
                 UrlManager::class,
@@ -129,8 +128,7 @@ class Cloudflare extends Plugin
         if (
             ConfigHelper::isConfigured() &&
             ! empty($this->getSettings()->purgeElements)
-        )
-        {
+        ) {
             Event::on(
                 Elements::class,
                 Elements::EVENT_AFTER_SAVE_ELEMENT,
@@ -154,8 +152,7 @@ class Cloudflare extends Plugin
             );
         }
 
-        if (Craft::$app instanceof ConsoleApplication)
-        {
+        if (Craft::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'workingconcept\cloudflare\console\controllers';
         }
 
@@ -176,26 +173,24 @@ class Cloudflare extends Plugin
      */
     public function beforeSaveSettings(): bool
     {
+        /** @var Settings $settings */
         $settings = $this->getSettings();
 
         // save the human-friendly zone name if we have one
         if ($zoneInfo = $this->api->getZoneById(
             ConfigHelper::getParsedSetting('zone')
-        ))
-        {
+        )) {
             $settings->zoneName = $zoneInfo->name;
         }
 
-        // don't save stale key credentials
-        if ($settings->authType === Settings::AUTH_TYPE_TOKEN)
-        {
+        // don’t save stale key credentials
+        if ($settings->authType === Settings::AUTH_TYPE_TOKEN) {
             $settings->apiKey = null;
             $settings->email = null;
         }
 
-        // don't save stale token
-        if ($settings->authType === Settings::AUTH_TYPE_KEY)
-        {
+        // don’t save stale token
+        if ($settings->authType === Settings::AUTH_TYPE_KEY) {
             $settings->apiToken = null;
         }
 
@@ -238,11 +233,9 @@ class Cloudflare extends Plugin
         $service = Craft::$app->getElements();
         $elementTypes = $service->getAllElementTypes();
 
-        foreach ($elementTypes as $elementType)
-        {
+        foreach ($elementTypes as $elementType) {
             // only make the option available if we support it
-            if ($this->_isSupportedElementType($elementType))
-            {
+            if ($this->_isSupportedElementType($elementType)) {
                 $options[$elementType] = $elementType::pluralDisplayName();
             }
         }
@@ -258,7 +251,7 @@ class Cloudflare extends Plugin
      *
      * @return bool
      */
-    private function _isSupportedElementType($elementType): bool
+    private function _isSupportedElementType(string $elementType): bool
     {
         $elementType = ConfigHelper::normalizeClassName($elementType);
         
@@ -275,16 +268,14 @@ class Cloudflare extends Plugin
      */
     private function _shouldPurgeElementType($elementType): bool
     {
-        if ( ! $this->_isSupportedElementType($elementType))
-        {
+        if ( ! $this->_isSupportedElementType($elementType)) {
             return false;
         }
 
         $elementType = ConfigHelper::normalizeClassName($elementType);
         $purgeElements = $this->getSettings()->purgeElements;
 
-        if (empty($purgeElements) || ! is_array($purgeElements))
-        {
+        if (empty($purgeElements) || ! is_array($purgeElements)) {
             return false;
         }
 
@@ -295,29 +286,26 @@ class Cloudflare extends Plugin
      * @param bool $isNew
      * @param \craft\base\ElementInterface|null $element
      *
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
-    private function _handleElementChange(bool $isNew, $element)
+    private function _handleElementChange(bool $isNew, $element): void
     {
         /**
          * Bail if we don't have an Element or an Element URL to work with.
          */
-        if ($element === null || $element->getUrl() === null)
-        {
+        if ($element === null || $element->getUrl() === null) {
             return;
         }
 
         $className = get_class($element);
 
-        if (! $isNew && $this->_shouldPurgeElementType($className))
-        {
+        if (! $isNew && $this->_shouldPurgeElementType($className)) {
             $elementUrl = $element->getUrl();
 
             /**
              * Try making relative URLs absolute.
              */
-            if (strpos($elementUrl, '//') === false)
-            {
+            if (strpos($elementUrl, '//') === false) {
                 $elementUrl = UrlHelper::siteUrl($elementUrl);
             }
 

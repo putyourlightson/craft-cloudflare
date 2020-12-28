@@ -3,7 +3,6 @@
 namespace workingconcept\cloudflare\migrations;
 
 use Craft;
-use workingconcept\cloudflare\Cloudflare;
 use craft\db\Migration;
 
 /**
@@ -14,9 +13,10 @@ class m200307_232253_purge_element_settings extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->_resaveSettings();
+        return true;
     }
 
     /**
@@ -32,7 +32,7 @@ class m200307_232253_purge_element_settings extends Migration
      * Moves previous `purgeEntryUrls` and `purgeAssetUrls` settings to
      * new `purgeElements` array.
      */
-    private function _resaveSettings()
+    private function _resaveSettings(): void
     {
         $projectConfig = Craft::$app->getProjectConfig();
         $settings = $projectConfig->get('plugins.cloudflare.settings');

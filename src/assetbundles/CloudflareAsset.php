@@ -23,15 +23,11 @@ class CloudflareAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
-        $this->sourcePath
-            = "@workingconcept/cloudflare/assetbundles/dist";
+        $this->sourcePath = "@workingconcept/cloudflare/assetbundles/dist";
 
-        $this->depends = [
-            CpAsset::class,
-        ];
-
+        $this->depends = [ CpAsset::class ];
         $this->js = [ 'js/cp.js' ];
         $this->css = [ 'css/cp.css' ];
 

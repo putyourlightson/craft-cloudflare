@@ -11,6 +11,7 @@
 namespace workingconcept\cloudflare\records;
 
 use craft\db\ActiveRecord;
+use workingconcept\cloudflare\db\Table;
 
 /**
  * @author    Working Concept
@@ -31,6 +32,6 @@ class RuleRecord extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return '{{%cloudflare_rules}}';
+        return Table::RULES;
     }
 }

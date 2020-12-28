@@ -21,7 +21,7 @@ class UrlHelper
      */
     public static function prepUrls($urls = []): array
     {
-        $cfDomainName     = Cloudflare::$plugin->getSettings()->zoneName;
+        $cfDomainName = Cloudflare::$plugin->getSettings()->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
 
         /**
@@ -44,15 +44,14 @@ class UrlHelper
      *
      * @return bool `true` if the URL is worth sending to Cloudflare
      */
-    public static function isPurgeableUrl($url, $includeZoneCheck): bool
+    public static function isPurgeableUrl(string $url, bool $includeZoneCheck): bool
     {
         $cfDomainName = Cloudflare::$plugin->getSettings()->zoneName;
 
         /**
          * Provided string is a valid URL.
          */
-        if (filter_var($url, FILTER_VALIDATE_URL) === false)
-        {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             Craft::info(
                 sprintf('Ignoring invalid URL: %s', $url),
                 'cloudflare'
@@ -67,14 +66,12 @@ class UrlHelper
          */
         if ($includeZoneCheck)
         {
-            if ( ! $urlDomain = self::getBaseDomainFromUrl($url))
-            {
+            if ( ! $urlDomain = self::getBaseDomainFromUrl($url)) {
                 // bail if we couldn't even get a base domain
                 return false;
             }
 
-            if (strtolower($urlDomain) !== strtolower($cfDomainName))
-            {
+            if (strtolower($urlDomain) !== strtolower($cfDomainName)) {
                 Craft::info(
                     sprintf('Ignoring URL outside zone: %s', $url),
                     'cloudflare'
@@ -94,15 +91,14 @@ class UrlHelper
      * @param string $url
      * @return bool|string `false` if the URL's host can't be parsed
      */
-    public static function getBaseDomainFromUrl($url)
+    public static function getBaseDomainFromUrl(string $url)
     {
         $host = parse_url($url, PHP_URL_HOST);
 
         $parts = explode('.', $host);
         $numParts = count($parts);
 
-        if ($numParts < 2)
-        {
+        if ($numParts < 2) {
             return false;
         }
 
