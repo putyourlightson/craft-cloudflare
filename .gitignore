@@ -31,3 +31,4 @@
 config.codekit3
 prepros-6.config
 composer.lock
+/tests/_craft/config/project
