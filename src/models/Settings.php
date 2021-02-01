@@ -12,12 +12,12 @@ class Settings extends Model
      * REST API calls will be authenticated using older X-Auth-Key and
      * X-Auth-Email headers.
      */
-    const AUTH_TYPE_KEY = 'key';
+    public const AUTH_TYPE_KEY = 'key';
 
     /**
      * REST API calls will be authenticated using a bearer token.
      */
-    const AUTH_TYPE_TOKEN = 'token';
+    public const AUTH_TYPE_TOKEN = 'token';
 
     /**
      * @var string  Type of API authentication to use.
@@ -40,7 +40,7 @@ class Settings extends Model
     public $apiToken = '';
 
     /**
-     * @var string  This site's related Cloudflare Zone ID.
+     * @var string  This site’s related Cloudflare Zone ID.
      */
     public $zone = '';
 
@@ -63,41 +63,6 @@ class Settings extends Model
     public $zoneName;
 
     /**
-     * Action URI to fetch zones.
-     *
-     * @var string
-     */
-    public $fetchZonesActionUri = 'cloudflare/default/fetch-zones';
-
-    /**
-     * Action URI to purge URLs.
-     *
-     * @var string
-     */
-    public $purgeUrlsActionUri = 'cloudflare/default/purge-urls';
-
-    /**
-     * Action URI to purge the entire cache.
-     *
-     * @var string
-     */
-    public $purgeAllActionUri = 'cloudflare/default/purge-all';
-
-    /**
-     * Action URI to save Craft URL triggers.
-     *
-     * @var string
-     */
-    public $saveRulesActionUri = 'cloudflare/default/save-rules';
-
-    /**
-     * Action URI to save Craft URL triggers.
-     *
-     * @var string
-     */
-    public $verifyCredentialsUri = 'cloudflare/default/verify-connection';
-
-    /**
      * Returns `true` if the Cloudflare zone ID is set in a static config file.
      *
      * @return bool
@@ -108,11 +73,13 @@ class Settings extends Model
     }
 
     /**
+     * Returns `true` if Cloudflare permissions allow listing zones.
+     *
      * @return bool
      */
     public function canListZones(): bool
     {
-        return Cloudflare::$plugin->api->canListZones();
+        return Cloudflare::getInstance()->api->canListZones();
     }
 
     /**

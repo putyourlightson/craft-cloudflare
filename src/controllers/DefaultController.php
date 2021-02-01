@@ -11,11 +11,11 @@
 namespace workingconcept\cloudflare\controllers;
 
 use workingconcept\cloudflare\Cloudflare;
-
 use Craft;
 use craft\web\Controller;
-use craft\helpers\UrlHelper;
 use yii\web\Response;
+use yii\web\BadRequestHttpException;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * @author    Working Concept
@@ -24,18 +24,23 @@ use yii\web\Response;
  */
 class DefaultController extends Controller
 {
+    /**
+     * Checks whether the supplied credentials can connect to the Cloudflare account.
+     *
+     * @return Response
+     * @throws BadRequestHttpException|GuzzleException
+     */
     public function actionVerifyConnection(): Response
     {
         $this->requireAcceptsJson();
 
-        $wasSuccessful = Cloudflare::$plugin->api->verifyConnection();
+        $wasSuccessful = Cloudflare::getInstance()->api->verifyConnection();
         $return = [
             'success' => $wasSuccessful
         ];
 
-        if ( ! $wasSuccessful)
-        {
-            $return['errors'] = Cloudflare::$plugin->api->getConnectionErrors();
+        if ( ! $wasSuccessful) {
+            $return['errors'] = Cloudflare::getInstance()->api->getConnectionErrors();
         }
 
         return $this->asJson($return);
@@ -43,20 +48,22 @@ class DefaultController extends Controller
 
     /**
      * Returns all available zones on the configured account.
+     *
      * @return Response
+     * @throws GuzzleException
      */
     public function actionFetchZones(): Response
     {
-        return $this->asJson(Cloudflare::$plugin->api->getZones());
+        return $this->asJson(Cloudflare::getInstance()->api->getZones());
     }
 
     /**
-     * Have Cloudflare purge URL caches passed via `urls` GET/POST parameter,
-     * a string with each item on its own line.
+     * Purges URLs passed in the `urls` parameter, whose value should be a string
+     * with each URL on its own line.
      *
      * @return mixed
      * @throws craft\errors\MissingComponentException without a valid session.
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException|GuzzleException
      */
     public function actionPurgeUrls()
     {
@@ -82,44 +89,24 @@ class DefaultController extends Controller
 
         // split lines into array items
         $urls = explode("\n", $urls);
-        $response = Cloudflare::$plugin->api->purgeUrls($urls);
+        $response = Cloudflare::getInstance()->api->purgeUrls($urls);
 
         return $this->asJson($response);
     }
 
     /**
-     * Purge entire Cloudflare zone cache.
+     * Purges entire Cloudflare zone cache.
      *
      * @return mixed
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException|GuzzleException
      */
     public function actionPurgeAll()
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $response = Cloudflare::$plugin->api->purgeZoneCache();
+        $response = Cloudflare::getInstance()->api->purgeZoneCache();
 
         return $this->asJson($response);
-    }
-
-    /**
-     * Save our Craft-URL-specific purge rules.
-     *
-     * @return mixed
-     *
-     * @throws craft\errors\MissingComponentException without a valid session
-     * @throws \craft\errors\SiteNotFoundException
-     */
-    public function actionSaveRules()
-    {
-        Cloudflare::$plugin->rules->saveRules();
-
-        Craft::$app->getSession()->setNotice(Craft::t(
-            'cloudflare',
-            'Cloudflare rules saved.'
-        ));
-
-        return $this->redirect(UrlHelper::cpUrl('cloudflare/rules'));
     }
 }

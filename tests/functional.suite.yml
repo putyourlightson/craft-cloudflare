@@ -1,0 +1,6 @@
+actor: FunctionalTester
+modules:
+  enabled:
+    - Asserts
+    - \Helper\Functional
+    - \craft\test\Craft

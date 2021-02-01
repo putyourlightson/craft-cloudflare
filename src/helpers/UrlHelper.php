@@ -10,6 +10,7 @@ namespace workingconcept\cloudflare\helpers;
 
 use workingconcept\cloudflare\Cloudflare;
 use Craft;
+use Pdp;
 
 class UrlHelper
 {
@@ -21,17 +22,19 @@ class UrlHelper
      */
     public static function prepUrls($urls = []): array
     {
-        $cfDomainName     = Cloudflare::$plugin->getSettings()->zoneName;
+        $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
 
-        /**
-         * First trim leading+trailing whitespace, just in case.
-         */
+        // trim leading+trailing whitespace
         $urls = array_map('trim', $urls);
 
-        return array_filter($urls, static function($url) use ($includeZoneCheck) {
+        // limit to URLs that can be purged
+        $urls = array_filter($urls, static function($url) use ($includeZoneCheck) {
             return self::isPurgeableUrl($url, $includeZoneCheck);
         });
+
+        // return without duplicates
+        return array_values(array_unique($urls));
     }
 
     /**
@@ -44,15 +47,14 @@ class UrlHelper
      *
      * @return bool `true` if the URL is worth sending to Cloudflare
      */
-    public static function isPurgeableUrl($url, $includeZoneCheck): bool
+    public static function isPurgeableUrl(string $url, bool $includeZoneCheck): bool
     {
-        $cfDomainName = Cloudflare::$plugin->getSettings()->zoneName;
+        $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
 
         /**
          * Provided string is a valid URL.
          */
-        if (filter_var($url, FILTER_VALIDATE_URL) === false)
-        {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             Craft::info(
                 sprintf('Ignoring invalid URL: %s', $url),
                 'cloudflare'
@@ -62,19 +64,16 @@ class UrlHelper
         }
 
         /**
-         * If we've stored the zone name (FQDN) locally, make sure the URL
+         * If we’ve stored the zone name (FQDN) locally, make sure the URL
          * uses it since it otherwise won't be cleared.
          */
-        if ($includeZoneCheck)
-        {
-            if ( ! $urlDomain = self::getBaseDomainFromUrl($url))
-            {
+        if ($includeZoneCheck) {
+            if ( ! $urlDomain = self::getBaseDomainFromUrl($url)) {
                 // bail if we couldn't even get a base domain
                 return false;
             }
 
-            if (strtolower($urlDomain) !== strtolower($cfDomainName))
-            {
+            if (strtolower($urlDomain) !== strtolower($cfDomainName)) {
                 Craft::info(
                     sprintf('Ignoring URL outside zone: %s', $url),
                     'cloudflare'
@@ -92,21 +91,16 @@ class UrlHelper
      * from the given URL.
      *
      * @param string $url
-     * @return bool|string `false` if the URL's host can't be parsed
+     * @return bool|string `false` if the URL’s host can’t be parsed
      */
-    public static function getBaseDomainFromUrl($url)
+    public static function getBaseDomainFromUrl(string $url)
     {
         $host = parse_url($url, PHP_URL_HOST);
+        $manager = new Pdp\Manager(new Pdp\Cache(), new Pdp\CurlHttpClient());
+        $manager->refreshRules();
+        $rules = $manager->getRules();
+        $domain = $rules->resolve($host);
 
-        $parts = explode('.', $host);
-        $numParts = count($parts);
-
-        if ($numParts < 2)
-        {
-            return false;
-        }
-
-        // hostname . tld
-        return "{$parts[$numParts-2]}.{$parts[$numParts-1]}";
+        return $domain->getRegistrableDomain();
     }
 }

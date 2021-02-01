@@ -2,7 +2,7 @@
     "name": "workingconcept/craft-cloudflare",
     "description": "Purge Cloudflare caches from Craft.",
     "type": "craft-plugin",
-    "version": "0.6.0",
+    "version": "1.0.0",
     "keywords": [
         "craft",
         "cms",
@@ -21,13 +21,28 @@
             "homepage": "https://workingconcept.com"
         },
         {
-            "name":  "Mo",
+            "name": "Mo",
             "email": "m@9dev.de"
         }
     ],
+    "scripts": {
+        "post-install-cmd": "\\Pdp\\Installer::updateLocalCache",
+        "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
+    },
     "require": {
-        "php": "^7.0.0",
-        "craftcms/cms": "^3.0.0"
+        "php": "^7.2.0",
+        "craftcms/cms": "^3.6.0",
+        "jeremykendall/php-domain-parser": "^5.6"
+    },
+    "require-dev": {
+        "vlucas/phpdotenv": "^3.4",
+        "roave/security-advisories": "dev-master",
+        "codeception/codeception": "^4.0.0",
+        "codeception/module-phpbrowser": "^1.0.0",
+        "codeception/module-asserts": "^1.0.0",
+        "codeception/module-rest": "^1.0.0",
+        "codeception/module-datafactory": "^1.0.0",
+        "codeception/module-yii2": "^1.0.0"
     },
     "repositories": [
         {
@@ -37,8 +52,11 @@
     ],
     "autoload": {
         "psr-4": {
-          "workingconcept\\cloudflare\\": "src/"
+            "workingconcept\\cloudflare\\": "src/"
         }
+    },
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "name": "Cloudflare",

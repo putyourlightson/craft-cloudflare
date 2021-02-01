@@ -10,11 +10,10 @@
 
 namespace workingconcept\cloudflare\migrations;
 
-use workingconcept\cloudflare\Cloudflare;
-
 use Craft;
-use craft\config\DbConfig;
 use craft\db\Migration;
+use workingconcept\cloudflare\db\Table;
+use craft\db\Table as CraftTable;
 
 /**
  * @author    Working Concept
@@ -63,13 +62,13 @@ class Install extends Migration
     {
         $tablesCreated = false;
 
-        $tableSchema = Craft::$app->db->schema->getTableSchema('{{%cloudflare_rules}}');
+        $tableSchema = Craft::$app->db->schema->getTableSchema(Table::RULES);
 
         if ($tableSchema === null)
         {
             $tablesCreated = true;
             $this->createTable(
-                '{{%cloudflare_rules}}',
+                Table::RULES,
                 [
                     'id' => $this->primaryKey(),
                     'dateCreated' => $this->dateTime()->notNull(),
@@ -89,13 +88,13 @@ class Install extends Migration
     /**
      * @return void
      */
-    protected function addForeignKeys()
+    protected function addForeignKeys(): void
     {
         $this->addForeignKey(
-            $this->db->getForeignKeyName('{{%cloudflare_rules}}', 'siteId'),
-            '{{%cloudflare_rules}}',
+            $this->db->getForeignKeyName(Table::RULES, 'siteId'),
+            Table::RULES,
             'siteId',
-            '{{%sites}}',
+            CraftTable::SITES,
             'id',
             'CASCADE',
             'CASCADE'
@@ -105,8 +104,8 @@ class Install extends Migration
     /**
      * @return void
      */
-    protected function removeTables()
+    protected function removeTables(): void
     {
-        $this->dropTableIfExists('{{%cloudflare_rules}}');
+        $this->dropTableIfExists(Table::RULES);
     }
 }

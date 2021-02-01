@@ -12,10 +12,9 @@ namespace workingconcept\cloudflare\widgets;
 
 use workingconcept\cloudflare\assetbundles\CloudflareAsset;
 use workingconcept\cloudflare\Cloudflare;
-
+use workingconcept\cloudflare\helpers\ConfigHelper;
 use Craft;
 use craft\base\Widget;
-use workingconcept\cloudflare\helpers\ConfigHelper;
 
 /**
  * Cloudflare Widget
@@ -47,7 +46,7 @@ class QuickPurge extends Widget
     }
 
     /**
-     * Returns the widget's icon path.
+     * Returns the widget’s icon path.
      *
      * @return string
      */
@@ -80,11 +79,7 @@ class QuickPurge extends Widget
      * Returns the widget body HTML.
      *
      * @return false|string
-     * @throws \RuntimeException
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
      */
-
     public function getBodyHtml()
     {
         Craft::$app->getView()->registerAssetBundle(CloudflareAsset::class);
@@ -92,7 +87,7 @@ class QuickPurge extends Widget
         return Craft::$app->getView()->renderTemplate(
             'cloudflare/widget',
             [
-                'settings' => Cloudflare::$plugin->getSettings(),
+                'settings' => Cloudflare::getInstance()->getSettings(),
                 'isConfigured' => ConfigHelper::isConfigured()
             ]
         );

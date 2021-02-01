@@ -15,7 +15,7 @@
  */
 
 return [
-    'CloudFlare Purge'                                                                             => 'CloudFlare Purge',
+    'Cloudflare Purge'                                                                             => 'Cloudflare Purge',
     'Cloudflare API Key'                                                                           => 'Cloudflare API Key',
     'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.' => 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.',
     'Cloudflare Account Email'                                                                     => 'Cloudflare Account Email',

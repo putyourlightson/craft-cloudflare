@@ -1,5 +1,20 @@
 # Cloudflare Changelog
 
+## 1.0.0 - 2021-01-31
+### Added
+- Added a Cloudflare utility for purging URLs and managing rule-based purging options.
+
+### Changed
+- Craft 3.6.0 or higher is required.
+- Moved formerly-hidden purge rules to the Cloudflare utility. ([#26](https://github.com/workingconcept/cloudflare-craft-plugin/issues/26))
+- Moved URL purge tools from settings to the Cloudflare utility.
+
+### Fixed
+- Added support for multi-level domain suffixes. ([#22](https://github.com/workingconcept/cloudflare-craft-plugin/issues/22))
+
+### Removed
+- Removed static `$plugin` variable. Replace instances of `Cloudflare::$plugin` with `Cloudflare::getInstance()`.
+
 ## 0.6.0 - 2020-10-24
 ### Fixed
 - Fixed PSR-4 namespacing for Composer 2.
