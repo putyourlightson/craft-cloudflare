@@ -95,8 +95,10 @@ class UrlHelper
      */
     public static function getBaseDomainFromUrl(string $url)
     {
+        $cachePath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . 'pdp';
+
         $host = parse_url($url, PHP_URL_HOST);
-        $manager = new Pdp\Manager(new Pdp\Cache(), new Pdp\CurlHttpClient());
+        $manager = new Pdp\Manager(new Pdp\Cache($cachePath), new Pdp\CurlHttpClient());
         $manager->refreshRules();
         $rules = $manager->getRules();
         $domain = $rules->resolve($host);
