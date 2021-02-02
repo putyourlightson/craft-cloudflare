@@ -1,6 +1,6 @@
 # Cloudflare Changelog
 
-## Unreleased
+## 1.0.1 - 2021-02-02
 ### Changed
 - Moved cache file to Craft’s storage directory rather than its default `vendor/` location. ([#31](https://github.com/workingconcept/cloudflare-craft-plugin/issues/31))
 
