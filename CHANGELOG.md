@@ -1,5 +1,9 @@
 # Cloudflare Changelog
 
+## 1.0.1 - 2021-02-02
+### Changed
+- Moved cache file to Craft’s storage directory rather than its default `vendor/` location. ([#31](https://github.com/workingconcept/cloudflare-craft-plugin/issues/31))
+
 ## 1.0.0 - 2021-01-31
 ### Added
 - Added a Cloudflare utility for purging URLs and managing rule-based purging options.
