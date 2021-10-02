@@ -1,74 +1,73 @@
 {
-    "name": "workingconcept/craft-cloudflare",
-    "description": "Purge Cloudflare caches from Craft.",
-    "type": "craft-plugin",
-    "version": "1.0.1",
-    "keywords": [
-        "craft",
-        "cms",
-        "craftcms",
-        "craft-plugin",
-        "cloudflare"
-    ],
-    "support": {
-        "docs": "https://github.com/workingconcept/cloudflare-craft-plugin/blob/master/readme.md",
-        "issues": "https://github.com/workingconcept/cloudflare-craft-plugin/issues"
+  "name": "workingconcept/craft-cloudflare",
+  "description": "Purge Cloudflare caches from Craft.",
+  "type": "craft-plugin",
+  "version": "1.0.2",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "cloudflare"
+  ],
+  "support": {
+    "docs": "https://github.com/workingconcept/cloudflare-craft-plugin/blob/main/README.md",
+    "issues": "https://github.com/workingconcept/cloudflare-craft-plugin/issues"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Working Concept",
+      "homepage": "https://workingconcept.com"
     },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Working Concept",
-            "homepage": "https://workingconcept.com"
-        },
-        {
-            "name": "Mo",
-            "email": "m@9dev.de"
-        }
-    ],
-    "scripts": {
-        "post-install-cmd": "\\Pdp\\Installer::updateLocalCache",
-        "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
-    },
-    "require": {
-        "php": "^7.2.0",
-        "craftcms/cms": "^3.6.0",
-        "jeremykendall/php-domain-parser": "^5.6"
-    },
-    "require-dev": {
-        "vlucas/phpdotenv": "^3.4",
-        "roave/security-advisories": "dev-master",
-        "codeception/codeception": "^4.0.0",
-        "codeception/module-phpbrowser": "^1.0.0",
-        "codeception/module-asserts": "^1.0.0",
-        "codeception/module-rest": "^1.0.0",
-        "codeception/module-datafactory": "^1.0.0",
-        "codeception/module-yii2": "^1.0.0"
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "workingconcept\\cloudflare\\": "src/"
-        }
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "name": "Cloudflare",
-        "handle": "cloudflare",
-        "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/master/CHANGELOG.md",
-        "components": {
-            "cloudflareService": "workingconcept\\cloudflare\\services\\CloudflareService",
-            "rulesService": "workingconcept\\cloudflare\\services\\RulesService"
-        },
-        "class": "workingconcept\\cloudflare\\Cloudflare",
-        "downloadUrl": "https://github.com/workingconcept/cloudflare-craft-plugin/archive/master.zip",
-        "developer": "Working Concept",
-        "developerUrl": "https://workingconcept.com/"
+    {
+      "name": "Mo",
+      "email": "m@9dev.de"
     }
+  ],
+  "scripts": {
+    "post-install-cmd": "\\Pdp\\Installer::updateLocalCache",
+    "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
+  },
+  "require": {
+    "craftcms/cms": "^3.6.0",
+    "jeremykendall/php-domain-parser": "^5.6"
+  },
+  "require-dev": {
+    "vlucas/phpdotenv": "^3.4",
+    "roave/security-advisories": "dev-latest",
+    "codeception/codeception": "^4.0.0",
+    "codeception/module-phpbrowser": "^1.0.0",
+    "codeception/module-asserts": "^1.0.0",
+    "codeception/module-rest": "^1.0.0",
+    "codeception/module-datafactory": "^1.0.0",
+    "codeception/module-yii2": "^1.0.0"
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "workingconcept\\cloudflare\\": "src/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "name": "Cloudflare",
+    "handle": "cloudflare",
+    "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/main/CHANGELOG.md",
+    "components": {
+      "cloudflareService": "workingconcept\\cloudflare\\services\\CloudflareService",
+      "rulesService": "workingconcept\\cloudflare\\services\\RulesService"
+    },
+    "class": "workingconcept\\cloudflare\\Cloudflare",
+    "downloadUrl": "https://github.com/workingconcept/cloudflare-craft-plugin/archive/main.zip",
+    "developer": "Working Concept",
+    "developerUrl": "https://workingconcept.com/"
+  }
 }

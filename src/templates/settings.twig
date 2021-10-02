@@ -6,14 +6,14 @@
 # to translate text on the clientside. Therefore, all messages are passed to a global object.
 #}
 {% set extraJs %}window.__CLOUDFLARE_PLUGIN = {
-    messages: {
-        credentialVerificationFailed: "{{ 'Could not verify API credentials.'|t('cloudflare') }}",
-        credentialsMissing: "{{ 'Please enter required API credentials.'|t('cloudflare') }}",
-    },
-    actions: {
-        verifyCredentials: "cloudflare/default/verify-connection",
-        fetchZones: "cloudflare/default/fetch-zones",
-    }
+  messages: {
+    credentialVerificationFailed: "{{ 'Could not verify API credentials.'|t('cloudflare') }}",
+    credentialsMissing: "{{ 'Please enter required API credentials.'|t('cloudflare') }}",
+  },
+  actions: {
+    verifyCredentials: "cloudflare/default/verify-connection",
+    fetchZones: "cloudflare/default/fetch-zones",
+  }
 };
 {% endset %}
 {# @formatter:on #}
@@ -22,142 +22,142 @@
 {% do view.registerAssetBundle("workingconcept\\cloudflare\\assetbundles\\CloudflareAsset") %}
 
 {{ forms.selectField({
-    label: 'Authentication Type'|t('cloudflare'),
-    id: 'authType',
-    first: true,
-    required: true,
-    name: 'authType',
-    options: [
-        { label: 'Key', value: 'key' },
-        { label: 'Token', value: 'token' },
-    ],
-    value: settings.authType,
-    autofocus: true,
-    errors: settings.getErrors('zone'),
-    toggle: true,
-    targetPrefix: 'fields-api-',
-    instructions: 'Choose whether you\'ll be using an account-level key or scope-limited token.'|t('cloudflare')
+  label: 'Authentication Type'|t('cloudflare'),
+  id: 'authType',
+  first: true,
+  required: true,
+  name: 'authType',
+  options: [
+    { label: 'Key', value: 'key' },
+    { label: 'Token', value: 'token' },
+  ],
+  value: settings.authType,
+  autofocus: true,
+  errors: settings.getErrors('zone'),
+  toggle: true,
+  targetPrefix: 'fields-api-',
+  instructions: 'Choose whether you\'ll be using an account-level key or scope-limited token.'|t('cloudflare')
 }) }}
 
 <div id="fields-api-token"{% if not (settings.authType == 'token') %} class="hidden"{% endif %}>
-    {% set apiTokenFieldSettings = {
-        label: 'Cloudflare API Token'|t('cloudflare'),
-        id: 'apiToken',
-        required: true,
-        name: 'apiToken',
-        type: 'password',
-        class: 'code',
-        value: settings.apiToken,
-        errors: settings.getErrors('apiToken'),
-        instructions: 'Add your API token. It must include at least `cache_purge:edit` and `zone:read` permissions.'|t('cloudflare'),
-    } %}
+  {% set apiTokenFieldSettings = {
+    label: 'Cloudflare API Token'|t('cloudflare'),
+    id: 'apiToken',
+    required: true,
+    name: 'apiToken',
+    type: 'password',
+    class: 'code',
+    value: settings.apiToken,
+    errors: settings.getErrors('apiToken'),
+    instructions: 'Add your API token. It must include at least `cache_purge:edit` and `zone:read` permissions.'|t('cloudflare'),
+  } %}
 
-    {% if isCraft31 %}
-        {% set apiTokenFieldSettings = apiTokenFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
-        {{ forms.autosuggestField(apiTokenFieldSettings) }}
-    {% else %}
-        {{ forms.passwordField(apiTokenFieldSettings) }}
-    {% endif %}
+  {% if isCraft31 %}
+    {% set apiTokenFieldSettings = apiTokenFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+    {{ forms.autosuggestField(apiTokenFieldSettings) }}
+  {% else %}
+    {{ forms.passwordField(apiTokenFieldSettings) }}
+  {% endif %}
 </div>
 
 <div id="fields-api-key"{% if not (settings.authType == 'key' or settings.authType is empty) %} class="hidden"{% endif %}>
-    {% set zoneOptions = craft.cloudflare.getZoneOptions %}
-    {% set apiKeyFieldSettings = {
-        label: 'Cloudflare API Key'|t('cloudflare'),
-        id:  'apiKey',
-        required: true,
-        name: 'apiKey',
-        type: 'password',
-        class: 'code',
-        value: settings.apiKey,
-        autofocus: true,
-        errors: settings.getErrors('apiKey'),
-        instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.'|t('cloudflare'),
-    } %}
+  {% set zoneOptions = craft.cloudflare.getZoneOptions %}
+  {% set apiKeyFieldSettings = {
+    label: 'Cloudflare API Key'|t('cloudflare'),
+    id:  'apiKey',
+    required: true,
+    name: 'apiKey',
+    type: 'password',
+    class: 'code',
+    value: settings.apiKey,
+    autofocus: true,
+    errors: settings.getErrors('apiKey'),
+    instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.'|t('cloudflare'),
+  } %}
 
-    {% if isCraft31 %}
-        {% set apiKeyFieldSettings = apiKeyFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
-        {{ forms.autosuggestField(apiKeyFieldSettings) }}
-    {% else %}
-        {{ forms.passwordField(apiKeyFieldSettings) }}
-    {% endif %}
+  {% if isCraft31 %}
+    {% set apiKeyFieldSettings = apiKeyFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+    {{ forms.autosuggestField(apiKeyFieldSettings) }}
+  {% else %}
+    {{ forms.passwordField(apiKeyFieldSettings) }}
+  {% endif %}
 
-    {{ forms.textField( {
-        label: 'Cloudflare Account Email'|t('cloudflare'),
-        id: 'email',
-        required: true,
-        name: 'email',
-        class: 'code',
-        value: settings.email,
-        placeholder: currentUser.email,
-        autofocus: true,
-        errors: settings.getErrors('email'),
-        instructions: 'Specify which account email should be used for API requests.'|t('cloudflare')
-    }) }}
+  {{ forms.textField( {
+    label: 'Cloudflare Account Email'|t('cloudflare'),
+    id: 'email',
+    required: true,
+    name: 'email',
+    class: 'code',
+    value: settings.email,
+    placeholder: currentUser.email,
+    autofocus: true,
+    errors: settings.getErrors('email'),
+    instructions: 'Specify which account email should be used for API requests.'|t('cloudflare')
+  }) }}
 </div>
 
 <br>
 
 <div class="cloudflare-verify{% if zoneOptions | length %} success{% endif %}">
-    <a class="btn" id="cf-test">{{ 'Verify Credentials'|t('cloudflare') }}</a>
-    <div id="credential-spinner" class="spinner hidden"></div>
+  <a class="btn" id="cf-test">{{ 'Verify Credentials'|t('cloudflare') }}</a>
+  <div id="credential-spinner" class="spinner hidden"></div>
 </div>
 
 <div>
-    {% set hardcodedZone = settings.zoneIsStatic() %}
-    {% set zoneListSupported = settings.canListZones() %}
+  {% set hardcodedZone = settings.zoneIsStatic() %}
+  {% set zoneListSupported = settings.canListZones() %}
 
-    {# Offer some secret clues, just in case. #}
-    <!-- canListZones: {{ zoneListSupported ? 'yes' : 'no' }} -->
-    <!-- zoneIsStatic: {{ hardcodedZone ? 'yes' : 'no' }} -->
+  {# Offer some secret clues, just in case. #}
+  <!-- canListZones: {{ zoneListSupported ? 'yes' : 'no' }} -->
+  <!-- zoneIsStatic: {{ hardcodedZone ? 'yes' : 'no' }} -->
 
-    {# Hide selection if we don’t have a list or the ID is already hardcoded. #}
-    <div id="zone-id-select"{% if not zoneListSupported or hardcodedZone %} class="hidden"{% endif %}>
-        {{ forms.selectField({
-            label: 'Cloudflare Zone'|t('cloudflare'),
-            id: 'zone-select',
-            required: true,
-            name: 'zone',
-            options: zoneOptions,
-            value: settings.zone,
-            autofocus: true,
-            errors: settings.getErrors('zone'),
-            instructions: 'Specify which Cloudflare Zone is utilized by this site.'|t('cloudflare')
-        }) }}
-    </div>
-
-    {% set warningMessage = 'Unable to list zones for selection. You must specify a Zone ID.'|t('cloudflare') %}
-
-    {% if settings.zoneIsStatic() %}
-        {% set warningMessage = 'Zone ID hardcoded in config file.'|t('cloudflare') %}
-    {% endif %}
-
-    {# Hide if a more convenient listing is already supported. #}
-    <div id="zone-id-input"{% if zoneListSupported %} class="hidden"{% endif %}>
-        {{ forms.textField( {
-            label: 'Cloudflare Zone ID'|t('cloudflare'),
-            id: 'zone-input',
-            required: true,
-            name: 'zone',
-            class: 'code',
-            value: settings.zone,
-            autofocus: true,
-            errors: settings.getErrors('zone'),
-            disabled: settings.zoneIsStatic(),
-            warning: warningMessage,
-            instructions: 'The Cloudflare Zone ID utilized by this site.'|t('cloudflare')
-        }) }}
-    </div>
-
-    <hr>
-
-    {{ forms.checkboxGroupField({
-        label: 'Automatically Purge Elements'|t('cloudflare'),
-        id: 'purgeElements',
-        name: 'purgeElements',
-        errors: settings.getErrors('purgeElements'),
-        options: elementTypes,
-        values: settings.purgeElements,
-        instructions: "Select elements whose URLs should automatically be purged when they’re updated."|t('cloudflare')
+  {# Hide selection if we don’t have a list or the ID is already hardcoded. #}
+  <div id="zone-id-select"{% if not zoneListSupported or hardcodedZone %} class="hidden"{% endif %}>
+    {{ forms.selectField({
+      label: 'Cloudflare Zone'|t('cloudflare'),
+      id: 'zone-select',
+      required: true,
+      name: 'zone',
+      options: zoneOptions,
+      value: settings.zone,
+      autofocus: true,
+      errors: settings.getErrors('zone'),
+      instructions: 'Specify which Cloudflare Zone is utilized by this site.'|t('cloudflare')
     }) }}
+  </div>
+
+  {% set warningMessage = 'Unable to list zones for selection. You must specify a Zone ID.'|t('cloudflare') %}
+
+  {% if settings.zoneIsStatic() %}
+      {% set warningMessage = 'Zone ID hardcoded in config file.'|t('cloudflare') %}
+  {% endif %}
+
+  {# Hide if a more convenient listing is already supported. #}
+  <div id="zone-id-input"{% if zoneListSupported %} class="hidden"{% endif %}>
+      {{ forms.textField( {
+        label: 'Cloudflare Zone ID'|t('cloudflare'),
+        id: 'zone-input',
+        required: true,
+        name: 'zone',
+        class: 'code',
+        value: settings.zone,
+        autofocus: true,
+        errors: settings.getErrors('zone'),
+        disabled: settings.zoneIsStatic(),
+        warning: warningMessage,
+        instructions: 'The Cloudflare Zone ID utilized by this site.'|t('cloudflare')
+      }) }}
+  </div>
+
+  <hr>
+
+  {{ forms.checkboxGroupField({
+    label: 'Automatically Purge Elements'|t('cloudflare'),
+    id: 'purgeElements',
+    name: 'purgeElements',
+    errors: settings.getErrors('purgeElements'),
+    options: elementTypes,
+    values: settings.purgeElements,
+    instructions: "Select elements whose URLs should automatically be purged when they’re updated."|t('cloudflare')
+  }) }}
 </div>

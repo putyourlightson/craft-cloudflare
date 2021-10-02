@@ -1,5 +1,12 @@
 # Cloudflare Changelog
 
+## 1.0.2 - 2021-10-02
+### Changed
+- Minor front-end dependency security updates.
+
+### Removed
+- Removed explicit Composer PHP requirement.
+
 ## 1.0.1 - 2021-02-02
 ### Changed
 - Moved cache file to Craft’s storage directory rather than its default `vendor/` location. ([#31](https://github.com/workingconcept/cloudflare-craft-plugin/issues/31))
