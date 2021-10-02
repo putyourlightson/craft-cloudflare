@@ -11,7 +11,7 @@
     "cloudflare"
   ],
   "support": {
-    "docs": "https://github.com/workingconcept/cloudflare-craft-plugin/blob/master/readme.md",
+    "docs": "https://github.com/workingconcept/cloudflare-craft-plugin/blob/main/README.md",
     "issues": "https://github.com/workingconcept/cloudflare-craft-plugin/issues"
   },
   "license": "MIT",
@@ -35,7 +35,7 @@
   },
   "require-dev": {
     "vlucas/phpdotenv": "^3.4",
-    "roave/security-advisories": "dev-master",
+    "roave/security-advisories": "dev-latest",
     "codeception/codeception": "^4.0.0",
     "codeception/module-phpbrowser": "^1.0.0",
     "codeception/module-asserts": "^1.0.0",
@@ -60,13 +60,13 @@
   "extra": {
     "name": "Cloudflare",
     "handle": "cloudflare",
-    "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/master/CHANGELOG.md",
+    "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/main/CHANGELOG.md",
     "components": {
       "cloudflareService": "workingconcept\\cloudflare\\services\\CloudflareService",
       "rulesService": "workingconcept\\cloudflare\\services\\RulesService"
     },
     "class": "workingconcept\\cloudflare\\Cloudflare",
-    "downloadUrl": "https://github.com/workingconcept/cloudflare-craft-plugin/archive/master.zip",
+    "downloadUrl": "https://github.com/workingconcept/cloudflare-craft-plugin/archive/main.zip",
     "developer": "Working Concept",
     "developerUrl": "https://workingconcept.com/"
   }

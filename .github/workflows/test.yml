@@ -6,7 +6,7 @@ on:
       - '*'
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   test:
@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ["7.2", "7.3", "7.4"]
+        php-versions: ["7.2", "7.3", "7.4", "8.0"]
         db: ["mysql", "pgsql"]
     env:
       DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
