@@ -265,7 +265,7 @@ class Api extends Component
 
             $responseBody = Json::decode($response->getBody(), false);
 
-            if ( ! $response->getStatusCode() === 200) {
+            if ($response->getStatusCode() !== 200 || $responseBody->success === false) {
                 Craft::info(sprintf(
                     'Zone purge request failed: %s',
                     Json::encode($responseBody)
