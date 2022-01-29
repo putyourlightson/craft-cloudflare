@@ -2,7 +2,7 @@
 
 ## 1.0.3 - 2022-01-29
 ### Fixed
-- Unsuccessful, `200`-status API responses will log returned messages instead of throwing exceptions. ([#44(https://github.com/workingconcept/cloudflare-craft-plugin/issues/44))
+- Unsuccessful, `200`-status API responses will log returned messages instead of throwing exceptions. ([#44](https://github.com/workingconcept/cloudflare-craft-plugin/issues/44))
 
 ## 1.0.2 - 2021-10-02
 ### Changed
