@@ -49,8 +49,8 @@ class Api extends Component
     private $_connectionErrors = [];
 
     /**
-     * Get a configured Guzzle client if we have an API key and email. Otherwise
-     * returns null.
+     * Get a configured Guzzle client if we have an API key and email.
+     * Otherwise, returns `null`.
      *
      * @return Client|null
      */
@@ -86,25 +86,18 @@ class Api extends Component
 
         try {
             $response = $this->getClient()->get($testUri);
-            $responseContents = Json::decode(
-                $response->getBody()->getContents(),
-                false
-            );
+            $responseBody = Json::decode($response->getBody(), false);
 
-            // should be 200 response containing `"success": true`
-            $success = $response->getStatusCode() === 200
-                && $responseContents->success;
-
-            if ($success) {
+            if ($this->_isSuccessfulResponse($response, $responseBody)) {
                 return true;
             }
 
-            if (isset($responseContents->errors)) {
-                $this->_connectionErrors = $responseContents->errors;
+            if (isset($responseBody->errors)) {
+                $this->_connectionErrors = $responseBody->errors;
 
                 Craft::info(sprintf(
                     'Connection test failed: %s',
-                    Json::encode($responseContents->errors)
+                    Json::encode($responseBody->errors)
                 ), 'cloudflare');
             } else {
                 Craft::info('Connection test failed.', 'cloudflare');
@@ -170,8 +163,8 @@ class Api extends Component
         $this->responseItems = [];
 
         $currentPage = 0;
-        $totalPages  = 1; // temporary
-        $perPage     = 50;
+        $totalPages = 1; // temporary
+        $perPage = 50;
 
         while ($currentPage < $totalPages) {
             $currentPage++;
@@ -213,11 +206,12 @@ class Api extends Component
                 $zoneId
             ));
 
-            if ( ! $response->getStatusCode() === 200)
-            {
+            $responseBody = Json::decode($response->getBody(), false);
+
+            if (! $this->_isSuccessfulResponse($response, $responseBody)) {
                 Craft::info(sprintf(
                     'Request failed: %s',
-                    $response->getBody()
+                    $responseBody->errors
                 ), 'cloudflare');
 
                 return null;
@@ -238,8 +232,7 @@ class Api extends Component
             'cloudflare'
         );
 
-        return Json::decode($response->getBody(), false)
-            ->result;
+        return $responseBody->result;
     }
 
     /**
@@ -265,15 +258,15 @@ class Api extends Component
 
             $responseBody = Json::decode($response->getBody(), false);
 
-            if ($response->getStatusCode() !== 200 || $responseBody->success === false) {
+            if (! $this->_isSuccessfulResponse($response, $responseBody)) {
                 Craft::info(sprintf(
                     'Zone purge request failed: %s',
-                    Json::encode($responseBody)
+                    $responseBody->errors
                 ), 'cloudflare');
 
                 return (object) [
                     'success' => false,
-                    'message' => $response->getBody()->getContents(),
+                    'message' => $responseBody,
                     'result' => []
                 ];
             }
@@ -323,15 +316,15 @@ class Api extends Component
 
             $responseBody = Json::decode($response->getBody(), false);
 
-            if ( ! $response->getStatusCode() === 200) {
+            if (! $this->_isSuccessfulResponse($response, $responseBody)) {
                 Craft::info(sprintf(
                     'Request failed: %s',
-                    Json::encode($responseBody)
+                    Json::encode($responseBody->errors)
                 ), 'cloudflare');
 
                 return (object) [
                     'success' => false,
-                    'message' => $response->getBody()->getContents(),
+                    'message' => $responseBody,
                     'result' => []
                 ];
             }
@@ -362,15 +355,27 @@ class Api extends Component
     }
 
     /**
+     * Returns `true` if the provided response status and data indicate success.
+     *
+     * @param $response
+     * @param $responseBody
+     * @return bool
+     */
+    private function _isSuccessfulResponse($response, $responseBody): bool
+    {
+        return $response->getStatusCode() === 200 && $responseBody->success === true;
+    }
+
+    /**
      * Quietly handle an exception from the Cloudflare API.
      *
      * @param mixed  $exception (ClientException or RequestException)
      * @param string $action    human-friendly description of the attempted action
      * @param array  $urls      related URLs (if relevant)
      *
-     * @return \stdClass with populated `result` property array
+     * @return object with populated `result` property array
      */
-    private function _handleApiException($exception, string $action, $urls = []): \stdClass
+    private function _handleApiException($exception, string $action, $urls = []): object
     {
         if ($responseBody = Json::decode($exception->getResponse()->getBody(), false)) {
             $message = "${action} failed.\n";
