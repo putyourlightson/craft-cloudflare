@@ -1,5 +1,9 @@
 # Cloudflare Changelog
 
+## 1.0.3.1 - 2022-01-31
+### Fixed
+- Fixed a bug where only the zone cache purge would log a `200`-status failure response. (Now applies to all other API requests.)
+
 ## 1.0.3 - 2022-01-29
 ### Fixed
 - Unsuccessful, `200`-status API responses will log returned messages instead of throwing exceptions. ([#44](https://github.com/workingconcept/cloudflare-craft-plugin/issues/44))
