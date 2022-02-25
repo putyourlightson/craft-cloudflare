@@ -22,45 +22,45 @@ class Settings extends Model
     /**
      * @var string  Type of API authentication to use.
      */
-    public $authType = 'key';
+    public string $authType = 'key';
 
     /**
-     * @var string  Account-level API key.
+     * @var ?string  Account-level API key.
      */
-    public $apiKey = '';
+    public ?string $apiKey = null;
 
     /**
-     * @var string  Primary account email address. Required with $apiKey.
+     * @var ?string  Primary account email address. Required with $apiKey.
      */
-    public $email = '';
+    public ?string $email = null;
 
     /**
-     * @var string  App token. (Alternative to $apiKey + $email.)
+     * @var ?string  App token. (Alternative to $apiKey + $email.)
      */
-    public $apiToken = '';
+    public ?string $apiToken = null;
 
     /**
-     * @var string  This site’s related Cloudflare Zone ID.
+     * @var ?string  This site’s related Cloudflare Zone ID.
      */
-    public $zone = '';
+    public ?string $zone = null;
 
     /**
      * @var array  List of element type classes that should be purged automatically.
      * @since 0.5.0
      */
-    public $purgeElements = [
+    public array $purgeElements = [
         'craft\elements\Asset',
     ];
 
     /**
      * @var string
      */
-    public $userServiceKey = '';
+    public string $userServiceKey = '';
 
     /**
      * @var string|null  Human-friendly name for the relevant Cloudflare Zone.
      */
-    public $zoneName;
+    public ?string $zoneName = null;
 
     /**
      * Returns `true` if the Cloudflare zone ID is set in a static config file.
@@ -76,6 +76,7 @@ class Settings extends Model
      * Returns `true` if Cloudflare permissions allow listing zones.
      *
      * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function canListZones(): bool
     {

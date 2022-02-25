@@ -17,11 +17,15 @@ use yii\base\Exception;
  * Provides a Cloudflare page rule service
  *
  * @package workingconcept\cloudflare
+ *
+ * @property-read array      $rulesForTable
+ * @property-read null|array $rules
  */
 class Rules extends Component
 {
     /**
      * Returns all rules for a table.
+     *
      * @return array
      */
     public function getRulesForTable(): array
@@ -79,7 +83,7 @@ class Rules extends Component
      * @param string $url
      *
      * @return void
-     * @throws Exception
+     * @throws Exception|\GuzzleHttp\Exception\GuzzleException
      */
     public function purgeCachesForUrl(string $url): void
     {

@@ -22,6 +22,7 @@ class PurgeController extends Controller
      *
      * @param array $urls
      * @return int
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionPurgeUrls(array $urls): int
     {
@@ -39,7 +40,9 @@ class PurgeController extends Controller
 
     /**
      * Attempt to purge entire zone cache.
+     *
      * @return int
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionPurgeAll(): int
     {

@@ -44,7 +44,7 @@
 
     {{ tag('div', {
       class: ['instructions'],
-      html: 'Purge the entire zone for this site.'|md('gfm-comment')|replace('/&amp;(\\w+);/', '&$1;'),
+      html: 'Purge the entire zone for this site.'|md,
     }) }}
   </div>
 
@@ -59,11 +59,14 @@
   {{ csrfInput() }}
   {{ forms.editableTableField({
     first: true,
-    label: 'Cache Clearing Rules'|t,
+    label: 'Cache Clearing Rules'|t('cloudflare'),
     id: 'rules',
     name: 'rules',
     value: '',
-    addRowLabel: 'Add Rule',
+    allowAdd: true,
+    allowReorder: true,
+    allowDelete: true,
+    addRowLabel: 'Add Rule'|t('cloudflare'),
     cols: {
       0: { heading: 'URL Trigger Pattern', type: 'singleline' },
       1: { heading: 'Clear URLs (one per line)', type: 'multiline' },
@@ -76,6 +79,6 @@
   {{ tag('button', {
     type: 'submit',
     class: ['btn', 'submit'],
-    text: 'Save Rules'|t
+    text: 'Save Rules'|t('cloudflare')
   }) }}
 </form>

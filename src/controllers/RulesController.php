@@ -22,12 +22,12 @@ class RulesController extends Controller
     /**
      * Save our Craft-URL-specific purge rules.
      *
-     * @return mixed
+     * @return \yii\web\Response
      *
      * @throws MissingComponentException without a valid session
      * @throws SiteNotFoundException
      */
-    public function actionSave()
+    public function actionSave(): \yii\web\Response
     {
         Cloudflare::getInstance()->rules->saveRules();
 

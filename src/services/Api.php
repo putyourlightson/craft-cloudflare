@@ -25,6 +25,11 @@ use craft\helpers\Json;
  * @author    Working Concept
  * @package   Cloudflare
  * @since     1.0.0
+ *
+ * @property-read string                  $apiBaseUrl
+ * @property-read array                   $connectionErrors
+ * @property-read \GuzzleHttp\Client|null $client
+ * @property-read null|array              $zones
  */
 class Api extends Component
 {
@@ -36,21 +41,21 @@ class Api extends Component
     /**
      * @var array
      */
-    protected $responseItems;
+    protected array $responseItems;
 
     /**
-     * @var Client
+     * @var ?Client
      */
-    private $_client;
+    private ?Client $_client = null;
 
     /**
      * @var array
      */
-    private $_connectionErrors = [];
+    private array $_connectionErrors = [];
 
     /**
-     * Get a configured Guzzle client if we have an API key and email. Otherwise
-     * returns null.
+     * Get a configured Guzzle client if we have an API key and email.
+     * Otherwise, returns null.
      *
      * @return Client|null
      */
@@ -158,7 +163,7 @@ class Api extends Component
      * Get a list of zones (domains) available for the provided Cloudflare account.
      * https://api.cloudflare.com/#zone-list-zones
      *
-     * @return array|null zones from response.result (combined if there was pagination)
+     * @return array|null zones from `response.result` (combined if there was pagination)
      * @throws GuzzleException
      */
     public function getZones(): ?array
@@ -246,10 +251,10 @@ class Api extends Component
      * Purge the entire zone cache.
      * https://api.cloudflare.com/#zone-purge-all-files
      *
-     * @return object|null Cloudflare’s response
+     * @return ?object Cloudflare’s response
      * @throws GuzzleException
      */
-    public function purgeZoneCache()
+    public function purgeZoneCache(): ?object
     {
         if ( ! $this->getClient()) {
             return null;
@@ -298,7 +303,7 @@ class Api extends Component
      * @return mixed|null  API response data or null
      * @throws GuzzleException
      */
-    public function purgeUrls(array $urls = [])
+    public function purgeUrls(array $urls = []): mixed
     {
         if ( ! $this->getClient()) {
             return null;
@@ -368,9 +373,9 @@ class Api extends Component
      * @param string $action    human-friendly description of the attempted action
      * @param array  $urls      related URLs (if relevant)
      *
-     * @return \stdClass with populated `result` property array
+     * @return object with populated `result` property array
      */
-    private function _handleApiException($exception, string $action, $urls = []): \stdClass
+    private function _handleApiException(mixed $exception, string $action, array $urls = []): object
     {
         if ($responseBody = Json::decode($exception->getResponse()->getBody(), false)) {
             $message = "${action} failed.\n";
@@ -405,10 +410,10 @@ class Api extends Component
      * @param int $page
      * @param int $perPage
      *
-     * @return \stdClass|null
+     * @return ?object
      * @throws GuzzleException
      */
-    private function _getPagedZones($page = 1, $perPage = 50)
+    private function _getPagedZones(int $page = 1, int $perPage = 50): ?object
     {
         if ( ! $this->getClient()) {
             return null;

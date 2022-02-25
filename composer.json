@@ -30,7 +30,7 @@
     "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
   },
   "require": {
-    "craftcms/cms": "^3.6.0",
+    "craftcms/cms": "^4.0.0-alpha@dev",
     "jeremykendall/php-domain-parser": "^5.6"
   },
   "require-dev": {
@@ -55,7 +55,11 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
   },
   "extra": {
     "name": "Cloudflare",

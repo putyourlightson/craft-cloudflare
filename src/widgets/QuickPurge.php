@@ -22,6 +22,9 @@ use craft\base\Widget;
  * @author    Working Concept
  * @package   Cloudflare
  * @since     1.0.0
+ *
+ * @property-read string|false $bodyHtml
+ * @property-read string       $title
  */
 class QuickPurge extends Widget
 {
@@ -78,9 +81,14 @@ class QuickPurge extends Widget
     /**
      * Returns the widget body HTML.
      *
-     * @return false|string
+     * @return ?string
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         Craft::$app->getView()->registerAssetBundle(CloudflareAsset::class);
 

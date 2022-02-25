@@ -20,7 +20,7 @@ class UrlHelper
      * @param array $urls Array of URL strings to be cleared.
      * @return array Validated, trimmed values only.
      */
-    public static function prepUrls($urls = []): array
+    public static function prepUrls(array $urls = []): array
     {
         $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
@@ -41,7 +41,7 @@ class UrlHelper
      * Make sure the supplied URL is something Cloudflare will be able to purge.
      *
      * @param string $url              URL to be checked.
-     * @param bool   $includeZoneCheck Whether or not to ensure that the URL
+     * @param bool   $includeZoneCheck Whether to ensure that the URL
      *                                 exists on the zone this site is
      *                                 configured to use.
      *
@@ -91,9 +91,9 @@ class UrlHelper
      * from the given URL.
      *
      * @param string $url
-     * @return bool|string `false` if the URL’s host can’t be parsed
+     * @return string|bool `false` if the URL’s host can’t be parsed
      */
-    public static function getBaseDomainFromUrl(string $url)
+    public static function getBaseDomainFromUrl(string $url): string|bool
     {
         $cachePath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . 'pdp';
 
@@ -101,8 +101,7 @@ class UrlHelper
         $manager = new Pdp\Manager(new Pdp\Cache($cachePath), new Pdp\CurlHttpClient());
         $manager->refreshRules();
         $rules = $manager->getRules();
-        $domain = $rules->resolve($host);
 
-        return $domain->getRegistrableDomain();
+        return $rules->resolve($host)->getRegistrableDomain();
     }
 }

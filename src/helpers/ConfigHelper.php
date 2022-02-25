@@ -43,7 +43,7 @@ class ConfigHelper
      *
      * @return string|null
      */
-    public static function getParsedSetting($key): ?string
+    public static function getParsedSetting(string $key): ?string
     {
         $request = Craft::$app->getRequest();
         $isConsole = Craft::$app instanceof ConsoleApplication;

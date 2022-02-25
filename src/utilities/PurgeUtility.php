@@ -35,7 +35,7 @@ class PurgeUtility extends Utility
     /**
      * @inheritdoc
      */
-    public static function iconPath()
+    public static function iconPath(): ?string
     {
         return Craft::getAlias("@workingconcept/cloudflare/assetbundles/dist/img/cloud.svg");
     }

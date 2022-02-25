@@ -24,6 +24,7 @@ class CloudflareVariable
      * Returns the zones.
      *
      * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getZones(): ?array
     {
@@ -34,6 +35,7 @@ class CloudflareVariable
      * Returns the zone options.
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getZoneOptions(): array
     {
@@ -59,9 +61,9 @@ class CloudflareVariable
     }
 
     /**
-     * @return bool|Model|null
+     * @return Model|null
      */
-    public function getSettings()
+    public function getSettings(): ?Model
     {
         return Cloudflare::getInstance()->getSettings();
     }

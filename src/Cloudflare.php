@@ -49,7 +49,7 @@ class Cloudflare extends Plugin
     /**
      * @var array
      */
-    public static $supportedElementTypes = [
+    public static array $supportedElementTypes = [
         'craft\elements\Asset',
         'craft\elements\Category',
         'craft\elements\Entry',
@@ -61,22 +61,22 @@ class Cloudflare extends Plugin
     /**
      * @var bool
      */
-    public $hasCpSettings = true;
+    public bool $hasCpSettings = true;
 
     /**
      * @var bool
      */
-    public $hasCpSection = false;
+    public bool $hasCpSection = false;
 
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.1';
+    public string $schemaVersion = '1.0.1';
 
     /**
-     * @var string
+     * @var ?string
      */
-    public $t9nCategory = 'cloudflare';
+    public ?string $t9nCategory = 'cloudflare';
 
     /**
      * @inheritdoc
@@ -115,7 +115,7 @@ class Cloudflare extends Plugin
             Event::on(
                 Utilities::class,
                 Utilities::EVENT_REGISTER_UTILITY_TYPES,
-                function(RegisterComponentTypesEvent $event) {
+                static function(RegisterComponentTypesEvent $event) {
                     $event->types[] = PurgeUtility::class;
                 }
             );
@@ -208,7 +208,7 @@ class Cloudflare extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
     }
@@ -233,7 +233,7 @@ class Cloudflare extends Plugin
      * Returns element types that should be available options for
      * automatic purging.
      *
-     * @return array|string[]
+     * @return string[]
      */
     private function _getElementTypeOptions(): array
     {
@@ -262,7 +262,7 @@ class Cloudflare extends Plugin
     private function _isSupportedElementType(string $elementType): bool
     {
         $elementType = ConfigHelper::normalizeClassName($elementType);
-        
+
         return in_array($elementType, self::$supportedElementTypes, true);
     }
 
@@ -291,12 +291,12 @@ class Cloudflare extends Plugin
     }
 
     /**
-     * @param bool $isNew
+     * @param bool                  $isNew
      * @param ElementInterface|null $element
      *
      * @throws Exception|GuzzleException
      */
-    private function _handleElementChange(bool $isNew, $element): void
+    private function _handleElementChange(bool $isNew, ?ElementInterface $element): void
     {
         // bail if we don’t have an Element or an Element URL to work with
         if ($element === null || $element->getUrl() === null) {
@@ -311,7 +311,7 @@ class Cloudflare extends Plugin
             /**
              * Try making relative URLs absolute.
              */
-            if (strpos($elementUrl, '//') === false) {
+            if (!str_contains($elementUrl, '//')) {
                 $elementUrl = UrlHelper::siteUrl($elementUrl);
             }
 
