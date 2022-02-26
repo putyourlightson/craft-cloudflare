@@ -90,10 +90,10 @@ class UrlHelper
      * Gets the domain name and TLD only (no subdomains or query parameters)
      * from the given URL.
      *
-     * @param string $url
-     * @return string|bool `false` if the URL’s host can’t be parsed
+     * @param string
+     * @return string|null `null` if the URL’s host can’t be parsed
      */
-    public static function getBaseDomainFromUrl(string $url): string|bool
+    public static function getBaseDomainFromUrl(string $url): ?string
     {
         $cachePath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . 'pdp';
 
