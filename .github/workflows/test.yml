@@ -7,8 +7,35 @@ on:
   pull_request:
     branches:
       - main
+      - develop
 
 jobs:
+  ecs:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run_ecs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-ansi --no-progress
+
+      - name: Run ECS checks
+        run: vendor/bin/ecs check --ansi
+
+  phpstan:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run_ecs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-ansi --no-progress
+
+      - name: Run PHPStan checks
+        run: vendor/bin/phpstan --memory-limit=2G
+
   test:
     name: PHP ${{ matrix.php-versions }} + ${{ matrix.db }} on ${{ matrix.operating-system }}
     runs-on: ${{ matrix.operating-system }}
