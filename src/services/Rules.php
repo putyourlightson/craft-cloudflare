@@ -36,6 +36,7 @@ class Rules extends Component
         $rules = $this->getRules();
 
         foreach ($rules as $rule) {
+            /** @var RuleRecord $rule */
             $data[(string)$rule->id] = [
                 0 => $rule->trigger,
                 1 => implode("\n", Json::decode($rule->urlsToClear)),
@@ -95,7 +96,6 @@ class Rules extends Component
         $urlsToPurge = [];
 
         foreach ($relatedRules as $rule) {
-            /** @var RuleRecord $rule */
             $clearList = Json::decode($rule->urlsToClear);
 
             foreach ($clearList as $clearUrl) {

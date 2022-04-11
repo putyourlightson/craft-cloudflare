@@ -18,6 +18,7 @@ use workingconcept\cloudflare\db\Table;
  * @package   Cloudflare
  * @since     1.0.0
  *
+ * @property int    $id          Rule ID.
  * @property int    $siteId      Site ID to which rule(s) should apply.
  * @property string $trigger     URI pattern applied to saved Entries and Assets
  *                               that will purge supplied URLs when matched.
