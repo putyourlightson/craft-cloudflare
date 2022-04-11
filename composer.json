@@ -2,7 +2,7 @@
   "name": "workingconcept/craft-cloudflare",
   "description": "Purge Cloudflare caches from Craft.",
   "type": "craft-plugin",
-  "version": "1.0.3",
+  "version": "2.0.0-beta.1",
   "keywords": [
     "craft",
     "cms",
@@ -30,7 +30,7 @@
     "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
   },
   "require": {
-    "craftcms/cms": "^4.0.0-alpha@dev",
+    "craftcms/cms": "^4.0.0-beta.1",
     "jeremykendall/php-domain-parser": "^5.6"
   },
   "require-dev": {

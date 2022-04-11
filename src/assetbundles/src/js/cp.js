@@ -48,8 +48,8 @@ if (verifyCredentialsButton) {
             Craft.t("cloudflare", "Could not verify API credentials.")
           );
 
-          verifyContainer.classList.remove("success");
-          verifyContainer.classList.add("fail");
+          verifyContainer.classList.remove("verified");
+          verifyContainer.classList.add("failed");
 
           console.error(
             "Credential verification failed with response: ",
@@ -60,8 +60,8 @@ if (verifyCredentialsButton) {
         }
 
         if (response.success === false) {
-          verifyContainer.classList.remove("success");
-          verifyContainer.classList.add("fail");
+          verifyContainer.classList.remove("verified");
+          verifyContainer.classList.add("failed");
 
           console.error(
             "Credential verification failed with response: ",
@@ -124,8 +124,8 @@ function fetchZones() {
           Craft.t("cloudflare", "Could not verify API credentials.")
         );
 
-        verifyContainer.classList.remove("success");
-        verifyContainer.classList.add("fail");
+        verifyContainer.classList.remove("verified");
+        verifyContainer.classList.add("failed");
 
         console.error(
           "Credential verification failed with response: ",
@@ -170,21 +170,21 @@ function fetchZones() {
         zoneInputWrap.classList.add("hidden");
       }
 
-      verifyContainer.classList.remove("fail");
-      verifyContainer.classList.add("success");
+      verifyContainer.classList.remove("failed");
+      verifyContainer.classList.add("verified");
     }
   );
 }
 
 function showSpinner() {
-  verifyContainer.classList.remove("success");
-  verifyContainer.classList.remove("fail");
+  verifyContainer.classList.remove("verified");
+  verifyContainer.classList.remove("failed");
 
-  credentialSpinner.classList.remove("hidden");
+  verifyCredentialsButton.classList.add("loading");
 }
 
 function hideSpinner() {
-  credentialSpinner.classList.add("hidden");
+  verifyCredentialsButton.classList.remove("loading");
 }
 
 function getAuthSettings() {

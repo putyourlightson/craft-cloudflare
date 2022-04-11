@@ -1,5 +1,12 @@
 # Cloudflare Changelog
 
+## Unreleased
+### Changed
+- Plugin now requires Craft 4 beta.
+
+### Fixed
+- Fixed successful verification button text color in plugin settings.
+
 ## 1.0.3 - 2022-01-29
 ### Fixed
 - Unsuccessful, `200`-status API responses will log returned messages instead of throwing exceptions. ([#44](https://github.com/workingconcept/cloudflare-craft-plugin/issues/44))

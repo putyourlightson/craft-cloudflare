@@ -36,7 +36,7 @@
   errors: settings.getErrors('zone'),
   toggle: true,
   targetPrefix: 'fields-api-',
-  instructions: 'Choose whether you\'ll be using an account-level key or scope-limited token.'|t('cloudflare')
+  instructions: 'Choose whether you’ll be using an account-level key or scope-limited token.'|t('cloudflare')
 }) }}
 
 <div id="fields-api-token"{% if not (settings.authType == 'token') %} class="hidden"{% endif %}>
@@ -72,7 +72,7 @@
     value: settings.apiKey,
     autofocus: true,
     errors: settings.getErrors('apiKey'),
-    instructions: 'Add your API key, which you\'ll find in the _My Profile_ section of Cloudflare\'s interface.'|t('cloudflare'),
+    instructions: 'Add your API key, which you’ll find in the _My Profile_ section of Cloudflare’s interface.'|t('cloudflare'),
   } %}
 
   {% if isCraft31 %}
@@ -98,9 +98,12 @@
 
 <br>
 
-<div class="cloudflare-verify{% if zoneOptions | length %} success{% endif %}">
-  <a class="btn" id="cf-test">{{ 'Verify Credentials'|t('cloudflare') }}</a>
-  <div id="credential-spinner" class="spinner hidden"></div>
+<div class="cloudflare-verify{% if zoneOptions | length %} verified{% endif %}">
+  {{ forms.button({
+    label: 'Verify Credentials'|t('cloudflare'),
+    id: 'cf-test',
+    spinner: true,
+  }) }}
 </div>
 
 <div>
