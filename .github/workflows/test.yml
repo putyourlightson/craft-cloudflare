@@ -32,7 +32,7 @@ jobs:
         run: composer install --no-interaction --no-ansi --no-progress
 
       - name: Run PHPStan checks
-        run: vendor/bin/phpstan --memory-limit=2G
+        run: vendor/bin/phpstan
 
   test:
     name: PHP ${{ matrix.php-versions }} + ${{ matrix.db }} on ${{ matrix.operating-system }}
