@@ -1,4 +1,4 @@
-name: Codeception
+name: Test
 
 on:
   push:
@@ -11,6 +11,7 @@ on:
 
 jobs:
   ecs:
+    name: ECS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,6 +24,7 @@ jobs:
         run: vendor/bin/ecs check --ansi
 
   phpstan:
+    name: PHPStan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,7 +37,7 @@ jobs:
         run: vendor/bin/phpstan
 
   test:
-    name: PHP ${{ matrix.php-versions }} + ${{ matrix.db }} on ${{ matrix.operating-system }}
+    name: Codeception PHP ${{ matrix.php-versions }} + ${{ matrix.db }}
     runs-on: ${{ matrix.operating-system }}
 
     strategy:
