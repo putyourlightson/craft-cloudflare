@@ -28,22 +28,22 @@ class Rules extends Component
     /**
      * Returns all rules for a table.
      *
-     * @return array<string, array<int, mixed>>
+     * @return mixed[]
      */
     public function getRulesForTable(): array
     {
-        $data = [];
+        $tableData = [];
         $rules = $this->getRules();
 
         foreach ($rules as $rule) {
             /** @var RuleRecord $rule */
-            $data[(string)$rule->id] = [
+            $tableData[(string)$rule->id] = [
                 0 => $rule->trigger,
                 1 => implode("\n", Json::decode($rule->urlsToClear)),
             ];
         }
 
-        return $data;
+        return $tableData;
     }
 
     /**
