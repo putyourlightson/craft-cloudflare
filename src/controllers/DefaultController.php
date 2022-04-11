@@ -10,12 +10,12 @@
 
 namespace workingconcept\cloudflare\controllers;
 
-use workingconcept\cloudflare\Cloudflare;
 use Craft;
 use craft\web\Controller;
-use yii\web\Response;
-use yii\web\BadRequestHttpException;
 use GuzzleHttp\Exception\GuzzleException;
+use workingconcept\cloudflare\Cloudflare;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 
 /**
  * @author    Working Concept
@@ -35,7 +35,7 @@ class DefaultController extends Controller
         $this->requireAcceptsJson();
         $apiService = Cloudflare::getInstance()->api;
 
-        if ( ! $apiService->verifyConnection()) {
+        if (!$apiService->verifyConnection()) {
             return $this->asFailure(
                 'Failed to verify connection.',
                 [ 'errors' => $apiService->getConnectionErrors() ]

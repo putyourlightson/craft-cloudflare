@@ -27,21 +27,28 @@
   ],
   "scripts": {
     "post-install-cmd": "\\Pdp\\Installer::updateLocalCache",
-    "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
+    "post-update-cmd": "\\Pdp\\Installer::updateLocalCache",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --ansi --fix",
+    "phpstan": "phpstan --memory-limit=1G"
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "craftcms/cms": "^4.0.0-beta.1",
     "jeremykendall/php-domain-parser": "^5.6"
   },
   "require-dev": {
-    "vlucas/phpdotenv": "^3.4",
-    "roave/security-advisories": "dev-latest",
     "codeception/codeception": "^4.0.0",
-    "codeception/module-phpbrowser": "^1.0.0",
     "codeception/module-asserts": "^1.0.0",
-    "codeception/module-rest": "^1.0.0",
     "codeception/module-datafactory": "^1.0.0",
-    "codeception/module-yii2": "^1.0.0"
+    "codeception/module-phpbrowser": "^1.0.0",
+    "codeception/module-rest": "^1.0.0",
+    "codeception/module-yii2": "^1.0.0",
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main",
+    "roave/security-advisories": "dev-latest",
+    "vlucas/phpdotenv": "^3.4"
   },
   "repositories": [
     {

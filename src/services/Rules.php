@@ -2,16 +2,16 @@
 
 namespace workingconcept\cloudflare\services;
 
-use workingconcept\cloudflare\Cloudflare;
-use workingconcept\cloudflare\records\RuleRecord;
-
 use Craft;
 use craft\base\Component;
-use craft\helpers\UrlHelper;
-use craft\helpers\Json;
+
 use craft\errors\SiteNotFoundException;
-use yii\base\NotSupportedException;
+use craft\helpers\Json;
+use craft\helpers\UrlHelper;
+use workingconcept\cloudflare\Cloudflare;
+use workingconcept\cloudflare\records\RuleRecord;
 use yii\base\Exception;
+use yii\base\NotSupportedException;
 
 /**
  * Provides a Cloudflare page rule service
@@ -30,13 +30,13 @@ class Rules extends Component
      */
     public function getRulesForTable(): array
     {
-        $data  = [];
+        $data = [];
         $rules = $this->getRules();
 
         foreach ($rules as $rule) {
             $data[(string)$rule->id] = [
                 0 => $rule->trigger,
-                1 => implode("\n", Json::decode($rule->urlsToClear))
+                1 => implode("\n", Json::decode($rule->urlsToClear)),
             ];
         }
 
@@ -126,12 +126,9 @@ class Rules extends Component
     {
         $relatedRules = [];
 
-        if ($rules = $this->getRules())
-        {
-            foreach ($rules as $rule)
-            {
-                if (preg_match("`" . $rule->trigger . "`", $url))
-                {
+        if ($rules = $this->getRules()) {
+            foreach ($rules as $rule) {
+                if (preg_match("`" . $rule->trigger . "`", $url)) {
                     $relatedRules[] = $rule;
                 }
             }

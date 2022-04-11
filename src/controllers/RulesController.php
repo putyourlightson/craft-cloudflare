@@ -10,12 +10,12 @@
 
 namespace workingconcept\cloudflare\controllers;
 
-use workingconcept\cloudflare\Cloudflare;
 use Craft;
-use craft\web\Controller;
+use craft\errors\MissingComponentException;
 use craft\errors\SiteNotFoundException;
 use craft\helpers\UrlHelper;
-use craft\errors\MissingComponentException;
+use craft\web\Controller;
+use workingconcept\cloudflare\Cloudflare;
 
 class RulesController extends Controller
 {

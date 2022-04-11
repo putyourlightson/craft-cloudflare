@@ -8,9 +8,10 @@
 
 namespace workingconcept\cloudflare\helpers;
 
-use workingconcept\cloudflare\Cloudflare;
 use Craft;
 use Pdp;
+use workingconcept\cloudflare\Cloudflare;
+use workingconcept\cloudflare\models\Settings;
 
 class UrlHelper
 {
@@ -22,7 +23,9 @@ class UrlHelper
      */
     public static function prepUrls(array $urls = []): array
     {
-        $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
+        /** @var Settings $settings */
+        $settings = Cloudflare::getInstance()->getSettings();
+        $cfDomainName = $settings->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
 
         // trim leading+trailing whitespace
@@ -49,7 +52,9 @@ class UrlHelper
      */
     public static function isPurgeableUrl(string $url, bool $includeZoneCheck): bool
     {
-        $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
+        /** @var Settings $settings */
+        $settings = Cloudflare::getInstance()->getSettings();
+        $cfDomainName = $settings->zoneName;
 
         /**
          * Provided string is a valid URL.
@@ -68,7 +73,7 @@ class UrlHelper
          * uses it since it otherwise won't be cleared.
          */
         if ($includeZoneCheck) {
-            if ( ! $urlDomain = self::getBaseDomainFromUrl($url)) {
+            if (!$urlDomain = self::getBaseDomainFromUrl($url)) {
                 // bail if we couldn't even get a base domain
                 return false;
             }
@@ -90,7 +95,7 @@ class UrlHelper
      * Gets the domain name and TLD only (no subdomains or query parameters)
      * from the given URL.
      *
-     * @param string
+     * @param string $url
      * @return string|null `null` if the URL’s host can’t be parsed
      */
     public static function getBaseDomainFromUrl(string $url): ?string

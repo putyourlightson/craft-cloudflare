@@ -10,6 +10,7 @@
 
 namespace workingconcept\cloudflare\console\controllers;
 
+use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\cloudflare\Cloudflare;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -22,7 +23,7 @@ class PurgeController extends Controller
      *
      * @param array $urls
      * @return int
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function actionPurgeUrls(array $urls): int
     {
@@ -42,7 +43,7 @@ class PurgeController extends Controller
      * Attempt to purge entire zone cache.
      *
      * @return int
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function actionPurgeAll(): int
     {
@@ -56,7 +57,7 @@ class PurgeController extends Controller
     /**
      * Handle Cloudflare’s API response for console output.
      *
-     * @param $response
+     * @param object $response
      * @return int
      */
     private function _handleResult($response): int
@@ -75,7 +76,7 @@ class PurgeController extends Controller
             $this->stdout('✗ purge failed' . PHP_EOL);
 
             if (isset($response->errors)) {
-                foreach($response->errors as $error) {
+                foreach ($response->errors as $error) {
                     $this->stdout(
                         sprintf('- %s: %s', $error->code, $error->message) . PHP_EOL
                     );

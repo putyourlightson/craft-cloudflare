@@ -8,9 +8,9 @@
 
 namespace workingconcept\cloudflare\helpers;
 
+use Craft;
 use craft\console\Application as ConsoleApplication;
 use workingconcept\cloudflare\Cloudflare;
-use Craft;
 use workingconcept\cloudflare\models\Settings;
 
 class ConfigHelper
@@ -52,9 +52,9 @@ class ConfigHelper
          * Check post params if we’re in the control panel, where we use AJAX
          * for initially checking new parameters.
          */
-        $usePost = ! $isConsole &&
+        $usePost = !$isConsole &&
             $request->getIsAjax() &&
-            ! empty($request->getParam($key)) &&
+            !empty($request->getParam($key)) &&
             is_string($request->getParam($key));
 
         $settingValue = $usePost ? $request->getParam($key) :
@@ -81,7 +81,7 @@ class ConfigHelper
     /**
      * Strips leading slash from namespaced class and returns it.
      *
-     * @param $class
+     * @param string $class
      *
      * @return string
      */

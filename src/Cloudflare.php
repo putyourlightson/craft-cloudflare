@@ -10,29 +10,29 @@
 
 namespace workingconcept\cloudflare;
 
+use Craft;
+use craft\base\ElementInterface;
+use craft\base\Plugin;
+use craft\console\Application as ConsoleApplication;
+use craft\events\ElementEvent;
+use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterUrlRulesEvent;
+use craft\helpers\UrlHelper;
+use craft\services\Dashboard;
+use craft\services\Elements;
+use craft\services\Utilities;
+use craft\web\twig\variables\CraftVariable;
+use craft\web\UrlManager;
+use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\cloudflare\helpers\ConfigHelper;
+use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\services\Api;
 use workingconcept\cloudflare\services\Rules;
 use workingconcept\cloudflare\utilities\PurgeUtility;
 use workingconcept\cloudflare\variables\CloudflareVariable;
-use workingconcept\cloudflare\models\Settings;
 use workingconcept\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
-use Craft;
-use craft\console\Application as ConsoleApplication;
-use craft\base\Plugin;
-use craft\web\UrlManager;
-use craft\web\twig\variables\CraftVariable;
-use craft\services\Dashboard;
-use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterUrlRulesEvent;
-use craft\events\ElementEvent;
-use craft\services\Elements;
-use craft\base\ElementInterface;
-use craft\helpers\UrlHelper;
-use craft\services\Utilities;
 use yii\base\Event;
 use yii\base\Exception;
-use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Class Cloudflare
@@ -86,15 +86,15 @@ class Cloudflare extends Plugin
         parent::init();
 
         $this->setComponents([
-            'api'   => Api::class,
-            'rules' => Rules::class
+            'api' => Api::class,
+            'rules' => Rules::class,
         ]);
 
         // register the variable
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            static function (Event $event) {
+            static function(Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('cloudflare', CloudflareVariable::class);
@@ -106,7 +106,7 @@ class Cloudflare extends Plugin
             Event::on(
                 Dashboard::class,
                 Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-                static function (RegisterComponentTypesEvent $event) {
+                static function(RegisterComponentTypesEvent $event) {
                     $event->types[] = QuickPurgeWidget::class;
                 }
             );
@@ -126,7 +126,7 @@ class Cloudflare extends Plugin
                 UrlManager::EVENT_REGISTER_CP_URL_RULES,
                 static function(RegisterUrlRulesEvent $event) {
                     $event->rules['cloudflare/rules'] = [
-                        'template' => 'cloudflare/rules'
+                        'template' => 'cloudflare/rules',
                     ];
                 }
             );
@@ -134,7 +134,7 @@ class Cloudflare extends Plugin
 
         if (
             ConfigHelper::isConfigured() &&
-            ! empty($this->getSettings()->purgeElements)
+            !empty($this->getSettings()->purgeElements)
         ) {
             Event::on(
                 Elements::class,
@@ -221,10 +221,10 @@ class Cloudflare extends Plugin
         return Craft::$app->view->renderTemplate(
             'cloudflare/settings',
             [
-                'settings'  => $this->getSettings(),
+                'settings' => $this->getSettings(),
                 'isConfigured' => ConfigHelper::isConfigured(),
                 'isCraft31' => ConfigHelper::isCraft31(),
-                'elementTypes' => $this->_getElementTypeOptions()
+                'elementTypes' => $this->_getElementTypeOptions(),
             ]
         );
     }
@@ -270,24 +270,26 @@ class Cloudflare extends Plugin
      * Returns `true` if the provided element type is both supported and
      * enabled for purging in the plugin’s settings.
      *
-     * @param $elementType
+     * @param string $elementType Element class name
      *
      * @return bool
      */
     private function _shouldPurgeElementType($elementType): bool
     {
-        if ( ! $this->_isSupportedElementType($elementType)) {
+        if (!$this->_isSupportedElementType($elementType)) {
             return false;
         }
 
         $elementType = ConfigHelper::normalizeClassName($elementType);
-        $purgeElements = $this->getSettings()->purgeElements;
 
-        if (empty($purgeElements) || ! is_array($purgeElements)) {
+        /** @var Settings $settings */
+        $settings = $this->getSettings();
+
+        if (empty($settings->purgeElements) || !is_array($settings->purgeElements)) {
             return false;
         }
 
-        return in_array($elementType, $purgeElements, true);
+        return in_array($elementType, $settings->purgeElements, true);
     }
 
     /**
@@ -305,7 +307,7 @@ class Cloudflare extends Plugin
 
         $className = get_class($element);
 
-        if (! $isNew && $this->_shouldPurgeElementType($className)) {
+        if (!$isNew && $this->_shouldPurgeElementType($className)) {
             $elementUrl = $element->getUrl();
 
             /**
@@ -316,7 +318,7 @@ class Cloudflare extends Plugin
             }
 
             $this->api->purgeUrls([
-                $elementUrl
+                $elementUrl,
             ]);
         }
 
