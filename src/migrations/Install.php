@@ -61,9 +61,7 @@ class Install extends Migration
     {
         $tablesCreated = false;
 
-        $tableSchema = Craft::$app->db->schema->getTableSchema(Table::RULES);
-
-        if ($tableSchema === null) {
+        if (!Craft::$app->db->tableExists(Table::RULES)) {
             $tablesCreated = true;
             $this->createTable(
                 Table::RULES,

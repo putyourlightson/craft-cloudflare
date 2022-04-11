@@ -218,7 +218,7 @@ class Api extends Component
                 $zoneId
             ));
 
-            if (!$response->getStatusCode() === 200) {
+            if ($response->getStatusCode() !== 200) {
                 Craft::info(sprintf(
                     'Request failed: %s',
                     $response->getBody()
@@ -327,7 +327,7 @@ class Api extends Component
 
             $responseBody = Json::decode($response->getBody(), false);
 
-            if (!$response->getStatusCode() === 200) {
+            if ($response->getStatusCode() !== 200) {
                 Craft::info(sprintf(
                     'Request failed: %s',
                     Json::encode($responseBody)
@@ -428,7 +428,7 @@ class Api extends Component
                 $perPage
             ));
 
-            if (!$response->getStatusCode() === 200) {
+            if ($response->getStatusCode() !== 200) {
                 return $this->_failureResponse(sprintf(
                     'Request failed: %s',
                     $response->getBody()

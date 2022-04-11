@@ -57,12 +57,12 @@ class PurgeController extends Controller
     /**
      * Handle Cloudflare’s API response for console output.
      *
-     * @param object $response
+     * @param ?object $response
      * @return int
      */
     private function _handleResult($response): int
     {
-        if ($response === null) {
+        if (empty($response)) {
             $this->stdout('✗ Cloudflare plugin not configured' . PHP_EOL);
             return ExitCode::CONFIG;
         }
