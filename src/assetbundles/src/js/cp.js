@@ -35,45 +35,7 @@ if (verifyCredentialsButton) {
     }
 
     showSpinner();
-
-    Craft.postActionRequest(
-      "cloudflare/default/verify-connection",
-      settings,
-      (response, statusText) => {
-        hideSpinner();
-
-        // check for errors
-        if (statusText === "error" || !response) {
-          Craft.cp.displayError(
-            Craft.t("cloudflare", "Could not verify API credentials.")
-          );
-
-          verifyContainer.classList.remove("verified");
-          verifyContainer.classList.add("failed");
-
-          console.error(
-            "Credential verification failed with response: ",
-            response
-          );
-
-          return false;
-        }
-
-        if (response.success === false) {
-          verifyContainer.classList.remove("verified");
-          verifyContainer.classList.add("failed");
-
-          console.error(
-            "Credential verification failed with response: ",
-            response
-          );
-          return false;
-        }
-
-        // if we succeeded, populate Cloudflare Zone options
-        fetchZones();
-      }
-    );
+    checkCredentials(settings);
   });
 }
 
@@ -177,14 +139,45 @@ function fetchZones() {
 }
 
 function showSpinner() {
-  verifyContainer.classList.remove("verified");
-  verifyContainer.classList.remove("failed");
-
+  verifyContainer.classList.remove("verified", "failed");
   verifyCredentialsButton.classList.add("loading");
 }
 
 function hideSpinner() {
   verifyCredentialsButton.classList.remove("loading");
+}
+
+function checkCredentials(settings) {
+  Craft.sendActionRequest('POST', 'cloudflare/default/verify-connection', { data: settings })
+    .then((response) => {
+      hideSpinner();
+
+      // if we succeeded, populate Cloudflare Zone options
+      fetchZones();
+    })
+    .catch(({response}) => {
+      // Handle non-2xx responses ...
+      hideSpinner();
+      verifyContainer.classList.remove("verified");
+      verifyContainer.classList.add("failed");
+
+      console.error(
+          "Credential verification failed with response: ",
+          response
+      );
+
+      if (typeof response.data.errors !== "undefined" && response.data.errors.length > 0) {
+        // Fail credentials, skip louder error
+        return false;
+      }
+
+      // Display louder error if we couldn’t even *check* the credentials
+      Craft.cp.displayError(
+        Craft.t("cloudflare", "Could not verify API credentials.")
+      );
+
+      return false;
+    });
 }
 
 function getAuthSettings() {
@@ -226,18 +219,28 @@ function getAuthSettings() {
 }
 
 function purgeUrls(urls) {
-  Craft.postActionRequest(
-    "cloudflare/default/purge-urls",
-    { urls },
-    (response, statusText, request) => {
-      const successful = handleResponse("URL purge", response);
+  Craft.sendActionRequest('POST', 'cloudflare/default/purge-urls', { data: { urls: urls } })
+    .then((response) => {
+      const wasSuccessful = typeof response.data.success !== "undefined" && response.data.success;
 
-      if (successful) {
-        // empty the URL field
-        purgeUrlsField.value = "";
+      if (! wasSuccessful) {
+        console.error("URL purge failed:", response);
+        Craft.cp.displayError(Craft.t("cloudflare",  "URL purge failed."));
+        return;
       }
-    }
-  );
+
+      // empty the URL field
+      purgeUrlsField.value = "";
+
+      Craft.cp.displayNotice(
+          Craft.t("cloudflare", "URL purge successful.")
+      );
+    })
+    .catch(({response}) => {
+      console.error("URL purge failed:", response);
+      Craft.cp.displayError(Craft.t("cloudflare",  "URL purge failed."));
+      return;
+    });
 }
 
 function purgeAll() {
@@ -249,53 +252,19 @@ function purgeAll() {
       )
     )
   ) {
-    Craft.postActionRequest(
-      "cloudflare/default/purge-all",
-      {},
-      (response, statusText, request) => {
-        handleResponse("Zone purge", response);
-      }
-    );
+    Craft.sendActionRequest('POST', 'cloudflare/default/purge-all')
+      .then((response) => {
+        const wasSuccessful = typeof response.data.success !== "undefined" && response.data.success;
+
+        if (! wasSuccessful) {
+          console.error("Zone purge failed:", response);
+          Craft.cp.displayError(Craft.t("cloudflare",  "Zone purge failed."));
+          return;
+        }
+
+        Craft.cp.displayNotice(
+            Craft.t("cloudflare", "Zone purge successful.")
+        );
+      });
   }
-}
-
-function handleResponse(intendedAction, response) {
-  // successful?
-  const success = typeof response.success !== "undefined" && response.success;
-
-  // Craft's ->asErrorJson will return {"error":"[message]"}
-  const craftError =
-    typeof response.error !== "undefined" ? response.error : null;
-
-  // Cloudflare errors will be an array on the "errors" key
-  const apiErrors =
-    typeof response.errors !== "undefined" ? response.errors : null;
-
-  // generic errors will be on a "message" key when success is false
-  const genericError =
-    !success && typeof response.message !== "undefined"
-      ? response.message
-      : null;
-
-  if (!success) {
-    if (craftError) {
-      // add Craft’s error to the console
-      console.error(intendedAction + " failed:", craftError);
-    } else if (apiErrors && apiErrors.length) {
-      // add Cloudflare’s first (presumed only) API error to the console
-      console.error(intendedAction + " failed:", apiErrors[0].message);
-    } else if (genericError) {
-      console.error(intendedAction + " failed:", genericError);
-    }
-
-    Craft.cp.displayError(Craft.t("cloudflare", intendedAction + " failed."));
-
-    return false;
-  }
-
-  Craft.cp.displayNotice(
-    Craft.t("cloudflare", intendedAction + " successful.")
-  );
-
-  return true;
 }

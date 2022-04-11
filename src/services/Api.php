@@ -350,8 +350,7 @@ class Api extends Component
             ), 'cloudflare');
 
             return $responseBody;
-        }
-        catch(ClientException | RequestException $exception) {
+        } catch(ClientException | RequestException $exception) {
             return $this->_handleApiException($exception, 'URL purge', $urls);
         }
     }

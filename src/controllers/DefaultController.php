@@ -33,17 +33,16 @@ class DefaultController extends Controller
     public function actionVerifyConnection(): Response
     {
         $this->requireAcceptsJson();
+        $apiService = Cloudflare::getInstance()->api;
 
-        $wasSuccessful = Cloudflare::getInstance()->api->verifyConnection();
-        $return = [
-            'success' => $wasSuccessful
-        ];
-
-        if ( ! $wasSuccessful) {
-            $return['errors'] = Cloudflare::getInstance()->api->getConnectionErrors();
+        if ( ! $apiService->verifyConnection()) {
+            return $this->asFailure(
+                'Failed to verify connection.',
+                [ 'errors' => $apiService->getConnectionErrors() ]
+            );
         }
 
-        return $this->asJson($return);
+        return $this->asSuccess();
     }
 
     /**
@@ -75,23 +74,19 @@ class DefaultController extends Controller
 
         $urls = $request->getBodyParam('urls');
 
-        if (empty($urls))
-        {
-            $session->setError(Craft::t(
+        if (empty($urls)) {
+            return $this->asFailure(Craft::t(
                 'cloudflare',
                 'Failed to purge empty or invalid URLs.'
             ));
-
-            return $this->asErrorJson(
-                'Failed to purge empty or invalid URLs.'
-            );
         }
 
         // split lines into array items
         $urls = explode("\n", $urls);
-        $response = Cloudflare::getInstance()->api->purgeUrls($urls);
 
-        return $this->asJson($response);
+        return $this->asJson(
+            Cloudflare::getInstance()->api->purgeUrls($urls)
+        );
     }
 
     /**
@@ -105,8 +100,8 @@ class DefaultController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $response = Cloudflare::getInstance()->api->purgeZoneCache();
-
-        return $this->asJson($response);
+        return $this->asJson(
+            Cloudflare::getInstance()->api->purgeZoneCache()
+        );
     }
 }
