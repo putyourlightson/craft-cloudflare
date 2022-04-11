@@ -61,7 +61,6 @@ class DefaultController extends Controller
      * with each URL on its own line.
      *
      * @return Response
-     * @throws craft\errors\MissingComponentException without a valid session.
      * @throws BadRequestHttpException|GuzzleException
      */
     public function actionPurgeUrls(): Response
@@ -69,10 +68,7 @@ class DefaultController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $request = Craft::$app->getRequest();
-        $session = Craft::$app->getSession();
-
-        $urls = $request->getBodyParam('urls');
+        $urls = Craft::$app->getRequest()->getBodyParam('urls');
 
         if (empty($urls)) {
             return $this->asFailure(Craft::t(
