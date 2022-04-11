@@ -39,6 +39,7 @@ jobs:
   test:
     name: Codeception PHP ${{ matrix.php-versions }} + ${{ matrix.db }}
     runs-on: ${{ matrix.operating-system }}
+    needs: [ecs, phpstan]
 
     strategy:
       matrix:
