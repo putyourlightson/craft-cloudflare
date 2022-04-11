@@ -39,7 +39,7 @@ class Api extends Component
     public const API_BASE_URL = 'https://api.cloudflare.com/client/v4/';
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected array $responseItems;
 
@@ -49,7 +49,7 @@ class Api extends Component
     private ?Client $_client = null;
 
     /**
-     * @var array
+     * @var string[]
      */
     private array $_connectionErrors = [];
 
@@ -133,7 +133,7 @@ class Api extends Component
     /**
      * Returns an array of connection errors.
      *
-     * @return array
+     * @return string[]
      */
     public function getConnectionErrors(): array
     {
@@ -163,7 +163,7 @@ class Api extends Component
      * Get a list of zones (domains) available for the provided Cloudflare account.
      * https://api.cloudflare.com/#zone-list-zones
      *
-     * @return array|null zones from `response.result` (combined if there was pagination)
+     * @return mixed[]|null zones from `response.result` (combined if there was pagination)
      * @throws GuzzleException
      */
     public function getZones(): ?array
@@ -297,7 +297,7 @@ class Api extends Component
      * Clear specific URLs in Cloudflare’s cache.
      * https://api.cloudflare.com/#zone-purge-individual-files-by-url-and-cache-tags
      *
-     * @param array $urls array of absolute URLs
+     * @param string[] $urls array of absolute URLs
      *
      * @return mixed|null  API response data or null
      * @throws GuzzleException
@@ -367,9 +367,9 @@ class Api extends Component
     /**
      * Quietly handle an exception from the Cloudflare API.
      *
-     * @param mixed  $exception (ClientException or RequestException)
-     * @param string $action    human-friendly description of the attempted action
-     * @param array  $urls      related URLs (if relevant)
+     * @param mixed     $exception (ClientException or RequestException)
+     * @param string    $action    human-friendly description of the attempted action
+     * @param string[]  $urls      related URLs (if relevant)
      *
      * @return object with populated `result` property array
      */
@@ -449,7 +449,7 @@ class Api extends Component
     /**
      * Returns request headers for the relevant authorization type.
      *
-     * @return array
+     * @return array<string, string>
      */
     private function _getClientHeaders(): array
     {

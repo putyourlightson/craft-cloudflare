@@ -4,6 +4,7 @@ namespace workingconcept\cloudflare\models;
 
 use Craft;
 use craft\base\Model;
+use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\cloudflare\Cloudflare;
 
 class Settings extends Model
@@ -45,7 +46,7 @@ class Settings extends Model
     public ?string $zone = null;
 
     /**
-     * @var array  List of element type classes that should be purged automatically.
+     * @var string[]  List of element type classes that should be purged automatically.
      * @since 0.5.0
      */
     public array $purgeElements = [
@@ -76,7 +77,7 @@ class Settings extends Model
      * Returns `true` if Cloudflare permissions allow listing zones.
      *
      * @return bool
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function canListZones(): bool
     {
@@ -85,6 +86,7 @@ class Settings extends Model
 
     /**
      * @inheritdoc
+     * @return mixed[]
      */
     public function rules(): array
     {
@@ -102,6 +104,9 @@ class Settings extends Model
         ];
     }
 
+    /**
+     * @return mixed[]
+     */
     private function _getStaticConfig(): array
     {
         return Craft::$app->getConfig()->getConfigFromFile('cloudflare');

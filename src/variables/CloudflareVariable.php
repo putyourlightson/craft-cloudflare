@@ -11,6 +11,7 @@
 namespace workingconcept\cloudflare\variables;
 
 use craft\base\Model;
+use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\cloudflare\Cloudflare;
 
 /**
@@ -23,8 +24,8 @@ class CloudflareVariable
     /**
      * Returns the zones.
      *
-     * @return array|null
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return mixed[]|null
+     * @throws GuzzleException
      */
     public function getZones(): ?array
     {
@@ -34,8 +35,8 @@ class CloudflareVariable
     /**
      * Returns the zone options.
      *
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return array<int, string>
+     * @throws GuzzleException
      */
     public function getZoneOptions(): array
     {
@@ -53,7 +54,7 @@ class CloudflareVariable
     /**
      * Returns the rules.
      *
-     * @return array
+     * @return string[][]
      */
     public function getRulesForTable(): array
     {

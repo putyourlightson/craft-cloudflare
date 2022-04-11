@@ -21,7 +21,7 @@ class PurgeController extends Controller
      * Attempt to purge specific URLs.
      * https://www.yiiframework.com/doc/guide/2.0/en/tutorial-console#arguments
      *
-     * @param array $urls
+     * @param string[] $urls
      * @return int
      * @throws GuzzleException
      */

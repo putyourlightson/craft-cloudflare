@@ -47,7 +47,7 @@ use yii\base\Exception;
 class Cloudflare extends Plugin
 {
     /**
-     * @var array
+     * @var string[]
      */
     public static array $supportedElementTypes = [
         'craft\elements\Asset',

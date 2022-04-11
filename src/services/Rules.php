@@ -8,10 +8,12 @@ use craft\base\Component;
 use craft\errors\SiteNotFoundException;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\cloudflare\Cloudflare;
 use workingconcept\cloudflare\records\RuleRecord;
 use yii\base\Exception;
 use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
 
 /**
  * Provides a Cloudflare page rule service
@@ -26,7 +28,7 @@ class Rules extends Component
     /**
      * Returns all rules for a table.
      *
-     * @return array
+     * @return array<string, array<int, mixed>>
      */
     public function getRulesForTable(): array
     {
@@ -44,7 +46,7 @@ class Rules extends Component
     }
 
     /**
-     * @return array|null
+     * @return ActiveRecord[]|null
      */
     public function getRules(): ?array
     {
@@ -83,7 +85,7 @@ class Rules extends Component
      * @param string $url
      *
      * @return void
-     * @throws Exception|\GuzzleHttp\Exception\GuzzleException
+     * @throws Exception|GuzzleException
      */
     public function purgeCachesForUrl(string $url): void
     {
@@ -93,6 +95,7 @@ class Rules extends Component
         $urlsToPurge = [];
 
         foreach ($relatedRules as $rule) {
+            /** @var RuleRecord $rule */
             $clearList = Json::decode($rule->urlsToClear);
 
             foreach ($clearList as $clearUrl) {
@@ -118,9 +121,9 @@ class Rules extends Component
     /**
      * Get any rules that match a supplied URL.
      *
-     * @param  string $url URL from Craft event that needs to be checked
+     * @param  string  $url  URL from Craft event that needs to be checked
      *
-     * @return array       rules related to URL
+     * @return RuleRecord[]  rules related to URL
      */
     public function getRulesForUrl(string $url): array
     {
@@ -128,6 +131,7 @@ class Rules extends Component
 
         if ($rules = $this->getRules()) {
             foreach ($rules as $rule) {
+                /** @var RuleRecord $rule */
                 if (preg_match("`" . $rule->trigger . "`", $url)) {
                     $relatedRules[] = $rule;
                 }

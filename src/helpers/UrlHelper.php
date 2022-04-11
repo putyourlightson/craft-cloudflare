@@ -18,8 +18,8 @@ class UrlHelper
     /**
      * Only return URLs that can be sent to Cloudflare.
      *
-     * @param array $urls Array of URL strings to be cleared.
-     * @return array Validated, trimmed values only.
+     * @param string[] $urls Array of URL strings to be cleared.
+     * @return string[] Validated, trimmed values only.
      */
     public static function prepUrls(array $urls = []): array
     {
