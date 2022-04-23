@@ -35,7 +35,6 @@
   },
   "require-dev": {
     "vlucas/phpdotenv": "^3.4",
-    "roave/security-advisories": "dev-latest",
     "codeception/codeception": "^4.0.0",
     "codeception/module-phpbrowser": "^1.0.0",
     "codeception/module-asserts": "^1.0.0",
