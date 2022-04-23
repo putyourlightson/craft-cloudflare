@@ -12,6 +12,7 @@ namespace workingconcept\cloudflare;
 
 use workingconcept\cloudflare\helpers\ConfigHelper;
 use workingconcept\cloudflare\jobs\FlushCFCacheJob;
+use workingconcept\cloudflare\queue\jobs\PurgeCloudflareCache;
 use workingconcept\cloudflare\services\Api;
 use workingconcept\cloudflare\services\Rules;
 use workingconcept\cloudflare\utilities\PurgeUtility;
@@ -323,7 +324,7 @@ class Cloudflare extends Plugin
                 $elementUrl = UrlHelper::siteUrl($elementUrl);
             }
 
-            Queue::push(new FlushCFCacheJob(['urls' => [$elementUrl]]));;
+            Queue::push(new PurgeCloudflareCache(['urls' => [$elementUrl]]));
         }
 
         /**
