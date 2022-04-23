@@ -11,6 +11,7 @@
 namespace workingconcept\cloudflare;
 
 use workingconcept\cloudflare\helpers\ConfigHelper;
+use workingconcept\cloudflare\jobs\FlushCFCacheJob;
 use workingconcept\cloudflare\services\Api;
 use workingconcept\cloudflare\services\Rules;
 use workingconcept\cloudflare\utilities\PurgeUtility;
@@ -33,6 +34,8 @@ use craft\services\Utilities;
 use yii\base\Event;
 use yii\base\Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use craft\helpers\ElementHelper;
+use craft\helpers\Queue;
 
 /**
  * Class Cloudflare
@@ -41,7 +44,7 @@ use GuzzleHttp\Exception\GuzzleException;
  * @package   Cloudflare
  * @since     1.0.0
  *
- * @property  Api   $api
+ * @property  Api $api
  * @property  Rules $rules
  */
 class Cloudflare extends Plugin
@@ -221,7 +224,7 @@ class Cloudflare extends Plugin
         return Craft::$app->view->renderTemplate(
             'cloudflare/settings',
             [
-                'settings'  => $this->getSettings(),
+                'settings' => $this->getSettings(),
                 'isConfigured' => ConfigHelper::isConfigured(),
                 'isCraft31' => ConfigHelper::isCraft31(),
                 'elementTypes' => $this->_getElementTypeOptions()
@@ -262,7 +265,7 @@ class Cloudflare extends Plugin
     private function _isSupportedElementType(string $elementType): bool
     {
         $elementType = ConfigHelper::normalizeClassName($elementType);
-        
+
         return in_array($elementType, self::$supportedElementTypes, true);
     }
 
@@ -303,6 +306,11 @@ class Cloudflare extends Plugin
             return;
         }
 
+        // Bail if this is not published
+        if (ElementHelper::isDraftOrRevision($element)) {
+            return;
+        }
+
         $className = get_class($element);
 
         if (! $isNew && $this->_shouldPurgeElementType($className)) {
@@ -315,9 +323,7 @@ class Cloudflare extends Plugin
                 $elementUrl = UrlHelper::siteUrl($elementUrl);
             }
 
-            $this->api->purgeUrls([
-                $elementUrl
-            ]);
+            Queue::push(new FlushCFCacheJob(['urls' => [$elementUrl]]));;
         }
 
         /**
