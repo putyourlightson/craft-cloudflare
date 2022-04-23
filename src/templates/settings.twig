@@ -52,12 +52,8 @@
     instructions: 'Add your API token. It must include at least `cache_purge:edit` and `zone:read` permissions.'|t('cloudflare'),
   } %}
 
-  {% if isCraft31 %}
-    {% set apiTokenFieldSettings = apiTokenFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
-    {{ forms.autosuggestField(apiTokenFieldSettings) }}
-  {% else %}
-    {{ forms.passwordField(apiTokenFieldSettings) }}
-  {% endif %}
+  {% set apiTokenFieldSettings = apiTokenFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+  {{ forms.autosuggestField(apiTokenFieldSettings) }}
 </div>
 
 <div id="fields-api-key"{% if not (settings.authType == 'key' or settings.authType is empty) %} class="hidden"{% endif %}>
@@ -75,12 +71,8 @@
     instructions: 'Add your API key, which you’ll find in the _My Profile_ section of Cloudflare’s interface.'|t('cloudflare'),
   } %}
 
-  {% if isCraft31 %}
-    {% set apiKeyFieldSettings = apiKeyFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
-    {{ forms.autosuggestField(apiKeyFieldSettings) }}
-  {% else %}
-    {{ forms.passwordField(apiKeyFieldSettings) }}
-  {% endif %}
+  {% set apiKeyFieldSettings = apiKeyFieldSettings | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+  {{ forms.autosuggestField(apiKeyFieldSettings) }}
 
   {{ forms.textField( {
     label: 'Cloudflare Account Email'|t('cloudflare'),

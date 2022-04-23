@@ -10,6 +10,7 @@ namespace workingconcept\cloudflare\helpers;
 
 use Craft;
 use craft\console\Application as ConsoleApplication;
+use craft\helpers\App;
 use workingconcept\cloudflare\Cloudflare;
 use workingconcept\cloudflare\models\Settings;
 
@@ -60,22 +61,12 @@ class ConfigHelper
         $settingValue = $usePost ? $request->getParam($key) :
             Cloudflare::getInstance()->getSettings()->{$key} ?? null;
 
-        if (self::isCraft31() && $settingValue) {
+        if ($settingValue) {
             /** @scrutinizer ignore-call */
-            return Craft::parseEnv($settingValue);
+            return App::parseEnv($settingValue);
         }
 
         return $settingValue;
-    }
-
-    /**
-     * Returns `true` if Craft version is 3.1 or greater.
-     *
-     * @return bool
-     */
-    public static function isCraft31(): bool
-    {
-        return version_compare(Craft::$app->getVersion(), '3.1', '>=');
     }
 
     /**
@@ -85,7 +76,7 @@ class ConfigHelper
      *
      * @return string
      */
-    public static function normalizeClassName($class): string
+    public static function normalizeClassName(string $class): string
     {
         // remove any leading slash
         return ltrim($class, '\\');

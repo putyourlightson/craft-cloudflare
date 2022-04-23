@@ -223,7 +223,6 @@ class Cloudflare extends Plugin
             [
                 'settings' => $this->getSettings(),
                 'isConfigured' => ConfigHelper::isConfigured(),
-                'isCraft31' => ConfigHelper::isCraft31(),
                 'elementTypes' => $this->_getElementTypeOptions(),
             ]
         );
