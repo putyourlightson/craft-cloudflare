@@ -188,20 +188,20 @@ class Cloudflare extends Plugin
         /** @var Settings $settings */
         $settings = $this->getSettings();
 
-        // save the human-friendly zone name if we have one
+        // Save the human-friendly zone name if we have one
         if ($zoneInfo = $this->api->getZoneById(
             ConfigHelper::getParsedSetting('zone')
         )) {
             $settings->zoneName = $zoneInfo->name;
         }
 
-        // don’t save stale key credentials
+        // Don’t save stale key credentials
         if ($settings->authType === Settings::AUTH_TYPE_TOKEN) {
             $settings->apiKey = null;
             $settings->email = null;
         }
 
-        // don’t save stale token
+        // Don’t save stale token
         if ($settings->authType === Settings::AUTH_TYPE_KEY) {
             $settings->apiToken = null;
         }
@@ -302,7 +302,7 @@ class Cloudflare extends Plugin
      */
     private function _handleElementChange(bool $isNew, $element): void
     {
-        // bail if we don’t have an Element or an Element URL to work with
+        // Bail if we don’t have an Element or an Element URL to work with
         if ($element === null || $element->getUrl() === null) {
             return;
         }
