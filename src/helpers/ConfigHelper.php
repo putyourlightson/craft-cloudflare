@@ -1,6 +1,6 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 3.x
+ * Cloudflare plugin for Craft CMS 4.x
  *
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2019 Working Concept Inc.

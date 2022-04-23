@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Cloudflare plugin for Craft CMS 3.x
+ * Cloudflare plugin for Craft CMS 4.x
  *
  * Purge Cloudflare caches from Craft.
  *
