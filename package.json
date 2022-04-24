@@ -1,6 +1,5 @@
 {
   "name": "cloudflare-craft-plugin",
-  "version": "1.0.3.1",
   "description": "![Cloudflare](resources/hero.svg)",
   "main": "index.js",
   "scripts": {

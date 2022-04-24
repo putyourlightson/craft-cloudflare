@@ -1,5 +1,13 @@
 # Cloudflare Changelog
-## Unreleased
+
+## 2.0.0-beta.1
+### Changed
+- Plugin now requires Craft 4 beta.
+
+### Fixed
+- Fixed successful verification button text color in plugin settings.
+
+## 1.1.0 - 2022-04-23
 ### Changed
 - Automatic element-save cache purges are now sent to the queue to speed up element saves.
 - Cleaned up translation files and added new keys to German set.
@@ -10,13 +18,6 @@
 ## 1.0.3.1 - 2022-01-31
 ### Fixed
 - Fixed a bug where only the zone cache purge would log a `200`-status failure response. (Now applies to all other API requests.)
-
-## Unreleased
-### Changed
-- Plugin now requires Craft 4 beta.
-
-### Fixed
-- Fixed successful verification button text color in plugin settings.
 
 ## 1.0.3 - 2022-01-29
 ### Fixed
