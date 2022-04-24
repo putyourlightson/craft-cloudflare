@@ -17,6 +17,8 @@ use craft\console\Application as ConsoleApplication;
 use craft\events\ElementEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\helpers\ElementHelper;
+use craft\helpers\Queue;
 use craft\helpers\UrlHelper;
 use craft\services\Dashboard;
 use craft\services\Elements;
@@ -26,6 +28,7 @@ use craft\web\UrlManager;
 use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\cloudflare\helpers\ConfigHelper;
 use workingconcept\cloudflare\models\Settings;
+use workingconcept\cloudflare\queue\jobs\PurgeCloudflareCache;
 use workingconcept\cloudflare\services\Api;
 use workingconcept\cloudflare\services\Rules;
 use workingconcept\cloudflare\utilities\PurgeUtility;
@@ -41,7 +44,7 @@ use yii\base\Exception;
  * @package   Cloudflare
  * @since     1.0.0
  *
- * @property  Api   $api
+ * @property  Api $api
  * @property  Rules $rules
  */
 class Cloudflare extends Plugin
@@ -184,20 +187,20 @@ class Cloudflare extends Plugin
         /** @var Settings $settings */
         $settings = $this->getSettings();
 
-        // save the human-friendly zone name if we have one
+        // Save the human-friendly zone name if we have one
         if ($zoneInfo = $this->api->getZoneById(
             ConfigHelper::getParsedSetting('zone')
         )) {
             $settings->zoneName = $zoneInfo->name;
         }
 
-        // don’t save stale key credentials
+        // Don’t save stale key credentials
         if ($settings->authType === Settings::AUTH_TYPE_TOKEN) {
             $settings->apiKey = null;
             $settings->email = null;
         }
 
-        // don’t save stale token
+        // Don’t save stale token
         if ($settings->authType === Settings::AUTH_TYPE_KEY) {
             $settings->apiToken = null;
         }
@@ -299,8 +302,13 @@ class Cloudflare extends Plugin
      */
     private function _handleElementChange(bool $isNew, ?ElementInterface $element): void
     {
-        // bail if we don’t have an Element or an Element URL to work with
+        // Bail if we don’t have an Element or an Element URL to work with
         if ($element === null || $element->getUrl() === null) {
+            return;
+        }
+
+        // Bail if this is not published
+        if (ElementHelper::isDraftOrRevision($element)) {
             return;
         }
 
@@ -316,9 +324,7 @@ class Cloudflare extends Plugin
                 $elementUrl = UrlHelper::siteUrl($elementUrl);
             }
 
-            $this->api->purgeUrls([
-                $elementUrl,
-            ]);
+            Queue::push(new PurgeCloudflareCache(['urls' => [$elementUrl]]));
         }
 
         /**

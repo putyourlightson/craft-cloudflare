@@ -228,9 +228,9 @@ class Api extends Component
             }
         } catch (RequestException $exception) {
             Craft::info(sprintf(
-                    'Zone request failed: %s',
-                    $this->_getExceptionReason($exception)
-                ),
+                'Zone request failed: %s',
+                $this->_getExceptionReason($exception)
+            ),
                 'cloudflare'
             );
 
@@ -261,9 +261,9 @@ class Api extends Component
 
         try {
             $response = $this->getClient()->delete(sprintf(
-                    'zones/%s/purge_cache',
-                    ConfigHelper::getParsedSetting('zone')
-                ),
+                'zones/%s/purge_cache',
+                ConfigHelper::getParsedSetting('zone')
+            ),
                 [ 'body' => Json::encode([ 'purge_everything' => true ]) ]
             );
 
@@ -319,9 +319,9 @@ class Api extends Component
 
         try {
             $response = $this->getClient()->delete(sprintf(
-                    'zones/%s/purge_cache',
-                    ConfigHelper::getParsedSetting('zone')
-                ),
+                'zones/%s/purge_cache',
+                ConfigHelper::getParsedSetting('zone')
+            ),
                 [ 'body' => Json::encode([ 'files' => $urls ]) ]
             );
 

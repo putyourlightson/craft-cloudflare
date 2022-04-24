@@ -7,9 +7,11 @@ use craft\base\Component;
 
 use craft\errors\SiteNotFoundException;
 use craft\helpers\Json;
+use craft\helpers\Queue;
 use craft\helpers\UrlHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\cloudflare\Cloudflare;
+use workingconcept\cloudflare\queue\jobs\PurgeCloudflareCache;
 use workingconcept\cloudflare\records\RuleRecord;
 use yii\base\Exception;
 use yii\base\NotSupportedException;
@@ -55,7 +57,7 @@ class Rules extends Component
     }
 
     /**
-     * Get supplied rules from the CP view and save them to the database.
+     * Get supplied rules from the control panel view and save them to the database.
      *
      * @return void
      * @throws SiteNotFoundException
@@ -83,12 +85,15 @@ class Rules extends Component
     }
 
     /**
-     * @param string $url
+     * Purge any related URLs we’ve established with custom rules.
+     *
+     * @param string $url          The URL our custom rules should be checked against
+     * @param bool   $immediately  Whether to skip the queue and immediately call Cloudflare’s API
      *
      * @return void
      * @throws Exception|GuzzleException
      */
-    public function purgeCachesForUrl(string $url): void
+    public function purgeCachesForUrl(string $url, bool $immediately = false): void
     {
         // max limit for Cloudflare API
         $cloudflareRuleCountLimit = 30;
@@ -115,7 +120,11 @@ class Rules extends Component
             );
         }
 
-        Cloudflare::getInstance()->api->purgeUrls($urlsToPurge);
+        if ($immediately) {
+            Cloudflare::getInstance()->api->purgeUrls($urlsToPurge);
+        } else {
+            Queue::push(new PurgeCloudflareCache(['urls' => $urlsToPurge]));
+        }
     }
 
     /**
