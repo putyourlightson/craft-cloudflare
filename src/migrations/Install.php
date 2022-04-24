@@ -12,8 +12,8 @@ namespace workingconcept\cloudflare\migrations;
 
 use Craft;
 use craft\db\Migration;
-use workingconcept\cloudflare\db\Table;
 use craft\db\Table as CraftTable;
+use workingconcept\cloudflare\db\Table;
 
 /**
  * @author    Working Concept
@@ -34,8 +34,7 @@ class Install extends Migration
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
 
-        if ($this->createTables())
-        {
+        if ($this->createTables()) {
             $this->addForeignKeys();
             // Refresh the db schema caches
             Craft::$app->db->schema->refresh();
@@ -64,8 +63,7 @@ class Install extends Migration
 
         $tableSchema = Craft::$app->db->schema->getTableSchema(Table::RULES);
 
-        if ($tableSchema === null)
-        {
+        if ($tableSchema === null) {
             $tablesCreated = true;
             $this->createTable(
                 Table::RULES,
@@ -77,7 +75,7 @@ class Install extends Migration
                     'siteId' => $this->integer()->notNull(),
                     'trigger' => $this->string(255)->notNull(),
                     'urlsToClear' => $this->string(255)->notNull(),
-                    'refresh' => $this->boolean()->defaultValue(false)
+                    'refresh' => $this->boolean()->defaultValue(false),
                 ]
             );
         }

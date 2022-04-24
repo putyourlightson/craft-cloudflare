@@ -28,13 +28,13 @@ class Rules extends Component
      */
     public function getRulesForTable(): array
     {
-        $data  = [];
+        $data = [];
         $rules = $this->getRules();
 
         foreach ($rules as $rule) {
             $data[(string)$rule->id] = [
                 0 => $rule->trigger,
-                1 => implode("\n", Json::decode($rule->urlsToClear))
+                1 => implode("\n", Json::decode($rule->urlsToClear)),
             ];
         }
 
@@ -115,7 +115,6 @@ class Rules extends Component
 
         if ($immediately) {
             Cloudflare::getInstance()->api->purgeUrls($urlsToPurge);
-
         } else {
             Queue::push(new PurgeCloudflareCache(['urls' => $urlsToPurge]));
         }
@@ -132,12 +131,9 @@ class Rules extends Component
     {
         $relatedRules = [];
 
-        if ($rules = $this->getRules())
-        {
-            foreach ($rules as $rule)
-            {
-                if (preg_match("`" . $rule->trigger . "`", $url))
-                {
+        if ($rules = $this->getRules()) {
+            foreach ($rules as $rule) {
+                if (preg_match("`" . $rule->trigger . "`", $url)) {
                     $relatedRules[] = $rule;
                 }
             }

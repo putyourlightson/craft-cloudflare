@@ -38,21 +38,18 @@ class m200307_232253_purge_element_settings extends Migration
         $settings = $projectConfig->get('plugins.cloudflare.settings');
         $schemaVersion = $projectConfig->get('plugins.cloudflare.schemaVersion');
 
-        if (empty($settings) || version_compare($schemaVersion, '1.0.1', '>='))
-        {
+        if (empty($settings) || version_compare($schemaVersion, '1.0.1', '>=')) {
             echo 'No settings to update.';
             return;
         }
 
         $purgeElements = [];
 
-        if ($settings['purgeEntryUrls'])
-        {
+        if ($settings['purgeEntryUrls']) {
             $purgeElements[] = 'craft\elements\Entry';
         }
 
-        if ($settings['purgeAssetUrls'])
-        {
+        if ($settings['purgeAssetUrls']) {
             $purgeElements[] = 'craft\elements\Asset';
         }
 

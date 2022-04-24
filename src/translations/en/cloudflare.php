@@ -54,7 +54,7 @@ return [
     'Zone ID hardcoded in config file.' => 'Zone ID hardcoded in config file.',
 
     // JavaScript strings
-    'Could not verify API credentials'  => 'Could not verify API credentials',
+    'Could not verify API credentials' => 'Could not verify API credentials',
     'Please enter an API key and email address first.' => 'Please enter an API key and email address first.',
     'Could not purge URLs' => 'Could not purge URLs',
     'Successfully purged URLs' => 'Successfully purged URLs',

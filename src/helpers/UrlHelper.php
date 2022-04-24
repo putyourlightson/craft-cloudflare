@@ -8,9 +8,9 @@
 
 namespace workingconcept\cloudflare\helpers;
 
-use workingconcept\cloudflare\Cloudflare;
 use Craft;
 use Pdp;
+use workingconcept\cloudflare\Cloudflare;
 
 class UrlHelper
 {
@@ -68,7 +68,7 @@ class UrlHelper
          * uses it since it otherwise won't be cleared.
          */
         if ($includeZoneCheck) {
-            if ( ! $urlDomain = self::getBaseDomainFromUrl($url)) {
+            if (!$urlDomain = self::getBaseDomainFromUrl($url)) {
                 // bail if we couldn't even get a base domain
                 return false;
             }

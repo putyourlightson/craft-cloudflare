@@ -72,7 +72,7 @@ class PurgeController extends Controller
             $this->stdout('✗ purge failed' . PHP_EOL);
 
             if (isset($response->errors)) {
-                foreach($response->errors as $error) {
+                foreach ($response->errors as $error) {
                     $this->stdout(
                         sprintf('- %s: %s', $error->code, $error->message) . PHP_EOL
                     );

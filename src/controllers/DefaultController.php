@@ -10,12 +10,12 @@
 
 namespace workingconcept\cloudflare\controllers;
 
-use workingconcept\cloudflare\Cloudflare;
 use Craft;
 use craft\web\Controller;
-use yii\web\Response;
-use yii\web\BadRequestHttpException;
 use GuzzleHttp\Exception\GuzzleException;
+use workingconcept\cloudflare\Cloudflare;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 
 /**
  * @author    Working Concept
@@ -36,10 +36,10 @@ class DefaultController extends Controller
 
         $wasSuccessful = Cloudflare::getInstance()->api->verifyConnection();
         $return = [
-            'success' => $wasSuccessful
+            'success' => $wasSuccessful,
         ];
 
-        if ( ! $wasSuccessful) {
+        if (!$wasSuccessful) {
             $return['errors'] = Cloudflare::getInstance()->api->getConnectionErrors();
         }
 
@@ -75,8 +75,7 @@ class DefaultController extends Controller
 
         $urls = $request->getBodyParam('urls');
 
-        if (empty($urls))
-        {
+        if (empty($urls)) {
             $session->setError(Craft::t(
                 'cloudflare',
                 'Failed to purge empty or invalid URLs.'

@@ -10,11 +10,11 @@
 
 namespace workingconcept\cloudflare\widgets;
 
+use Craft;
+use craft\base\Widget;
 use workingconcept\cloudflare\assetbundles\CloudflareAsset;
 use workingconcept\cloudflare\Cloudflare;
 use workingconcept\cloudflare\helpers\ConfigHelper;
-use Craft;
-use craft\base\Widget;
 
 /**
  * Cloudflare Widget
@@ -88,7 +88,7 @@ class QuickPurge extends Widget
             'cloudflare/widget',
             [
                 'settings' => Cloudflare::getInstance()->getSettings(),
-                'isConfigured' => ConfigHelper::isConfigured()
+                'isConfigured' => ConfigHelper::isConfigured(),
             ]
         );
     }
