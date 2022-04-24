@@ -11,6 +11,7 @@ namespace workingconcept\cloudflare\helpers;
 use Craft;
 use Pdp;
 use workingconcept\cloudflare\Cloudflare;
+use workingconcept\cloudflare\models\Settings;
 
 class UrlHelper
 {
@@ -22,7 +23,9 @@ class UrlHelper
      */
     public static function prepUrls($urls = []): array
     {
-        $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
+        /** @var Settings $settings */
+        $settings = Cloudflare::getInstance()->getSettings();
+        $cfDomainName = $settings->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
 
         // trim leading+trailing whitespace
@@ -49,8 +52,6 @@ class UrlHelper
      */
     public static function isPurgeableUrl(string $url, bool $includeZoneCheck): bool
     {
-        $cfDomainName = Cloudflare::getInstance()->getSettings()->zoneName;
-
         /**
          * Provided string is a valid URL.
          */
@@ -73,7 +74,10 @@ class UrlHelper
                 return false;
             }
 
-            if (strtolower($urlDomain) !== strtolower($cfDomainName)) {
+            /** @var Settings $settings */
+            $settings = Cloudflare::getInstance()->getSettings();
+
+            if (strtolower($urlDomain) !== strtolower($settings->zoneName)) {
                 Craft::info(
                     sprintf('Ignoring URL outside zone: %s', $url),
                     'cloudflare'

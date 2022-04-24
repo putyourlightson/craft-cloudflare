@@ -81,7 +81,7 @@ class ConfigHelper
     /**
      * Strips leading slash from namespaced class and returns it.
      *
-     * @param $class
+     * @param string $class
      *
      * @return string
      */

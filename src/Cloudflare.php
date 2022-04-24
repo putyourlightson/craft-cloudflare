@@ -273,7 +273,7 @@ class Cloudflare extends Plugin
      * Returns `true` if the provided element type is both supported and
      * enabled for purging in the plugin’s settings.
      *
-     * @param $elementType
+     * @param string $elementType
      *
      * @return bool
      */
@@ -284,7 +284,9 @@ class Cloudflare extends Plugin
         }
 
         $elementType = ConfigHelper::normalizeClassName($elementType);
-        $purgeElements = $this->getSettings()->purgeElements;
+        /** @var Settings $settings */
+        $settings = $this->getSettings();
+        $purgeElements = $settings->purgeElements;
 
         if (empty($purgeElements) || !is_array($purgeElements)) {
             return false;

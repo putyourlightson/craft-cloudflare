@@ -356,8 +356,8 @@ class Api extends Component
     /**
      * Returns `true` if the provided response status and data indicate success.
      *
-     * @param $response
-     * @param $responseBody
+     * @param object $response
+     * @param object $responseBody
      * @return bool
      */
     private function _isSuccessfulResponse($response, $responseBody): bool
@@ -429,7 +429,7 @@ class Api extends Component
                 $perPage
             ));
 
-            if (!$response->getStatusCode() === 200) {
+            if (! ($response->getStatusCode() === 200)) {
                 return $this->_failureResponse(sprintf(
                     'Request failed: %s',
                     $response->getBody()
@@ -477,7 +477,7 @@ class Api extends Component
     /**
      * Log message and return standard failure response.
      *
-     * @param $message
+     * @param string $message
      *
      * @return object
      */

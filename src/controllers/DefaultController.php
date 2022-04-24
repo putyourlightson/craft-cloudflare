@@ -61,11 +61,9 @@ class DefaultController extends Controller
      * Purges URLs passed in the `urls` parameter, whose value should be a string
      * with each URL on its own line.
      *
-     * @return mixed
-     * @throws craft\errors\MissingComponentException without a valid session.
-     * @throws BadRequestHttpException|GuzzleException
+     * @return Response
      */
-    public function actionPurgeUrls()
+    public function actionPurgeUrls(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -96,10 +94,10 @@ class DefaultController extends Controller
     /**
      * Purges entire Cloudflare zone cache.
      *
-     * @return mixed
+     * @return Response
      * @throws BadRequestHttpException|GuzzleException
      */
-    public function actionPurgeAll()
+    public function actionPurgeAll(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
