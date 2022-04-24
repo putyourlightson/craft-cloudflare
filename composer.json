@@ -2,7 +2,7 @@
   "name": "workingconcept/craft-cloudflare",
   "description": "Purge Cloudflare caches from Craft.",
   "type": "craft-plugin",
-  "version": "1.0.3.1",
+  "version": "1.1.0",
   "keywords": [
     "craft",
     "cms",
@@ -27,7 +27,10 @@
   ],
   "scripts": {
     "post-install-cmd": "\\Pdp\\Installer::updateLocalCache",
-    "post-update-cmd": "\\Pdp\\Installer::updateLocalCache"
+    "post-update-cmd": "\\Pdp\\Installer::updateLocalCache",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --ansi --fix",
+    "phpstan": "phpstan --memory-limit=1G"
   },
   "require": {
     "craftcms/cms": "^3.6.0",
@@ -35,27 +38,26 @@
   },
   "require-dev": {
     "vlucas/phpdotenv": "^3.4",
-    "roave/security-advisories": "dev-latest",
     "codeception/codeception": "^4.0.0",
     "codeception/module-phpbrowser": "^1.0.0",
     "codeception/module-asserts": "^1.0.0",
     "codeception/module-rest": "^1.0.0",
     "codeception/module-datafactory": "^1.0.0",
-    "codeception/module-yii2": "^1.0.0"
+    "codeception/module-yii2": "^1.0.0",
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main"
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://asset-packagist.org"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "workingconcept\\cloudflare\\": "src/"
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
   },
   "extra": {
     "name": "Cloudflare",

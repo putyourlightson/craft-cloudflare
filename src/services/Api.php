@@ -10,16 +10,16 @@
 
 namespace workingconcept\cloudflare\services;
 
-use workingconcept\cloudflare\helpers\ConfigHelper;
-use workingconcept\cloudflare\models\Settings;
-use workingconcept\cloudflare\helpers\UrlHelper;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\GuzzleException;
 use Craft;
 use craft\base\Component;
 use craft\helpers\Json;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
+use workingconcept\cloudflare\helpers\ConfigHelper;
+use workingconcept\cloudflare\helpers\UrlHelper;
+use workingconcept\cloudflare\models\Settings;
 
 /**
  * @author    Working Concept
@@ -61,7 +61,7 @@ class Api extends Component
                 'base_uri' => self::API_BASE_URL,
                 'headers' => $this->_getClientHeaders(),
                 'verify' => false,
-                'debug' => false
+                'debug' => false,
             ]);
         }
 
@@ -136,7 +136,7 @@ class Api extends Component
      */
     public function canListZones(): bool
     {
-        if ( ! $this->getClient()) {
+        if (!$this->getClient()) {
             return false;
         }
 
@@ -156,7 +156,7 @@ class Api extends Component
      */
     public function getZones(): ?array
     {
-        if ( ! $this->getClient()) {
+        if (!$this->getClient()) {
             return null;
         }
 
@@ -196,7 +196,7 @@ class Api extends Component
      */
     public function getZoneById(string $zoneId): ?object
     {
-        if (! $this->getClient()) {
+        if (!$this->getClient()) {
             return null;
         }
 
@@ -208,7 +208,7 @@ class Api extends Component
 
             $responseBody = Json::decode($response->getBody(), false);
 
-            if (! $this->_isSuccessfulResponse($response, $responseBody)) {
+            if (!$this->_isSuccessfulResponse($response, $responseBody)) {
                 Craft::info(sprintf(
                     'Request failed: %s',
                     $responseBody->errors
@@ -216,7 +216,7 @@ class Api extends Component
 
                 return null;
             }
-        } catch(RequestException $exception) {
+        } catch (RequestException $exception) {
             Craft::info(sprintf(
                     'Zone request failed: %s',
                     $this->_getExceptionReason($exception)
@@ -244,7 +244,7 @@ class Api extends Component
      */
     public function purgeZoneCache()
     {
-        if ( ! $this->getClient()) {
+        if (!$this->getClient()) {
             return null;
         }
 
@@ -258,7 +258,7 @@ class Api extends Component
 
             $responseBody = Json::decode($response->getBody(), false);
 
-            if (! $this->_isSuccessfulResponse($response, $responseBody)) {
+            if (!$this->_isSuccessfulResponse($response, $responseBody)) {
                 Craft::info(sprintf(
                     'Zone purge request failed: %s',
                     $responseBody->errors
@@ -267,7 +267,7 @@ class Api extends Component
                 return (object) [
                     'success' => false,
                     'message' => $responseBody,
-                    'result' => []
+                    'result' => [],
                 ];
             }
 
@@ -277,7 +277,7 @@ class Api extends Component
             );
 
             return $responseBody;
-        } catch(ClientException | RequestException $exception) {
+        } catch (ClientException | RequestException $exception) {
             return $this->_handleApiException($exception, 'zone purge');
         }
     }
@@ -293,7 +293,7 @@ class Api extends Component
      */
     public function purgeUrls(array $urls = [])
     {
-        if ( ! $this->getClient()) {
+        if (!$this->getClient()) {
             return null;
         }
 
@@ -316,7 +316,7 @@ class Api extends Component
 
             $responseBody = Json::decode($response->getBody(), false);
 
-            if (! $this->_isSuccessfulResponse($response, $responseBody)) {
+            if (!$this->_isSuccessfulResponse($response, $responseBody)) {
                 Craft::info(sprintf(
                     'Request failed: %s',
                     Json::encode($responseBody->errors)
@@ -325,7 +325,7 @@ class Api extends Component
                 return (object) [
                     'success' => false,
                     'message' => $responseBody,
-                    'result' => []
+                    'result' => [],
                 ];
             }
 
@@ -338,8 +338,7 @@ class Api extends Component
             ), 'cloudflare');
 
             return $responseBody;
-        }
-        catch(ClientException | RequestException $exception) {
+        } catch (ClientException | RequestException $exception) {
             return $this->_handleApiException($exception, 'URL purge', $urls);
         }
     }
@@ -357,8 +356,8 @@ class Api extends Component
     /**
      * Returns `true` if the provided response status and data indicate success.
      *
-     * @param $response
-     * @param $responseBody
+     * @param object $response
+     * @param object $responseBody
      * @return bool
      */
     private function _isSuccessfulResponse($response, $responseBody): bool
@@ -393,7 +392,7 @@ class Api extends Component
             return (object) [
                 'success' => false,
                 'errors' => $responseBody->errors ?? [],
-                'result' => []
+                'result' => [],
             ];
         }
 
@@ -415,7 +414,7 @@ class Api extends Component
      */
     private function _getPagedZones($page = 1, $perPage = 50)
     {
-        if ( ! $this->getClient()) {
+        if (!$this->getClient()) {
             return null;
         }
 
@@ -430,7 +429,7 @@ class Api extends Component
                 $perPage
             ));
 
-            if ( ! $response->getStatusCode() === 200) {
+            if (! ($response->getStatusCode() === 200)) {
                 return $this->_failureResponse(sprintf(
                     'Request failed: %s',
                     $response->getBody()
@@ -459,7 +458,7 @@ class Api extends Component
 
         $headers = [
             'Content-Type' => 'application/json',
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ];
 
         if ($authType === Settings::AUTH_TYPE_KEY) {
@@ -478,7 +477,7 @@ class Api extends Component
     /**
      * Log message and return standard failure response.
      *
-     * @param $message
+     * @param string $message
      *
      * @return object
      */
@@ -489,7 +488,7 @@ class Api extends Component
         return (object) [
             'success' => false,
             'message' => $message,
-            'result' => []
+            'result' => [],
         ];
     }
 
@@ -502,8 +501,7 @@ class Api extends Component
      */
     private function _getExceptionReason(RequestException $exception): string
     {
-        if ($exception->hasResponse())
-        {
+        if ($exception->hasResponse()) {
             return $exception->getResponse()->getBody()->getContents();
         }
 

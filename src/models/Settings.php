@@ -2,8 +2,8 @@
 
 namespace workingconcept\cloudflare\models;
 
-use craft\base\Model;
 use Craft;
+use craft\base\Model;
 use workingconcept\cloudflare\Cloudflare;
 
 class Settings extends Model
@@ -25,17 +25,17 @@ class Settings extends Model
     public $authType = 'key';
 
     /**
-     * @var string  Account-level API key.
+     * @var string|null  Account-level API key.
      */
     public $apiKey = '';
 
     /**
-     * @var string  Primary account email address. Required with $apiKey.
+     * @var string|null  Primary account email address. Required with $apiKey.
      */
     public $email = '';
 
     /**
-     * @var string  App token. (Alternative to $apiKey + $email.)
+     * @var string|null  App token. (Alternative to $apiKey + $email.)
      */
     public $apiToken = '';
 
@@ -92,10 +92,10 @@ class Settings extends Model
             [['purgeElements'], 'each', 'rule' => ['in', 'range' => Cloudflare::$supportedElementTypes]],
             [['apiKey', 'email', 'apiToken', 'zone', 'zoneName', 'userServiceKey'], 'string'],
             ['zone', 'required'],
-            [['apiKey', 'email'], 'required', 'when' => static function ($model) {
+            [['apiKey', 'email'], 'required', 'when' => static function($model) {
                 return $model->authType === self::AUTH_TYPE_KEY;
             }],
-            ['apiToken', 'required', 'when' => static function ($model) {
+            ['apiToken', 'required', 'when' => static function($model) {
                 return $model->authType === self::AUTH_TYPE_TOKEN;
             }],
         ];

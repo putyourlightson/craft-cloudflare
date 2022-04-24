@@ -18,7 +18,6 @@ class PurgeController extends Controller
 {
     /**
      * Attempt to purge specific URLs.
-     * https://www.yiiframework.com/doc/guide/2.0/en/tutorial-console#arguments
      *
      * @param array $urls
      * @return int
@@ -53,7 +52,7 @@ class PurgeController extends Controller
     /**
      * Handle Cloudflare’s API response for console output.
      *
-     * @param $response
+     * @param mixed $response
      * @return int
      */
     private function _handleResult($response): int
@@ -72,7 +71,7 @@ class PurgeController extends Controller
             $this->stdout('✗ purge failed' . PHP_EOL);
 
             if (isset($response->errors)) {
-                foreach($response->errors as $error) {
+                foreach ($response->errors as $error) {
                     $this->stdout(
                         sprintf('- %s: %s', $error->code, $error->message) . PHP_EOL
                     );

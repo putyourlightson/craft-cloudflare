@@ -1,4 +1,11 @@
 # Cloudflare Changelog
+## 1.1.0 - 2022-04-23
+### Changed
+- Automatic element-save cache purges are now sent to the queue to speed up element saves.
+- Cleaned up translation files and added new keys to German set.
+
+### Fixed
+- Draft entry and category saves are ignored and will not trigger a cache purge.
 
 ## 1.0.3.1 - 2022-01-31
 ### Fixed

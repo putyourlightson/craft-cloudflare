@@ -10,12 +10,12 @@
 
 namespace workingconcept\cloudflare\controllers;
 
-use workingconcept\cloudflare\Cloudflare;
 use Craft;
 use craft\web\Controller;
-use yii\web\Response;
-use yii\web\BadRequestHttpException;
 use GuzzleHttp\Exception\GuzzleException;
+use workingconcept\cloudflare\Cloudflare;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 
 /**
  * @author    Working Concept
@@ -36,10 +36,10 @@ class DefaultController extends Controller
 
         $wasSuccessful = Cloudflare::getInstance()->api->verifyConnection();
         $return = [
-            'success' => $wasSuccessful
+            'success' => $wasSuccessful,
         ];
 
-        if ( ! $wasSuccessful) {
+        if (!$wasSuccessful) {
             $return['errors'] = Cloudflare::getInstance()->api->getConnectionErrors();
         }
 
@@ -61,11 +61,9 @@ class DefaultController extends Controller
      * Purges URLs passed in the `urls` parameter, whose value should be a string
      * with each URL on its own line.
      *
-     * @return mixed
-     * @throws craft\errors\MissingComponentException without a valid session.
-     * @throws BadRequestHttpException|GuzzleException
+     * @return Response
      */
-    public function actionPurgeUrls()
+    public function actionPurgeUrls(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -75,8 +73,7 @@ class DefaultController extends Controller
 
         $urls = $request->getBodyParam('urls');
 
-        if (empty($urls))
-        {
+        if (empty($urls)) {
             $session->setError(Craft::t(
                 'cloudflare',
                 'Failed to purge empty or invalid URLs.'
@@ -97,10 +94,10 @@ class DefaultController extends Controller
     /**
      * Purges entire Cloudflare zone cache.
      *
-     * @return mixed
+     * @return Response
      * @throws BadRequestHttpException|GuzzleException
      */
-    public function actionPurgeAll()
+    public function actionPurgeAll(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();

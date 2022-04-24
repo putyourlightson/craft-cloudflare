@@ -10,8 +10,8 @@
 
 namespace workingconcept\cloudflare\variables;
 
-use workingconcept\cloudflare\Cloudflare;
 use craft\base\Model;
+use workingconcept\cloudflare\Cloudflare;
 
 /**
  * @author    Working Concept
