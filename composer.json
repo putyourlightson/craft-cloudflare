@@ -1,5 +1,5 @@
 {
-  "name": "workingconcept/craft-cloudflare",
+  "name": "putyourlightson/craft-cloudflare",
   "description": "Purge Cloudflare caches from Craft.",
   "type": "craft-plugin",
   "version": "1.1.0",
