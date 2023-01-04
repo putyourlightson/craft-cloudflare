@@ -50,7 +50,7 @@ class ConfigHelper
             is_string($request->getParam($key));
 
         $settingValue = $usePost ? $request->getParam($key) :
-            Cloudflare::getInstance()->getSettings()->{$key} ?? null;
+            Cloudflare::$plugin->getSettings()->{$key} ?? null;
 
         if ($settingValue) {
             /** @scrutinizer ignore-call */

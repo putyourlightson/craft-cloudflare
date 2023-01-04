@@ -44,7 +44,7 @@ class PurgeUtility extends Utility
         return Craft::$app->getView()->renderTemplate(
             'cloudflare/utility',
             [
-                'settings' => Cloudflare::getInstance()->getSettings(),
+                'settings' => Cloudflare::$plugin->getSettings(),
             ]
         );
     }

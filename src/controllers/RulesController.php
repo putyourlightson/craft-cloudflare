@@ -19,7 +19,7 @@ class RulesController extends Controller
      */
     public function actionSave(): Response
     {
-        Cloudflare::getInstance()->rules->saveRules();
+        Cloudflare::$plugin->rules->saveRules();
 
         Craft::$app->getSession()->setNotice(Craft::t(
             'cloudflare',

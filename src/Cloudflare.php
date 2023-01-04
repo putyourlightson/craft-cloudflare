@@ -10,7 +10,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Model;
 use craft\base\Plugin;
-use craft\console\Application as ConsoleApplication;
 use craft\events\ElementEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -35,9 +34,29 @@ use yii\base\Event;
 /**
  * @property-read Api $api
  * @property-read Rules $rules
+ * @property-read Settings $settings
+ * @method Settings getSettings()
  */
 class Cloudflare extends Plugin
 {
+    /**
+     * @var Cloudflare
+     */
+    public static Cloudflare $plugin;
+
+    /**
+     * @inerhitdoc
+     */
+    public static function config(): array
+    {
+        return [
+            'components' => [
+                'api' => ['class' => Api::class],
+                'rules' => ['class' => Rules::class],
+            ],
+        ];
+    }
+
     /**
      * @var string[]
      */
@@ -66,21 +85,12 @@ class Cloudflare extends Plugin
     public string $schemaVersion = '1.0.1';
 
     /**
-     * @var ?string
-     */
-    public ?string $t9nCategory = 'cloudflare';
-
-    /**
      * @inheritdoc
      */
     public function init(): void
     {
         parent::init();
-
-        $this->setComponents([
-            'api' => Api::class,
-            'rules' => Rules::class,
-        ]);
+        self::$plugin = $this;
 
         // register the variable
         Event::on(
@@ -150,19 +160,6 @@ class Cloudflare extends Plugin
                 }
             );
         }
-
-        if (Craft::$app instanceof ConsoleApplication) {
-            $this->controllerNamespace = 'putyourlightson\cloudflare\console\controllers';
-        }
-
-        Craft::info(
-            Craft::t(
-                'cloudflare',
-                '{name} plugin loaded',
-                ['name' => $this->name]
-            ),
-            'cloudflare'
-        );
     }
 
     /**
@@ -170,7 +167,6 @@ class Cloudflare extends Plugin
      */
     public function beforeSaveSettings(): bool
     {
-        /** @var Settings $settings */
         $settings = $this->getSettings();
 
         // Save the human-friendly zone name if we have one
@@ -263,7 +259,6 @@ class Cloudflare extends Plugin
 
         $elementType = ConfigHelper::normalizeClassName($elementType);
 
-        /** @var Settings $settings */
         $settings = $this->getSettings();
 
         if (empty($settings->purgeElements)) {

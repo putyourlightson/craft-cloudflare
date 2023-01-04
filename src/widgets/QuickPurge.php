@@ -68,7 +68,7 @@ class QuickPurge extends Widget
         return Craft::$app->getView()->renderTemplate(
             'cloudflare/widget',
             [
-                'settings' => Cloudflare::getInstance()->getSettings(),
+                'settings' => Cloudflare::$plugin->getSettings(),
                 'isConfigured' => ConfigHelper::isConfigured(),
             ]
         );

@@ -20,7 +20,7 @@ class PurgeCloudflareCache extends BaseJob
      */
     public function execute($queue): void
     {
-        Cloudflare::getInstance()->api->purgeUrls($this->urls);
+        Cloudflare::$plugin->api->purgeUrls($this->urls);
         $this->setProgress($queue, 100);
     }
 
