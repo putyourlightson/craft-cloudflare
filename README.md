@@ -1,34 +1,34 @@
-![Cloudflare](resources/hero.svg)
+[![Stable Version](https://img.shields.io/packagist/v/putyourlightson/craft-cloudflare?label=stable)]((https://packagist.org/packages/putyourlightson/craft-cloudflare))
+[![Total Downloads](https://img.shields.io/packagist/dt/putyourlightson/craft-cloudflare)](https://packagist.org/packages/putyourlightson/craft-cloudflare)
 
-<h1 align="center">Cloudflare Craft CMS 3 Plugin</h1>
-<h4 align="center">Purge <a href="https://www.cloudflare.com/">Cloudflare</a> caches from Craft.</h4>
+<p align="center"><img width="150" src="https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/v2/src/icon.svg"></p>
 
----
+# Cloudflare Plugin for Craft CMS
 
-**This is the updated Craft 3 plugin. [Craft 2 version here](https://github.com/workingconcept/cloudflare-craft-plugin/tree/craft-2).**
-
----
+This plugin makes it possible to purge Cloudflare caches directly from Craft CMS. You can initiate purges manually, either for individual URLs or an entire zone, and configure the plugin to automatically purge Entry and Asset URLs when they’re updated.
 
 ## Documentation
 
-Overview, installation, configuration, purging, and troubleshooting:
+Learn more and read the documentation at [putyourlightson.com/plugins/cloudflare »](https://putyourlightson.com/plugins/cloudflare)
 
-https://cloudflare.docs.workingconcept.com
+## License
 
-## Support
+This plugin is licensed for free under the MIT License.
 
-[File an issue](https://github.com/workingconcept/cloudflare-craft-plugin/issues) and I’ll try to respond promptly and thoughtfully. This is a free-time project, so I appreciate your patience.
+## Requirements
 
-## Contributing
+This plugin requires [Craft CMS](https://craftcms.com/) 3.6.0 or later, or 4.0.0 or later.
 
-Feature requests and pull requests welcome! Please just mind your formatting and help me understand your intent.
+## Installation
 
-## Things Not Yet Done
+To install the plugin, search for “Cloudflare” in the Craft Plugin Store, or install manually using composer.
 
-- Extensive production testing.
-- Handle bulk Element operations efficiently. (There could be a lot of Cloudflare requests.)
-- See if it’s possible to dig deeper into how Craft clears its own caches and mirror the approach so we rely less on manually-specified rules.
+```
+composer require putyourlightson/craft-cloudflare
+```
 
 ---
 
-This plugin is brought to you by [Working Concept](https://workingconcept.com), which has no affiliation with [Cloudflare](https://www.cloudflare.com/).
+Originally created by [Working Concept](https://workingconcept.com).  
+Acquired and maintained by [PutYourLightsOn](https://putyourlightson.com/).  
+This plugin has no affiliation with [Cloudflare](https://www.cloudflare.com/).
