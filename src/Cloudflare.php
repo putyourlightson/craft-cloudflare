@@ -35,6 +35,7 @@ use yii\base\Event;
  * @property-read Api $api
  * @property-read Rules $rules
  * @property-read Settings $settings
+ *
  * @method Settings getSettings()
  */
 class Cloudflare extends Plugin
@@ -92,70 +93,16 @@ class Cloudflare extends Plugin
         parent::init();
         self::$plugin = $this;
 
-        // register the variable
-        Event::on(
-            CraftVariable::class,
-            CraftVariable::EVENT_INIT,
-            static function(Event $event) {
-                /** @var CraftVariable $variable */
-                $variable = $event->sender;
-                $variable->set('cloudflare', CloudflareVariable::class);
-            }
-        );
+        $this->_registerVariables();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-            // register the widget
-            Event::on(
-                Dashboard::class,
-                Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-                static function(RegisterComponentTypesEvent $event) {
-                    $event->types[] = QuickPurgeWidget::class;
-                }
-            );
-
-            // register the utility
-            Event::on(
-                Utilities::class,
-                Utilities::EVENT_REGISTER_UTILITY_TYPES,
-                static function(RegisterComponentTypesEvent $event) {
-                    $event->types[] = PurgeUtility::class;
-                }
-            );
-
-            // register the actions
-            Event::on(
-                UrlManager::class,
-                UrlManager::EVENT_REGISTER_CP_URL_RULES,
-                static function(RegisterUrlRulesEvent $event) {
-                    $event->rules['cloudflare/rules'] = [
-                        'template' => 'cloudflare/rules',
-                    ];
-                }
-            );
+            $this->_registerWidget();
+            $this->_registerUtility();
+            $this->_registerActions();
         }
 
         if (ConfigHelper::isConfigured() && !empty($this->getSettings()->purgeElements)) {
-            Event::on(
-                Elements::class,
-                Elements::EVENT_AFTER_SAVE_ELEMENT,
-                function(ElementEvent $event) {
-                    $this->_handleElementChange(
-                        $event->isNew,
-                        $event->element
-                    );
-                }
-            );
-
-            Event::on(
-                Elements::class,
-                Elements::EVENT_AFTER_DELETE_ELEMENT,
-                function(ElementEvent $event) {
-                    $this->_handleElementChange(
-                        $event->isNew,
-                        $event->element
-                    );
-                }
-            );
+            $this->_registerElementChangeEvents();
         }
     }
 
@@ -204,6 +151,79 @@ class Cloudflare extends Plugin
             'isConfigured' => ConfigHelper::isConfigured(),
             'elementTypes' => $this->_getElementTypeOptions(),
         ]);
+    }
+
+    private function _registerVariables(): void
+    {
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            static function (Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('cloudflare', CloudflareVariable::class);
+            }
+        );
+    }
+
+    private function _registerWidget(): void
+    {
+        Event::on(
+            Dashboard::class,
+            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
+            static function (RegisterComponentTypesEvent $event) {
+                $event->types[] = QuickPurgeWidget::class;
+            }
+        );
+    }
+
+    private function _registerUtility(): void
+    {
+        Event::on(
+            Utilities::class,
+            Utilities::EVENT_REGISTER_UTILITY_TYPES,
+            static function (RegisterComponentTypesEvent $event) {
+                $event->types[] = PurgeUtility::class;
+            }
+        );
+    }
+
+    private function _registerActions(): void
+    {
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            static function (RegisterUrlRulesEvent $event) {
+                $event->rules['cloudflare/rules'] = [
+                    'template' => 'cloudflare/rules',
+                ];
+            }
+        );
+    }
+
+    private function _registerElementChangeEvents(): void
+    {
+        Event::on(
+            Elements::class,
+            Elements::EVENT_AFTER_SAVE_ELEMENT,
+            function (ElementEvent $event) {
+                $this->_handleElementChange(
+                    $event->isNew,
+                    $event->element
+                );
+            }
+        );
+
+        Event::on(
+            Elements::class,
+            Elements::EVENT_AFTER_DELETE_ELEMENT,
+            function (ElementEvent $event) {
+                $this->_handleElementChange(
+                    $event->isNew,
+                    $event->element
+                );
+            }
+        );
     }
 
     /**
