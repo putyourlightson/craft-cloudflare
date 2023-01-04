@@ -21,7 +21,6 @@ class UrlHelper
      */
     public static function prepUrls(array $urls = []): array
     {
-        /** @var Settings $settings */
         $settings = Cloudflare::$plugin->getSettings();
         $cfDomainName = $settings->zoneName;
         $includeZoneCheck = $cfDomainName !== null;
@@ -50,7 +49,6 @@ class UrlHelper
      */
     public static function isPurgeableUrl(string $url, bool $includeZoneCheck): bool
     {
-        /** @var Settings $settings */
         $settings = Cloudflare::$plugin->getSettings();
         $cfDomainName = $settings->zoneName;
 

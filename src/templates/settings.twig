@@ -55,7 +55,7 @@
 </div>
 
 <div id="fields-api-key"{% if not (settings.authType == 'key' or settings.authType is empty) %} class="hidden"{% endif %}>
-    {% set zoneOptions = craft.cloudflare.getZoneOptions %}
+    {% set zoneOptions = craft.cloudflare.getZoneOptions() %}
     {{ forms.autosuggestField({
         label: 'Cloudflare API Key'|t('cloudflare'),
         id:  'apiKey',
