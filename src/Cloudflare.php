@@ -298,9 +298,7 @@ class Cloudflare extends Plugin
         if (!$isNew && $this->_shouldPurgeElementType($className)) {
             $elementUrl = $element->getUrl();
 
-            /**
-             * Try making relative URLs absolute.
-             */
+            // Try making relative URLs absolute.
             if (!str_contains($elementUrl, '//')) {
                 $elementUrl = UrlHelper::siteUrl($elementUrl);
             }
@@ -308,10 +306,7 @@ class Cloudflare extends Plugin
             Queue::push(new PurgeCloudflareCache(['urls' => [$elementUrl]]));
         }
 
-        /**
-         * Honor any explicit rules that match this URL, regardless
-         * of whatever Element it is.
-         */
+        // Honour any explicit rules that match this URL, regardless of whatever Element it is.
         $this->rules->purgeCachesForUrl(
             $element->getUrl()
         );
