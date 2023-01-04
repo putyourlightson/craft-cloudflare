@@ -9,7 +9,6 @@ namespace putyourlightson\cloudflare\helpers;
 use Craft;
 use Pdp;
 use putyourlightson\cloudflare\Cloudflare;
-use putyourlightson\cloudflare\models\Settings;
 
 class UrlHelper
 {

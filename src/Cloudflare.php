@@ -158,7 +158,7 @@ class Cloudflare extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            static function (Event $event) {
+            static function(Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('cloudflare', CloudflareVariable::class);
@@ -171,7 +171,7 @@ class Cloudflare extends Plugin
         Event::on(
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            static function (RegisterComponentTypesEvent $event) {
+            static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = QuickPurgeWidget::class;
             }
         );
@@ -182,7 +182,7 @@ class Cloudflare extends Plugin
         Event::on(
             Utilities::class,
             Utilities::EVENT_REGISTER_UTILITY_TYPES,
-            static function (RegisterComponentTypesEvent $event) {
+            static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = PurgeUtility::class;
             }
         );
@@ -193,7 +193,7 @@ class Cloudflare extends Plugin
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            static function (RegisterUrlRulesEvent $event) {
+            static function(RegisterUrlRulesEvent $event) {
                 $event->rules['cloudflare/rules'] = [
                     'template' => 'cloudflare/rules',
                 ];
@@ -206,7 +206,7 @@ class Cloudflare extends Plugin
         Event::on(
             Elements::class,
             Elements::EVENT_AFTER_SAVE_ELEMENT,
-            function (ElementEvent $event) {
+            function(ElementEvent $event) {
                 $this->_handleElementChange(
                     $event->isNew,
                     $event->element
@@ -217,7 +217,7 @@ class Cloudflare extends Plugin
         Event::on(
             Elements::class,
             Elements::EVENT_AFTER_DELETE_ELEMENT,
-            function (ElementEvent $event) {
+            function(ElementEvent $event) {
                 $this->_handleElementChange(
                     $event->isNew,
                     $event->element
