@@ -10,10 +10,6 @@ use craft\db\ActiveRecord;
 use putyourlightson\cloudflare\db\Table;
 
 /**
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- *
  * @property int    $id          Rule ID.
  * @property int    $siteId      Site ID to which rule(s) should apply.
  * @property string $trigger     URI pattern applied to saved Entries and Assets

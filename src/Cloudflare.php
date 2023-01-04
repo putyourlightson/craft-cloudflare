@@ -134,10 +134,7 @@ class Cloudflare extends Plugin
             );
         }
 
-        if (
-            ConfigHelper::isConfigured() &&
-            !empty($this->getSettings()->purgeElements)
-        ) {
+        if (ConfigHelper::isConfigured() && !empty($this->getSettings()->purgeElements)) {
             Event::on(
                 Elements::class,
                 Elements::EVENT_AFTER_SAVE_ELEMENT,
@@ -168,11 +165,10 @@ class Cloudflare extends Plugin
     public function beforeSaveSettings(): bool
     {
         $settings = $this->getSettings();
+        $zoneInfo = $this->api->getZoneById(ConfigHelper::getParsedSetting('zone'));
 
         // Save the human-friendly zone name if we have one
-        if ($zoneInfo = $this->api->getZoneById(
-            ConfigHelper::getParsedSetting('zone')
-        )) {
+        if ($zoneInfo) {
             $settings->zoneName = $zoneInfo->name;
         }
 
@@ -203,14 +199,11 @@ class Cloudflare extends Plugin
      */
     protected function settingsHtml(): string
     {
-        return Craft::$app->view->renderTemplate(
-            'cloudflare/settings',
-            [
-                'settings' => $this->getSettings(),
-                'isConfigured' => ConfigHelper::isConfigured(),
-                'elementTypes' => $this->_getElementTypeOptions(),
-            ]
-        );
+        return Craft::$app->view->renderTemplate('cloudflare/settings', [
+            'settings' => $this->getSettings(),
+            'isConfigured' => ConfigHelper::isConfigured(),
+            'elementTypes' => $this->_getElementTypeOptions(),
+        ]);
     }
 
     /**
@@ -228,7 +221,7 @@ class Cloudflare extends Plugin
         foreach ($elementTypes as $elementType) {
             // only make the option available if we support it
             if ($this->_isSupportedElementType($elementType)) {
-                /** @var string|ElementInterface $elementType */
+                /** @var ElementInterface|string $elementType */
                 $options[$elementType] = $elementType::pluralDisplayName();
             }
         }
