@@ -1,4 +1,5 @@
 [![Stable Version](https://img.shields.io/packagist/v/putyourlightson/craft-cloudflare?label=stable)]((https://packagist.org/packages/putyourlightson/craft-cloudflare))
+[![Total Downloads](https://img.shields.io/packagist/dt/workingconcept/craft-cloudflare)](https://packagist.org/packages/workingconcept/craft-cloudflare)
 [![Total Downloads](https://img.shields.io/packagist/dt/putyourlightson/craft-cloudflare)](https://packagist.org/packages/putyourlightson/craft-cloudflare)
 
 <p align="center"><img width="150" src="https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/v2/src/icon.svg"></p>
