@@ -1,25 +1,16 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
  * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\migrations;
+namespace putyourlightson\cloudflare\migrations;
 
 use Craft;
 use craft\db\Migration;
 use craft\db\Table as CraftTable;
-use workingconcept\cloudflare\db\Table;
+use putyourlightson\cloudflare\db\Table;
 
-/**
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- */
 class Install extends Migration
 {
     /**
@@ -54,9 +45,6 @@ class Install extends Migration
         return true;
     }
 
-    /**
-     * @return bool
-     */
     protected function createTables(): bool
     {
         $tablesCreated = false;
@@ -81,9 +69,6 @@ class Install extends Migration
         return $tablesCreated;
     }
 
-    /**
-     * @return void
-     */
     protected function addForeignKeys(): void
     {
         $this->addForeignKey(
@@ -97,9 +82,6 @@ class Install extends Migration
         );
     }
 
-    /**
-     * @return void
-     */
     protected function removeTables(): void
     {
         $this->dropTableIfExists(Table::RULES);

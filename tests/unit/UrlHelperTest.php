@@ -1,6 +1,6 @@
 <?php
 
-use workingconcept\cloudflare\helpers\UrlHelper;
+use putyourlightson\cloudflare\helpers\UrlHelper;
 
 class UrlHelperTest extends \Codeception\Test\Unit
 {
@@ -16,7 +16,7 @@ class UrlHelperTest extends \Codeception\Test\Unit
         Craft::$app->getPlugins()->savePluginSettings(
             $plugin,
             [
-                'authType' => \workingconcept\cloudflare\models\Settings::AUTH_TYPE_KEY,
+                'authType' => \putyourlightson\cloudflare\models\Settings::AUTH_TYPE_KEY,
                 'apiKey' => '12345',
                 'email' => 'test@foo.bar',
                 'zone' => '123abc',

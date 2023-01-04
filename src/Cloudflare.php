@@ -1,17 +1,14 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
  * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare;
+namespace putyourlightson\cloudflare;
 
 use Craft;
 use craft\base\ElementInterface;
+use craft\base\Model;
 use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
 use craft\events\ElementEvent;
@@ -25,27 +22,19 @@ use craft\services\Elements;
 use craft\services\Utilities;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
-use GuzzleHttp\Exception\GuzzleException;
-use workingconcept\cloudflare\helpers\ConfigHelper;
-use workingconcept\cloudflare\models\Settings;
-use workingconcept\cloudflare\queue\jobs\PurgeCloudflareCache;
-use workingconcept\cloudflare\services\Api;
-use workingconcept\cloudflare\services\Rules;
-use workingconcept\cloudflare\utilities\PurgeUtility;
-use workingconcept\cloudflare\variables\CloudflareVariable;
-use workingconcept\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
+use putyourlightson\cloudflare\helpers\ConfigHelper;
+use putyourlightson\cloudflare\models\Settings;
+use putyourlightson\cloudflare\queue\jobs\PurgeCloudflareCache;
+use putyourlightson\cloudflare\services\Api;
+use putyourlightson\cloudflare\services\Rules;
+use putyourlightson\cloudflare\utilities\PurgeUtility;
+use putyourlightson\cloudflare\variables\CloudflareVariable;
+use putyourlightson\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
 use yii\base\Event;
-use yii\base\Exception;
 
 /**
- * Class Cloudflare
- *
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- *
- * @property  Api $api
- * @property  Rules $rules
+ * @property-read Api $api
+ * @property-read Rules $rules
  */
 class Cloudflare extends Plugin
 {
@@ -163,7 +152,7 @@ class Cloudflare extends Plugin
         }
 
         if (Craft::$app instanceof ConsoleApplication) {
-            $this->controllerNamespace = 'workingconcept\cloudflare\console\controllers';
+            $this->controllerNamespace = 'putyourlightson\cloudflare\console\controllers';
         }
 
         Craft::info(
@@ -178,9 +167,6 @@ class Cloudflare extends Plugin
 
     /**
      * Store the selected Cloudflare Zone's base URL for later comparison.
-     *
-     * @return bool
-     * @throws GuzzleException
      */
     public function beforeSaveSettings(): bool
     {
@@ -211,7 +197,7 @@ class Cloudflare extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel(): ?\craft\base\Model
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
@@ -246,6 +232,7 @@ class Cloudflare extends Plugin
         foreach ($elementTypes as $elementType) {
             // only make the option available if we support it
             if ($this->_isSupportedElementType($elementType)) {
+                /** @var string|ElementInterface $elementType */
                 $options[$elementType] = $elementType::pluralDisplayName();
             }
         }
@@ -256,10 +243,6 @@ class Cloudflare extends Plugin
     /**
      * Returns `true` is the given element type is one we support,
      * mostly to be sure there’s a chance its element will have a URL.
-     *
-     * @param string $elementType
-     *
-     * @return bool
      */
     private function _isSupportedElementType(string $elementType): bool
     {
@@ -271,12 +254,8 @@ class Cloudflare extends Plugin
     /**
      * Returns `true` if the provided element type is both supported and
      * enabled for purging in the plugin’s settings.
-     *
-     * @param string $elementType Element class name
-     *
-     * @return bool
      */
-    private function _shouldPurgeElementType($elementType): bool
+    private function _shouldPurgeElementType(string $elementType): bool
     {
         if (!$this->_isSupportedElementType($elementType)) {
             return false;
@@ -287,19 +266,13 @@ class Cloudflare extends Plugin
         /** @var Settings $settings */
         $settings = $this->getSettings();
 
-        if (empty($settings->purgeElements) || !is_array($settings->purgeElements)) {
+        if (empty($settings->purgeElements)) {
             return false;
         }
 
         return in_array($elementType, $settings->purgeElements, true);
     }
 
-    /**
-     * @param bool                  $isNew
-     * @param ElementInterface|null $element
-     *
-     * @throws Exception|GuzzleException
-     */
     private function _handleElementChange(bool $isNew, ?ElementInterface $element): void
     {
         // Bail if we don’t have an Element or an Element URL to work with

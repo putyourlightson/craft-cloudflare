@@ -1,11 +1,10 @@
 <?php
 
-namespace workingconcept\cloudflare\models;
+namespace putyourlightson\cloudflare\models;
 
 use Craft;
 use craft\base\Model;
-use GuzzleHttp\Exception\GuzzleException;
-use workingconcept\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\Cloudflare;
 
 class Settings extends Model
 {
@@ -64,9 +63,7 @@ class Settings extends Model
     public ?string $zoneName = null;
 
     /**
-     * Returns `true` if the Cloudflare zone ID is set in a static config file.
-     *
-     * @return bool
+     * Returns `true` if the Cloudflare zone ID is set in a static config file.\
      */
     public function zoneIsStatic(): bool
     {
@@ -75,9 +72,6 @@ class Settings extends Model
 
     /**
      * Returns `true` if Cloudflare permissions allow listing zones.
-     *
-     * @return bool
-     * @throws GuzzleException
      */
     public function canListZones(): bool
     {
@@ -86,7 +80,6 @@ class Settings extends Model
 
     /**
      * @inheritdoc
-     * @return mixed[]
      */
     public function rules(): array
     {
@@ -104,9 +97,6 @@ class Settings extends Model
         ];
     }
 
-    /**
-     * @return mixed[]
-     */
     private function _getStaticConfig(): array
     {
         return Craft::$app->getConfig()->getConfigFromFile('cloudflare');

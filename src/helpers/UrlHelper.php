@@ -1,17 +1,15 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2019 Working Concept Inc.
+ * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\helpers;
+namespace putyourlightson\cloudflare\helpers;
 
 use Craft;
 use Pdp;
-use workingconcept\cloudflare\Cloudflare;
-use workingconcept\cloudflare\models\Settings;
+use putyourlightson\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\models\Settings;
 
 class UrlHelper
 {

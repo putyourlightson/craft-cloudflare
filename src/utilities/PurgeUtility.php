@@ -1,18 +1,14 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2020 Working Concept
+ * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\utilities;
+namespace putyourlightson\cloudflare\utilities;
 
 use Craft;
 use craft\base\Utility;
-use workingconcept\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\Cloudflare;
 
 class PurgeUtility extends Utility
 {
@@ -37,7 +33,7 @@ class PurgeUtility extends Utility
      */
     public static function iconPath(): ?string
     {
-        return Craft::getAlias("@workingconcept/cloudflare/assetbundles/dist/img/cloud.svg");
+        return Craft::getAlias("@putyourlightson/cloudflare/resources/images/cloud.svg");
     }
 
     /**

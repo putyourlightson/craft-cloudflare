@@ -1,35 +1,26 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
  * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\services;
+namespace putyourlightson\cloudflare\services;
 
 use Craft;
 use craft\base\Component;
 use craft\helpers\Json;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
-use workingconcept\cloudflare\helpers\ConfigHelper;
-use workingconcept\cloudflare\helpers\UrlHelper;
-use workingconcept\cloudflare\models\Settings;
+use putyourlightson\cloudflare\helpers\ConfigHelper;
+use putyourlightson\cloudflare\helpers\UrlHelper;
+use putyourlightson\cloudflare\models\Settings;
 
 /**
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- *
- * @property-read string                  $apiBaseUrl
- * @property-read array                   $connectionErrors
- * @property-read \GuzzleHttp\Client|null $client
- * @property-read null|array              $zones
+ * @property-read string $apiBaseUrl
+ * @property-read array $connectionErrors
+ * @property-read Client|null $client
+ * @property-read null|array $zones
  */
 class Api extends Component
 {
@@ -39,7 +30,7 @@ class Api extends Component
     public const API_BASE_URL = 'https://api.cloudflare.com/client/v4/';
 
     /**
-     * @var mixed[]
+     * @var array
      */
     protected array $responseItems;
 
@@ -56,8 +47,6 @@ class Api extends Component
     /**
      * Get a configured Guzzle client if we have an API key and email.
      * Otherwise, returns null.
-     *
-     * @return Client|null
      */
     public function getClient(): ?Client
     {
@@ -75,9 +64,6 @@ class Api extends Component
 
     /**
      * Returns true if provided credentials can successfully make API calls.
-     *
-     * @return bool
-     * @throws GuzzleException
      */
     public function verifyConnection(): bool
     {
@@ -142,9 +128,6 @@ class Api extends Component
 
     /**
      * Returns `true` if we’re able to list available zones.
-     *
-     * @return bool
-     * @throws GuzzleException
      */
     public function canListZones(): bool
     {
@@ -163,8 +146,7 @@ class Api extends Component
      * Get a list of zones (domains) available for the provided Cloudflare account.
      * https://api.cloudflare.com/#zone-list-zones
      *
-     * @return mixed[]|null zones from `response.result` (combined if there was pagination)
-     * @throws GuzzleException
+     * @return array|null zones from `response.result` (combined if there was pagination)
      */
     public function getZones(): ?array
     {
@@ -201,10 +183,6 @@ class Api extends Component
     /**
      * Get details for a zone.
      * https://api.cloudflare.com/#zone-zone-details
-     *
-     * @param string $zoneId
-     * @return object|null
-     * @throws GuzzleException
      */
     public function getZoneById(string $zoneId): ?object
     {
@@ -249,9 +227,6 @@ class Api extends Component
     /**
      * Purge the entire zone cache.
      * https://api.cloudflare.com/#zone-purge-all-files
-     *
-     * @return ?object Cloudflare’s response
-     * @throws GuzzleException
      */
     public function purgeZoneCache(): ?object
     {
@@ -298,9 +273,6 @@ class Api extends Component
      * https://api.cloudflare.com/#zone-purge-individual-files-by-url-and-cache-tags
      *
      * @param string[] $urls array of absolute URLs
-     *
-     * @return mixed|null  API response data or null
-     * @throws GuzzleException
      */
     public function purgeUrls(array $urls = []): mixed
     {
@@ -356,8 +328,6 @@ class Api extends Component
 
     /**
      * Get Cloudflare’s base API URL.
-     *
-     * @return string
      */
     public function getApiBaseUrl(): string
     {
@@ -376,14 +346,14 @@ class Api extends Component
     private function _handleApiException(mixed $exception, string $action, array $urls = []): object
     {
         if ($responseBody = Json::decode($exception->getResponse()->getBody(), false)) {
-            $message = "${action} failed.\n";
+            $message = $action . " failed.\n";
 
             if ($urls) {
                 $message .= '- urls: ' . implode(',', $urls) . "\n";
             }
 
             foreach ($responseBody->errors as $error) {
-                $message .= "- error code {$error->code}: " . $error->message . "\n";
+                $message .= "- error code " . $error->code . ": " . $error->message . "\n";
             }
 
             Craft::info($message, 'cloudflare');
@@ -404,12 +374,6 @@ class Api extends Component
 
     /**
      * Fetch zones via API, which returns paginated results.
-     *
-     * @param int $page
-     * @param int $perPage
-     *
-     * @return ?object
-     * @throws GuzzleException
      */
     private function _getPagedZones(int $page = 1, int $perPage = 50): ?object
     {
@@ -475,10 +439,6 @@ class Api extends Component
 
     /**
      * Log message and return standard failure response.
-     *
-     * @param string $message
-     *
-     * @return object
      */
     private function _failureResponse(string $message): object
     {
@@ -493,10 +453,6 @@ class Api extends Component
 
     /**
      * Returns a string for the request exception that can be used for logging.
-     *
-     * @param RequestException  $exception
-     *
-     * @return string
      */
     private function _getExceptionReason(RequestException $exception): string
     {

@@ -1,17 +1,12 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2019 Working Concept
+ * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\console\controllers;
+namespace putyourlightson\cloudflare\console\controllers;
 
-use GuzzleHttp\Exception\GuzzleException;
-use workingconcept\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\Cloudflare;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -22,8 +17,6 @@ class PurgeController extends Controller
      * https://www.yiiframework.com/doc/guide/2.0/en/tutorial-console#arguments
      *
      * @param string[] $urls
-     * @return int
-     * @throws GuzzleException
      */
     public function actionPurgeUrls(array $urls): int
     {
@@ -41,9 +34,6 @@ class PurgeController extends Controller
 
     /**
      * Attempt to purge entire zone cache.
-     *
-     * @return int
-     * @throws GuzzleException
      */
     public function actionPurgeAll(): int
     {
@@ -56,11 +46,8 @@ class PurgeController extends Controller
 
     /**
      * Handle Cloudflare’s API response for console output.
-     *
-     * @param ?object $response
-     * @return int
      */
-    private function _handleResult($response): int
+    private function _handleResult(?object $response): int
     {
         if (empty($response)) {
             $this->stdout('✗ Cloudflare plugin not configured' . PHP_EOL);

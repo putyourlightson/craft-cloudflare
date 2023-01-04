@@ -1,18 +1,9 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
  * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-/**
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- */
 
 return [
     'Add Rule' => 'Add Rule',

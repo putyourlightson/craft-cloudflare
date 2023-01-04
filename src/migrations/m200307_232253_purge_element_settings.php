@@ -1,6 +1,6 @@
 <?php
 
-namespace workingconcept\cloudflare\migrations;
+namespace putyourlightson\cloudflare\migrations;
 
 use Craft;
 use craft\db\Migration;

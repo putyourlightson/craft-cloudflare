@@ -1,23 +1,14 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
  * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\assetbundles;
+namespace putyourlightson\cloudflare\assets;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-/**
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- */
 class CloudflareAsset extends AssetBundle
 {
     /**
@@ -25,7 +16,7 @@ class CloudflareAsset extends AssetBundle
      */
     public function init(): void
     {
-        $this->sourcePath = "@workingconcept/cloudflare/assetbundles/dist";
+        $this->sourcePath = "@putyourlightson/cloudflare/resources";
 
         $this->depends = [ CpAsset::class ];
         $this->js = [ 'js/cp.js' ];

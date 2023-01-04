@@ -1,11 +1,12 @@
 <?php
 
-namespace workingconcept\cloudflare\queue\jobs;
+namespace putyourlightson\cloudflare\queue\jobs;
 
 use Craft;
 use craft\queue\BaseJob;
 use craft\queue\QueueInterface;
-use workingconcept\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\Cloudflare;
+use yii\queue\Queue;
 
 class PurgeCloudflareCache extends BaseJob
 {
@@ -15,9 +16,7 @@ class PurgeCloudflareCache extends BaseJob
     public array $urls;
 
     /**
-     * @param \yii\queue\Queue|QueueInterface $queue
-     * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @param Queue|QueueInterface $queue
      */
     public function execute($queue): void
     {

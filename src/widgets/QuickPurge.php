@@ -1,37 +1,25 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
  * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\widgets;
+namespace putyourlightson\cloudflare\widgets;
 
 use Craft;
 use craft\base\Widget;
-use workingconcept\cloudflare\assetbundles\CloudflareAsset;
-use workingconcept\cloudflare\Cloudflare;
-use workingconcept\cloudflare\helpers\ConfigHelper;
+use putyourlightson\cloudflare\assets\CloudflareAsset;
+use putyourlightson\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\helpers\ConfigHelper;
 
 /**
- * Cloudflare Widget
- *
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- *
  * @property-read string|false $bodyHtml
  * @property-read string       $title
  */
 class QuickPurge extends Widget
 {
     /**
-     * Disallow multiple widget instances.
-     *
-     * @return bool
+     * @inerhitdoc
      */
     protected static function allowMultipleInstances(): bool
     {
@@ -39,9 +27,7 @@ class QuickPurge extends Widget
     }
 
     /**
-     * Returns the translated widget display name.
-     *
-     * @return string
+     * @inerhitdoc
      */
     public static function displayName(): string
     {
@@ -49,19 +35,15 @@ class QuickPurge extends Widget
     }
 
     /**
-     * Returns the widget’s icon path.
-     *
-     * @return string
+     * @inerhitdoc
      */
     public static function icon(): string
     {
-        return Craft::getAlias("@workingconcept/cloudflare/assetbundles/dist/img/quickpurge-icon.svg");
+        return Craft::getAlias("@putyourlightson/cloudflare/resources/images/quickpurge-icon.svg");
     }
 
     /**
-     * Sets the maximum column span to 1.
-     *
-     * @return int
+     * @inerhitdoc
      */
     public static function maxColspan(): int
     {
@@ -69,9 +51,7 @@ class QuickPurge extends Widget
     }
 
     /**
-     * Returns the translated widget title.
-     *
-     * @return string
+     * @inerhitdoc
      */
     public function getTitle(): string
     {
@@ -79,14 +59,7 @@ class QuickPurge extends Widget
     }
 
     /**
-     * Returns the widget body HTML.
-     *
-     * @return ?string
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
+     * @inerhitdoc
      */
     public function getBodyHtml(): ?string
     {

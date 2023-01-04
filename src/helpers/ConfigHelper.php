@@ -1,25 +1,21 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2019 Working Concept Inc.
+ * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\helpers;
+namespace putyourlightson\cloudflare\helpers;
 
 use Craft;
 use craft\console\Application as ConsoleApplication;
 use craft\helpers\App;
-use workingconcept\cloudflare\Cloudflare;
-use workingconcept\cloudflare\models\Settings;
+use putyourlightson\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\models\Settings;
 
 class ConfigHelper
 {
     /**
      * Returns true if we’ve got the settings to make REST API calls.
-     *
-     * @return bool
      */
     public static function isConfigured(): bool
     {
@@ -37,12 +33,7 @@ class ConfigHelper
     /**
      * Returns settings needed to connect to the REST API. Checks request
      * parameters if we’re in the control panel checking unsaved settings.
-     *
      * Also parses environment variables.
-     *
-     * @param string $key `apiKey`, `email`, `apiToken`, or `zone`
-     *
-     * @return string|null
      */
     public static function getParsedSetting(string $key): ?string
     {
@@ -71,10 +62,6 @@ class ConfigHelper
 
     /**
      * Strips leading slash from namespaced class and returns it.
-     *
-     * @param string $class
-     *
-     * @return string
      */
     public static function normalizeClassName(string $class): string
     {

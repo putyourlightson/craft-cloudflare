@@ -2,15 +2,10 @@
 /.gitattributes export-ignore
 /.github/ export-ignore
 /.gitignore export-ignore
-/CHANGELOG.md export-ignore
-/README.md export-ignore
-/code-of-conduct.md export-ignore
-/codeception.yml export-ignore
-/composer.lock export-ignore
 /ecs.php export-ignore
-/package-lock.json export-ignore
-/package.json export-ignore
+/codeception.yml export-ignore
 /phpstan.neon export-ignore
-/resources/ export-ignore
 /tests/ export-ignore
-/webpack.mix.js export-ignore
+
+# Auto detect text files and perform LF normalization
+* text=auto

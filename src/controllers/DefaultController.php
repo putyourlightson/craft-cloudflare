@@ -1,34 +1,20 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
  * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\controllers;
+namespace putyourlightson\cloudflare\controllers;
 
 use Craft;
 use craft\web\Controller;
-use GuzzleHttp\Exception\GuzzleException;
-use workingconcept\cloudflare\Cloudflare;
-use yii\web\BadRequestHttpException;
+use putyourlightson\cloudflare\Cloudflare;
 use yii\web\Response;
 
-/**
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- */
 class DefaultController extends Controller
 {
     /**
      * Checks whether the supplied credentials can connect to the Cloudflare account.
-     *
-     * @return Response
-     * @throws BadRequestHttpException|GuzzleException
      */
     public function actionVerifyConnection(): Response
     {
@@ -47,9 +33,6 @@ class DefaultController extends Controller
 
     /**
      * Returns all available zones on the configured account.
-     *
-     * @return Response
-     * @throws GuzzleException
      */
     public function actionFetchZones(): Response
     {
@@ -59,9 +42,6 @@ class DefaultController extends Controller
     /**
      * Purges URLs passed in the `urls` parameter, whose value should be a string
      * with each URL on its own line.
-     *
-     * @return Response
-     * @throws BadRequestHttpException|GuzzleException
      */
     public function actionPurgeUrls(): Response
     {
@@ -87,9 +67,6 @@ class DefaultController extends Controller
 
     /**
      * Purges entire Cloudflare zone cache.
-     *
-     * @return Response
-     * @throws BadRequestHttpException|GuzzleException
      */
     public function actionPurgeAll(): Response
     {

@@ -1,31 +1,18 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
  * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\variables;
+namespace putyourlightson\cloudflare\variables;
 
 use craft\base\Model;
-use GuzzleHttp\Exception\GuzzleException;
-use workingconcept\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\Cloudflare;
 
-/**
- * @author    Working Concept
- * @package   Cloudflare
- * @since     1.0.0
- */
 class CloudflareVariable
 {
     /**
      * Returns the zones.
-     *
-     * @return mixed[]|null
-     * @throws GuzzleException
      */
     public function getZones(): ?array
     {
@@ -36,7 +23,6 @@ class CloudflareVariable
      * Returns the zone options.
      *
      * @return array<int, string>
-     * @throws GuzzleException
      */
     public function getZoneOptions(): array
     {
@@ -61,9 +47,6 @@ class CloudflareVariable
         return Cloudflare::getInstance()->rules->getRulesForTable();
     }
 
-    /**
-     * @return Model|null
-     */
     public function getSettings(): ?Model
     {
         return Cloudflare::getInstance()->getSettings();

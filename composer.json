@@ -1,83 +1,31 @@
 {
-  "name": "workingconcept/craft-cloudflare",
+  "name": "putyourlightson/craft-cloudflare",
   "description": "Purge Cloudflare caches from Craft.",
+  "version": "2.0.0",
   "type": "craft-plugin",
-  "keywords": [
-    "craft",
-    "cms",
-    "craftcms",
-    "craft-plugin",
-    "cloudflare"
-  ],
-  "support": {
-    "docs": "https://github.com/workingconcept/cloudflare-craft-plugin/blob/main/README.md",
-    "issues": "https://github.com/workingconcept/cloudflare-craft-plugin/issues"
-  },
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Working Concept",
-      "homepage": "https://workingconcept.com"
-    },
-    {
-      "name": "Mo",
-      "email": "m@9dev.de"
-    }
-  ],
-  "scripts": {
-    "post-install-cmd": "\\Pdp\\Installer::updateLocalCache",
-    "post-update-cmd": "\\Pdp\\Installer::updateLocalCache",
-    "check-cs": "ecs check --ansi",
-    "fix-cs": "ecs check --ansi --fix",
-    "phpstan": "phpstan --memory-limit=1G"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
+  "license": "mit",
   "require": {
-    "craftcms/cms": "^4.0.0-beta.1",
+    "php": "^8.0.2",
+    "craftcms/cms": "^4.0",
     "jeremykendall/php-domain-parser": "^5.6"
   },
-  "require-dev": {
-    "codeception/codeception": "^4.0.0",
-    "codeception/module-asserts": "^1.0.0",
-    "codeception/module-datafactory": "^1.0.0",
-    "codeception/module-phpbrowser": "^1.0.0",
-    "codeception/module-rest": "^1.0.0",
-    "codeception/module-yii2": "^1.0.0",
-    "craftcms/ecs": "dev-main",
-    "craftcms/phpstan": "dev-main",
-    "roave/security-advisories": "dev-latest",
-    "vlucas/phpdotenv": "^3.4"
-  },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://asset-packagist.org"
-    }
-  ],
   "autoload": {
     "psr-4": {
-      "workingconcept\\cloudflare\\": "src/"
+      "putyourlightson\\cloudflare\\": "src/"
     }
   },
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "yiisoft/yii2-composer": true,
-      "craftcms/plugin-installer": true
-    }
+  "support": {
+    "docs": "https://putyourlightson.com/plugins/cloudflare",
+    "source": "https://github.com/putyourlightson/craft-cloudflare",
+    "issues": "https://github.com/putyourlightson/craft-cloudflare/issues"
   },
   "extra": {
     "name": "Cloudflare",
     "handle": "cloudflare",
-    "changelogUrl": "https://raw.githubusercontent.com/workingconcept/cloudflare-craft-plugin/main/CHANGELOG.md",
-    "components": {
-      "cloudflareService": "workingconcept\\cloudflare\\services\\CloudflareService",
-      "rulesService": "workingconcept\\cloudflare\\services\\RulesService"
-    },
-    "class": "workingconcept\\cloudflare\\Cloudflare",
-    "downloadUrl": "https://github.com/workingconcept/cloudflare-craft-plugin/archive/main.zip",
-    "developer": "Working Concept",
-    "developerUrl": "https://workingconcept.com/"
+    "developer": "PutYourLightsOn",
+    "developerUrl": "https://putyourlightson.com/",
+    "documentationUrl": "https://putyourlightson.com/plugins/cloudflare",
+    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/v2/CHANGELOG.md",
+    "class": "putyourlightson\\cloudflare\\Cloudflare"
   }
 }

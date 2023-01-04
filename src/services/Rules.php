@@ -1,26 +1,23 @@
 <?php
 
-namespace workingconcept\cloudflare\services;
+namespace putyourlightson\cloudflare\services;
 
 use Craft;
 use craft\base\Component;
 
-use craft\errors\SiteNotFoundException;
 use craft\helpers\Json;
 use craft\helpers\Queue;
 use craft\helpers\UrlHelper;
-use GuzzleHttp\Exception\GuzzleException;
-use workingconcept\cloudflare\Cloudflare;
-use workingconcept\cloudflare\queue\jobs\PurgeCloudflareCache;
-use workingconcept\cloudflare\records\RuleRecord;
-use yii\base\Exception;
+use putyourlightson\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\queue\jobs\PurgeCloudflareCache;
+use putyourlightson\cloudflare\records\RuleRecord;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 
 /**
  * Provides a Cloudflare page rule service
  *
- * @package workingconcept\cloudflare
+ * @package putyourlightson\cloudflare
  *
  * @property-read array      $rulesForTable
  * @property-read null|array $rules
@@ -29,8 +26,6 @@ class Rules extends Component
 {
     /**
      * Returns all rules for a table.
-     *
-     * @return mixed[]
      */
     public function getRulesForTable(): array
     {
@@ -58,9 +53,6 @@ class Rules extends Component
 
     /**
      * Get supplied rules from the control panel view and save them to the database.
-     *
-     * @return void
-     * @throws SiteNotFoundException
      */
     public function saveRules(): void
     {
@@ -86,12 +78,6 @@ class Rules extends Component
 
     /**
      * Purge any related URLs we’ve established with custom rules.
-     *
-     * @param string $url          The URL our custom rules should be checked against
-     * @param bool   $immediately  Whether to skip the queue and immediately call Cloudflare’s API
-     *
-     * @return void
-     * @throws Exception|GuzzleException
      */
     public function purgeCachesForUrl(string $url, bool $immediately = false): void
     {

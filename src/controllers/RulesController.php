@@ -1,33 +1,23 @@
 <?php
 /**
- * Cloudflare plugin for Craft CMS 4.x
- *
- * Purge Cloudflare caches from Craft.
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2020 Working Concept
+ * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace workingconcept\cloudflare\controllers;
+namespace putyourlightson\cloudflare\controllers;
 
 use Craft;
-use craft\errors\MissingComponentException;
-use craft\errors\SiteNotFoundException;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
-use workingconcept\cloudflare\Cloudflare;
+use putyourlightson\cloudflare\Cloudflare;
+use yii\web\Response;
 
 class RulesController extends Controller
 {
     /**
      * Save our Craft-URL-specific purge rules.
-     *
-     * @return \yii\web\Response
-     *
-     * @throws MissingComponentException without a valid session
-     * @throws SiteNotFoundException
      */
-    public function actionSave(): \yii\web\Response
+    public function actionSave(): Response
     {
         Cloudflare::getInstance()->rules->saveRules();
 

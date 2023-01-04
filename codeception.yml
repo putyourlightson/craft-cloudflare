@@ -1,38 +1,26 @@
 actor: Tester
 paths:
-  tests: tests
-  output: tests/_output
-  data: tests/_data
-  support: tests/_support
-  envs: tests/_envs
+    tests: tests
+    log: tests/_output
+    output: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
 bootstrap: _bootstrap.php
-coverage:
-  enabled: true
-  include:
-    - src/*
-  exclude:
-    - src/assetbundles/*
-    - src/db/*
-    - src/migrations/*
-    - src/templates/*
-    - src/translations/*
-    - tests/*
-    - vendor/*
 params:
-  - env
-  - tests/.env
+    - tests/.env
 modules:
-  config:
-    \craft\test\Craft:
-      configFile: 'tests/_craft/config/test.php'
-      entryUrl: 'http://cloudflare-plugin.test/index.php'
-      projectConfig: {}
-      migrations: []
-      plugins:
-        cloudflare:
-          class: '\workingconcept\cloudflare\Cloudflare'
-          handle: cloudflare
-      cleanup: true
-      transaction: true
-      dbSetup: {clean: true, setupCraft: true}
-      fullMock: false
+    config:
+        \craft\test\Craft:
+            configFile: 'tests/_craft/config/test.php'
+            entryUrl: 'http://localhost:8004/index.php'
+            entryScript: 'index.php'
+            projectConfig: {}
+            migrations: []
+            plugins:
+                campaign:
+                    class: '\putyourlightson\cloudflare\Cloudflare'
+                    handle: cloudflare
+            cleanup: true
+            transaction: false
+            dbSetup: {clean: true, setupCraft: true}
