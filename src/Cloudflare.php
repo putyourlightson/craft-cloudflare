@@ -28,7 +28,7 @@ use putyourlightson\cloudflare\services\Api;
 use putyourlightson\cloudflare\services\Rules;
 use putyourlightson\cloudflare\utilities\PurgeUtility;
 use putyourlightson\cloudflare\variables\CloudflareVariable;
-use putyourlightson\cloudflare\widgets\QuickPurge as QuickPurgeWidget;
+use putyourlightson\cloudflare\widgets\QuickPurge;
 use yii\base\Event;
 
 /**
@@ -96,9 +96,9 @@ class Cloudflare extends Plugin
         $this->_registerVariables();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-            $this->_registerWidget();
+            $this->_registerCpUrlRules();
             $this->_registerUtility();
-            $this->_registerActions();
+            $this->_registerWidgets();
         }
 
         if (ConfigHelper::isConfigured() && !empty($this->getSettings()->purgeElements)) {
@@ -166,13 +166,15 @@ class Cloudflare extends Plugin
         );
     }
 
-    private function _registerWidget(): void
+    private function _registerCpUrlRules(): void
     {
         Event::on(
-            Dashboard::class,
-            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            static function(RegisterComponentTypesEvent $event) {
-                $event->types[] = QuickPurgeWidget::class;
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            static function(RegisterUrlRulesEvent $event) {
+                $event->rules['cloudflare/rules'] = [
+                    'template' => 'cloudflare/rules',
+                ];
             }
         );
     }
@@ -188,15 +190,13 @@ class Cloudflare extends Plugin
         );
     }
 
-    private function _registerActions(): void
+    private function _registerWidgets(): void
     {
         Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            static function(RegisterUrlRulesEvent $event) {
-                $event->rules['cloudflare/rules'] = [
-                    'template' => 'cloudflare/rules',
-                ];
+            Dashboard::class,
+            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
+            static function(RegisterComponentTypesEvent $event) {
+                $event->types[] = QuickPurge::class;
             }
         );
     }
