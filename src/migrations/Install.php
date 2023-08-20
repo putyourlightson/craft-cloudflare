@@ -10,6 +10,7 @@ use Craft;
 use craft\db\Migration;
 use craft\db\Table as CraftTable;
 use putyourlightson\cloudflare\db\Table;
+use putyourlightson\cloudflare\records\RuleRecord;
 
 class Install extends Migration
 {
@@ -42,10 +43,10 @@ class Install extends Migration
     {
         $tablesCreated = false;
 
-        if (!Craft::$app->db->tableExists(Table::RULES)) {
+        if (!Craft::$app->db->tableExists(RuleRecord::tableName())) {
             $tablesCreated = true;
             $this->createTable(
-                Table::RULES,
+                RuleRecord::tableName(),
                 [
                     'id' => $this->primaryKey(),
                     'dateCreated' => $this->dateTime()->notNull(),
@@ -66,7 +67,7 @@ class Install extends Migration
     {
         $this->addForeignKey(
             $this->db->getForeignKeyName(),
-            Table::RULES,
+            RuleRecord::tableName(),
             'siteId',
             CraftTable::SITES,
             'id',
@@ -77,6 +78,6 @@ class Install extends Migration
 
     protected function removeTables(): void
     {
-        $this->dropTableIfExists(Table::RULES);
+        $this->dropTableIfExists(RuleRecord::tableName());
     }
 }

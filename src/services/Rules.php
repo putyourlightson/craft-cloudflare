@@ -4,7 +4,6 @@ namespace putyourlightson\cloudflare\services;
 
 use Craft;
 use craft\base\Component;
-
 use craft\helpers\Json;
 use craft\helpers\Queue;
 use craft\helpers\UrlHelper;
@@ -12,14 +11,14 @@ use putyourlightson\cloudflare\Cloudflare;
 use putyourlightson\cloudflare\queue\jobs\PurgeCloudflareCache;
 use putyourlightson\cloudflare\records\RuleRecord;
 use yii\base\NotSupportedException;
-use yii\db\ActiveRecord;
+use yii\db\ActiveRecordInterface;
 
 /**
  * Provides a Cloudflare page rule service
  *
  * @package putyourlightson\cloudflare
  *
- * @property-read array      $rulesForTable
+ * @property-read array $rulesForTable
  * @property-read null|array $rules
  */
 class Rules extends Component
@@ -44,7 +43,7 @@ class Rules extends Component
     }
 
     /**
-     * @return ActiveRecord[]|null
+     * @return ActiveRecordInterface[]|null
      */
     public function getRules(): ?array
     {
@@ -116,7 +115,7 @@ class Rules extends Component
     /**
      * Get any rules that match a supplied URL.
      *
-     * @param  string  $url  URL from Craft event that needs to be checked
+     * @param string $url URL from Craft event that needs to be checked
      *
      * @return RuleRecord[]  rules related to URL
      */
