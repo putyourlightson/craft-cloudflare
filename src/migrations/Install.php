@@ -14,19 +14,13 @@ use putyourlightson\cloudflare\db\Table;
 class Install extends Migration
 {
     /**
-     * @var string The database driver to use
-     */
-    public string $driver;
-
-    /**
      * @inheritdoc
      */
     public function safeUp(): bool
     {
-        $this->driver = Craft::$app->getConfig()->getDb()->driver;
-
         if ($this->createTables()) {
             $this->addForeignKeys();
+
             // Refresh the db schema caches
             Craft::$app->db->schema->refresh();
         }
@@ -39,7 +33,6 @@ class Install extends Migration
      */
     public function safeDown(): bool
     {
-        $this->driver = Craft::$app->getConfig()->getDb()->driver;
         $this->removeTables();
 
         return true;
