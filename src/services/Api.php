@@ -30,11 +30,6 @@ class Api extends Component
     public const API_BASE_URL = 'https://api.cloudflare.com/client/v4/';
 
     /**
-     * @var array
-     */
-    protected array $responseItems;
-
-    /**
      * @var ?Client
      */
     private ?Client $_client = null;
@@ -144,7 +139,7 @@ class Api extends Component
 
     /**
      * Get a list of zones (domains) available for the provided Cloudflare account.
-     * https://api.cloudflare.com/#zone-list-zones
+     * https://developers.cloudflare.com/api/operations/zones-get
      *
      * @return array|null zones from `response.result` (combined if there was pagination)
      */
@@ -154,10 +149,10 @@ class Api extends Component
             return null;
         }
 
-        $this->responseItems = [];
+        $responseItems = [];
 
         $currentPage = 0;
-        $totalPages = 1; // temporary
+        $totalPages = 1;
         $perPage = 50;
 
         while ($currentPage < $totalPages) {
@@ -169,20 +164,18 @@ class Api extends Component
                     $totalPages = ceil($totalRecords / $perPage);
 
                     foreach ($response->result as $item) {
-                        $this->responseItems[] = $item;
+                        $responseItems[] = $item;
                     }
-                } else {
-                    return [];
                 }
             }
         }
 
-        return $this->responseItems;
+        return $responseItems;
     }
 
     /**
      * Get details for a zone.
-     * https://api.cloudflare.com/#zone-zone-details
+     * https://developers.cloudflare.com/api/operations/zones-0-get
      */
     public function getZoneById(string $zoneId): ?object
     {
@@ -226,7 +219,7 @@ class Api extends Component
 
     /**
      * Purge the entire zone cache.
-     * https://api.cloudflare.com/#zone-purge-all-files
+     * https://developers.cloudflare.com/api/operations/zone-purge
      */
     public function purgeZoneCache(): ?object
     {
@@ -239,7 +232,7 @@ class Api extends Component
                 'zones/%s/purge_cache',
                 ConfigHelper::getParsedSetting('zone')
             ),
-                [ 'body' => Json::encode([ 'purge_everything' => true ]) ]
+                ['body' => Json::encode(['purge_everything' => true])]
             );
 
             $responseBody = Json::decode($response->getBody(), false);
@@ -250,7 +243,7 @@ class Api extends Component
                     Json::encode($responseBody)
                 ), 'cloudflare');
 
-                return (object) [
+                return (object)[
                     'success' => false,
                     'message' => $response->getBody()->getContents(),
                     'result' => [],
@@ -263,14 +256,14 @@ class Api extends Component
             );
 
             return $responseBody;
-        } catch (ClientException | RequestException $exception) {
+        } catch (ClientException|RequestException $exception) {
             return $this->_handleApiException($exception, 'zone purge');
         }
     }
 
     /**
      * Clear specific URLs in Cloudflare’s cache.
-     * https://api.cloudflare.com/#zone-purge-individual-files-by-url-and-cache-tags
+     * https://developers.cloudflare.com/api/operations/zone-purge
      *
      * @param string[] $urls array of absolute URLs
      */
@@ -294,7 +287,7 @@ class Api extends Component
                 'zones/%s/purge_cache',
                 ConfigHelper::getParsedSetting('zone')
             ),
-                [ 'body' => Json::encode([ 'files' => $urls ]) ]
+                ['body' => Json::encode(['files' => $urls])]
             );
 
             $responseBody = Json::decode($response->getBody(), false);
@@ -305,7 +298,7 @@ class Api extends Component
                     Json::encode($responseBody)
                 ), 'cloudflare');
 
-                return (object) [
+                return (object)[
                     'success' => false,
                     'message' => $response->getBody()->getContents(),
                     'result' => [],
@@ -321,7 +314,7 @@ class Api extends Component
             ), 'cloudflare');
 
             return $responseBody;
-        } catch (ClientException | RequestException $exception) {
+        } catch (ClientException|RequestException $exception) {
             return $this->_handleApiException($exception, 'URL purge', $urls);
         }
     }
@@ -337,9 +330,9 @@ class Api extends Component
     /**
      * Quietly handle an exception from the Cloudflare API.
      *
-     * @param mixed     $exception (ClientException or RequestException)
-     * @param string    $action    human-friendly description of the attempted action
-     * @param string[]  $urls      related URLs (if relevant)
+     * @param mixed $exception (ClientException or RequestException)
+     * @param string $action human-friendly description of the attempted action
+     * @param string[] $urls related URLs (if relevant)
      *
      * @return object with populated `result` property array
      */
@@ -358,7 +351,7 @@ class Api extends Component
 
             Craft::info($message, 'cloudflare');
 
-            return (object) [
+            return (object)[
                 'success' => false,
                 'errors' => $responseBody->errors ?? [],
                 'result' => [],
@@ -444,7 +437,7 @@ class Api extends Component
     {
         Craft::error($message, 'cloudflare');
 
-        return (object) [
+        return (object)[
             'success' => false,
             'message' => $message,
             'result' => [],
