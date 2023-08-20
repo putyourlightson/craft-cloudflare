@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed a bug in which the install migration could fail due to a type error ([#64](https://github.com/putyourlightson/craft-cloudflare/issues/64)).
+- Fixed a bug in which only the first 50 zones were being fetched from the Cloudflare API ([#65](https://github.com/putyourlightson/craft-cloudflare/issues/65)).
 
 ## 2.0.0 - 2023-01-05
 
