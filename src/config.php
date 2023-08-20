@@ -35,7 +35,7 @@ return [
         //'zone' => '1234567890',
 
         // List of element type classes that should be purged automatically.
-        //purgeElements = [
+        //purgeElements => [
         //    'craft\elements\Asset',
         //],
     ],
