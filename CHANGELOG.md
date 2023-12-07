@@ -1,5 +1,11 @@
 # Release Notes for Cloudflare
 
+## 2.0.2 - 2023-12-07
+
+### Fixed
+
+- Fixed a bug in which an error was being logged unnecessarily when no valid URLs were present ([#66](https://github.com/putyourlightson/craft-cloudflare/issues/66)).
+
 ## 2.0.1 - 2023-08-20
 
 ### Fixed

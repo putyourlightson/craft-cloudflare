@@ -105,6 +105,10 @@ class Rules extends Component
             );
         }
 
+        if (empty($urlsToPurge)) {
+            return;
+        }
+
         if ($immediately) {
             Cloudflare::$plugin->api->purgeUrls($urlsToPurge);
         } else {
