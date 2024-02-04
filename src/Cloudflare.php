@@ -10,6 +10,10 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Model;
 use craft\base\Plugin;
+use craft\db\Query;
+use craft\db\Table;
+use craft\elements\Asset;
+use craft\events\AssetEvent;
 use craft\events\ElementEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -18,6 +22,7 @@ use craft\helpers\Queue;
 use craft\helpers\UrlHelper;
 use craft\services\Dashboard;
 use craft\services\Elements;
+use craft\services\ImageTransforms;
 use craft\services\Utilities;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
@@ -103,6 +108,10 @@ class Cloudflare extends Plugin
 
         if (ConfigHelper::isConfigured() && !empty($this->getSettings()->purgeElements)) {
             $this->_registerElementChangeEvents();
+
+            if (in_array(Asset::class, $this->getSettings()->purgeElements)) {
+                $this->_registerImageTransformEvents();
+            }
         }
     }
 
@@ -226,6 +235,19 @@ class Cloudflare extends Plugin
         );
     }
 
+    private function _registerImageTransformEvents(): void
+    {
+        Event::on(
+            ImageTransforms::class,
+            ImageTransforms::EVENT_BEFORE_INVALIDATE_ASSET_TRANSFORMS,
+            function(AssetEvent $event) {
+                $this->_handleInvalidateAssetTransform(
+                    $event->asset
+                );
+            }
+        );
+    }
+
     /**
      * Returns element types that should be available options for
      * automatic purging.
@@ -296,19 +318,52 @@ class Cloudflare extends Plugin
         $className = get_class($element);
 
         if (!$isNew && $this->_shouldPurgeElementType($className)) {
-            $elementUrl = $element->getUrl();
-
-            // Try making relative URLs absolute.
-            if (!str_contains($elementUrl, '//')) {
-                $elementUrl = UrlHelper::siteUrl($elementUrl);
-            }
-
-            Queue::push(new PurgeCloudflareCache(['urls' => [$elementUrl]]));
+            $url = $this->getAbsoluteUrl($element);
+            Queue::push(new PurgeCloudflareCache(['urls' => [$url]]));
         }
 
         // Honour any explicit rules that match this URL, regardless of whatever Element it is.
         $this->rules->purgeCachesForUrl(
             $element->getUrl()
         );
+    }
+
+    private function _handleInvalidateAssetTransform(Asset $asset): void
+    {
+        $urls = [];
+        $url = $this->getAbsoluteUrl($asset);
+
+        $indexes = (new Query())
+            ->select([
+                'filename',
+                'transformString',
+            ])
+            ->from([Table::IMAGETRANSFORMINDEX])
+            ->where([
+                'assetId' => $asset->id,
+                'fileExists' => true,
+            ])
+            ->all();
+
+        foreach ($indexes as $index) {
+            $urls[] = str_replace(
+                $asset->getFilename(),
+                $index['transformString'] . '/' . $asset->getFilename(),
+                $url,
+            );
+        }
+
+        Queue::push(new PurgeCloudflareCache(['urls' => $urls]));
+    }
+
+    private function getAbsoluteUrl(ElementInterface $element): string
+    {
+        $url = $element->getUrl();
+
+        if (!str_contains($url, '//')) {
+            $url = UrlHelper::siteUrl($url);
+        }
+
+        return $url;
     }
 }
