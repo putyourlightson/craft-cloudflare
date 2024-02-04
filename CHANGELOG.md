@@ -1,5 +1,11 @@
 # Release Notes for Cloudflare
 
+## 2.1.0 - Unreleased
+
+### Added
+
+- Added the automatic purging of asset image transform URLs ([#67](https://github.com/putyourlightson/craft-cloudflare/issues/67)).
+
 ## 2.0.2 - 2023-12-07
 
 ### Fixed
