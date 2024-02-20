@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) Working Concept
  * @copyright Copyright (c) PutYourLightsOn
  */
 
@@ -192,7 +192,7 @@ class Cloudflare extends Plugin
     {
         Event::on(
             Utilities::class,
-            Utilities::EVENT_REGISTER_UTILITY_TYPES,
+            Utilities::EVENT_REGISTER_UTILITIES,
             static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = PurgeUtility::class;
             }

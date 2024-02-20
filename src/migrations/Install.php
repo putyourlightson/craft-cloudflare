@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) Working Concept
  * @copyright Copyright (c) PutYourLightsOn
  */
 
@@ -8,8 +8,7 @@ namespace putyourlightson\cloudflare\migrations;
 
 use Craft;
 use craft\db\Migration;
-use craft\db\Table as CraftTable;
-use putyourlightson\cloudflare\db\Table;
+use craft\db\Table;
 use putyourlightson\cloudflare\records\RuleRecord;
 
 class Install extends Migration
@@ -69,7 +68,7 @@ class Install extends Migration
             $this->db->getForeignKeyName(),
             RuleRecord::tableName(),
             'siteId',
-            CraftTable::SITES,
+            Table::SITES,
             'id',
             'CASCADE',
             'CASCADE'

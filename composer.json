@@ -1,18 +1,39 @@
 {
   "name": "putyourlightson/craft-cloudflare",
   "description": "Purge Cloudflare caches from Craft.",
-  "version": "2.1.0",
+  "version": "3.0.0-beta.1",
   "type": "craft-plugin",
   "license": "mit",
   "require": {
-    "php": "^8.0.2",
-    "craftcms/cms": "^4.0",
+    "php": "^8.2",
+    "craftcms/cms": "^5.0.0-beta.1",
     "jeremykendall/php-domain-parser": "^5.7.2"
+  },
+  "require-dev": {
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main",
+    "markhuot/craft-pest-core": "v3.x-dev",
+    "putyourlightson/craft-generate-test-spec": "v2.x-dev"
   },
   "autoload": {
     "psr-4": {
       "putyourlightson\\cloudflare\\": "src/"
     }
+  },
+  "scripts": {
+    "pest": "pest tests/pest --test-directory=tests/pest",
+    "phpstan": "phpstan --ansi --memory-limit=1G",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --fix --ansi"
+  },
+  "config": {
+    "allow-plugins": {
+      "craftcms/plugin-installer": true,
+      "pestphp/pest-plugin": true,
+      "yiisoft/yii2-composer": true
+    },
+    "optimize-autoloader": true,
+    "sort-packages": true
   },
   "support": {
     "docs": "https://putyourlightson.com/plugins/cloudflare",
@@ -25,7 +46,7 @@
     "developer": "PutYourLightsOn",
     "developerUrl": "https://putyourlightson.com/",
     "documentationUrl": "https://putyourlightson.com/plugins/cloudflare",
-    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/v2/CHANGELOG.md",
+    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/v3/CHANGELOG.md",
     "class": "putyourlightson\\cloudflare\\Cloudflare"
   }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) Working Concept
  * @copyright Copyright (c) PutYourLightsOn
  */
 

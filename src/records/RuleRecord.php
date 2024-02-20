@@ -1,13 +1,12 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) Working Concept
  * @copyright Copyright (c) PutYourLightsOn
  */
 
 namespace putyourlightson\cloudflare\records;
 
 use craft\db\ActiveRecord;
-use putyourlightson\cloudflare\db\Table;
 
 /**
  * @property int $id          Rule ID.

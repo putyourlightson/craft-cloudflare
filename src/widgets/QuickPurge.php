@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) Working Concept
  * @copyright Copyright (c) PutYourLightsOn
  */
 
@@ -14,7 +14,7 @@ use putyourlightson\cloudflare\helpers\ConfigHelper;
 
 /**
  * @property-read string|false $bodyHtml
- * @property-read string       $title
+ * @property-read string $title
  */
 class QuickPurge extends Widget
 {

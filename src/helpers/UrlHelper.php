@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) Working Concept
  * @copyright Copyright (c) PutYourLightsOn
  */
 
@@ -39,8 +39,8 @@ class UrlHelper
     /**
      * Make sure the supplied URL is something Cloudflare will be able to purge.
      *
-     * @param string $url              URL to be checked.
-     * @param bool   $includeZoneCheck Whether to ensure that the URL
+     * @param string $url URL to be checked.
+     * @param bool $includeZoneCheck Whether to ensure that the URL
      *                                 exists on the zone this site is
      *                                 configured to use.
      *

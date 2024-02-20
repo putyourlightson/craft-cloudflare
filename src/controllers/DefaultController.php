@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) Working Concept
  * @copyright Copyright (c) PutYourLightsOn
  */
 
@@ -24,7 +24,7 @@ class DefaultController extends Controller
         if (!$apiService->verifyConnection()) {
             return $this->asFailure(
                 'Failed to verify connection.',
-                [ 'errors' => $apiService->getConnectionErrors() ]
+                ['errors' => $apiService->getConnectionErrors()]
             );
         }
 

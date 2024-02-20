@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Working Concept
+ * @copyright Copyright (c) Working Concept
  * @copyright Copyright (c) PutYourLightsOn
  */
 
@@ -31,9 +31,9 @@ class PurgeUtility extends Utility
     /**
      * @inheritdoc
      */
-    public static function iconPath(): ?string
+    public static function icon(): ?string
     {
-        return Craft::getAlias("@putyourlightson/cloudflare/resources/images/cloud.svg");
+        return Craft::getAlias('@putyourlightson/cloudflare/resources/images/cloud.svg');
     }
 
     /**
