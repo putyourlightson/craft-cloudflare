@@ -7,7 +7,6 @@
 namespace putyourlightson\cloudflare\records;
 
 use craft\db\ActiveRecord;
-use putyourlightson\cloudflare\db\Table;
 
 /**
  * @property int $id          Rule ID.
