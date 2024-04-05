@@ -7,7 +7,6 @@
 namespace putyourlightson\cloudflare\helpers;
 
 use Craft;
-use Pdp;
 use putyourlightson\cloudflare\Cloudflare;
 
 class UrlHelper
@@ -68,7 +67,7 @@ class UrlHelper
          * uses it since it otherwise won't be cleared.
          */
         if ($includeZoneCheck) {
-            if (!$urlDomain = self::getBaseDomainFromUrl($url)) {
+            if (!$urlDomain = parse_url($url, PHP_URL_HOST)) {
                 // bail if we couldn't even get a base domain
                 return false;
             }
@@ -84,24 +83,5 @@ class UrlHelper
         }
 
         return true;
-    }
-
-    /**
-     * Gets the domain name and TLD only (no subdomains or query parameters)
-     * from the given URL.
-     *
-     * @param string $url
-     * @return string|null `null` if the URL’s host can’t be parsed
-     */
-    public static function getBaseDomainFromUrl(string $url): ?string
-    {
-        $cachePath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . 'pdp';
-
-        $host = parse_url($url, PHP_URL_HOST);
-        $manager = new Pdp\Manager(new Pdp\Cache($cachePath), new Pdp\CurlHttpClient());
-        $manager->refreshRules();
-        $rules = $manager->getRules();
-
-        return $rules->resolve($host)->getRegistrableDomain();
     }
 }

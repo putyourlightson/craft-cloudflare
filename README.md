@@ -2,7 +2,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/workingconcept/craft-cloudflare)](https://packagist.org/packages/workingconcept/craft-cloudflare)
 [![Total Downloads](https://img.shields.io/packagist/dt/putyourlightson/craft-cloudflare)](https://packagist.org/packages/putyourlightson/craft-cloudflare)
 
-<p align="center"><img width="150" src="https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/v2/src/icon.svg"></p>
+<p align="center"><img width="150" src="https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/3.x/src/icon.svg"></p>
 
 # Cloudflare Plugin for Craft CMS
 
@@ -18,13 +18,13 @@ This plugin is licensed for free under the MIT License.
 
 ## Requirements
 
-This plugin requires [Craft CMS](https://craftcms.com/) 3.6.0 or later, or 4.0.0 or later.
+This plugin requires [Craft CMS](https://craftcms.com/) 3.6.0 or later, or 4.0.0 or later, or 5.0.0 or later.
 
 ## Installation
 
 To install the plugin, search for “Cloudflare” in the Craft Plugin Store, or install manually using composer.
 
-```
+```shell
 composer require putyourlightson/craft-cloudflare
 ```
 
