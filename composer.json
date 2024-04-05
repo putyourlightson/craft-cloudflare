@@ -45,7 +45,7 @@
     "developer": "PutYourLightsOn",
     "developerUrl": "https://putyourlightson.com/",
     "documentationUrl": "https://putyourlightson.com/plugins/cloudflare",
-    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/3.x/CHANGELOG.md",
+    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/develop/CHANGELOG.md",
     "class": "putyourlightson\\cloudflare\\Cloudflare"
   }
 }
