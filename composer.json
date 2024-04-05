@@ -11,7 +11,7 @@
   "require-dev": {
     "craftcms/ecs": "dev-main",
     "craftcms/phpstan": "dev-main",
-    "markhuot/craft-pest-core": "v3.x-dev",
+    "markhuot/craft-pest-core": "dev-craft5",
     "putyourlightson/craft-generate-test-spec": "v2.x-dev"
   },
   "autoload": {
