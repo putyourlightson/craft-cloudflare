@@ -1,10 +1,10 @@
 # Release Notes for Cloudflare
 
-## 3.0.0-beta.1 - 2024-04-05
+## 3.0.0 - 2024-04-08
 
 ### Added
 
-- Added compatibility with Craft 5.0.0.
+- Added compatibility with Craft 5.
 
 ### Removed
 
