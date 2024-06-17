@@ -160,8 +160,7 @@ class Api extends Component
 
             if ($response = $this->_getPagedZones($currentPage, $perPage)) {
                 if (count($response->result) > 0) {
-                    $totalRecords = $response->result_info->total_count;
-                    $totalPages = ceil($totalRecords / $perPage);
+                    $totalPages = $response->result_info->total_pages;
 
                     foreach ($response->result as $item) {
                         $responseItems[] = $item;
@@ -381,8 +380,9 @@ class Api extends Component
 
         try {
             $response = $this->getClient()->get(sprintf(
-                'zones?per_page=%d',
-                $perPage
+                'zones?page=%d&per_page=%d',
+                $page,
+                $perPage,
             ));
 
             if ($response->getStatusCode() !== 200) {
