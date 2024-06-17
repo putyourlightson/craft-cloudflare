@@ -1,5 +1,11 @@
 # Release Notes for Cloudflare
 
+## 2.1.1 - Unreleased
+
+### Changed
+
+- The default number of pages fetched from the Cloudflare API is now `1`, to help avoid timeout errors ([#72](https://github.com/putyourlightson/craft-cloudflare/issues/72)).
+
 ## 2.1.0 - 2024-04-05
 
 ### Added

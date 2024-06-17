@@ -152,7 +152,7 @@ class Api extends Component
         $responseItems = [];
 
         $currentPage = 0;
-        $totalPages = 100;
+        $totalPages = 1;
         $perPage = 50;
 
         while ($currentPage < $totalPages) {
