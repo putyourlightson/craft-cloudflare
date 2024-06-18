@@ -10,9 +10,7 @@
   },
   "require-dev": {
     "craftcms/ecs": "dev-main",
-    "craftcms/phpstan": "dev-main",
-    "markhuot/craft-pest-core": "dev-craft5",
-    "putyourlightson/craft-generate-test-spec": "v2.x-dev"
+    "craftcms/phpstan": "dev-main"
   },
   "autoload": {
     "psr-4": {
