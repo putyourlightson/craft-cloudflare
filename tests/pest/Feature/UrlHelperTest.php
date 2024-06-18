@@ -14,7 +14,7 @@ beforeEach(function() {
 test('Invalid URLs are removed', function() {
     $urls = UrlHelper::prepUrls([
         '/no-domain-name',
-        'not-a-url-at-all'
+        'not-a-url-at-all',
     ]);
 
     expect($urls)
@@ -26,13 +26,13 @@ test('Leading and trailing spaces are trimmed and duplicates removed from URLs',
         'cloudflare-plugin.test ',
         ' https://cloudflare-plugin.test  ',
         ' https://cloudflare-plugin.test/foo ',
-        '  cloudflare-plugin.test/foo'
+        '  cloudflare-plugin.test/foo',
     ]);
 
     expect($urls)
         ->toBe([
             'https://cloudflare-plugin.test',
-            'https://cloudflare-plugin.test/foo'
+            'https://cloudflare-plugin.test/foo',
         ]);
 });
 
@@ -69,8 +69,7 @@ test('URLs not within a zone are not purgeable', function() {
     }
 });
 
-test('The base domain is correctly returned from a URL', function()
-{
+test('The base domain is correctly returned from a URL', function() {
     $urls = [
         'snipcart.com' => 'https://snipcart.com/foo/bar',
         'example.org.au' => 'https://www.example.org.au/path/to/something',
@@ -83,8 +82,7 @@ test('The base domain is correctly returned from a URL', function()
     }
 });
 
-test('A base domain that is not real is not returned from a URL', function()
-{
+test('A base domain that is not real is not returned from a URL', function() {
     expect(UrlHelper::getBaseDomainFromUrl('www.nota.realdomain/foo/bar'))
         ->toBeNull();
 });
