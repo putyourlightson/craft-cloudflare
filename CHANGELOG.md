@@ -1,5 +1,11 @@
 # Release Notes for Cloudflare
 
+## 3.0.2 - Unreleased
+
+### Changed
+
+- Element URLs are now checked for null values for better compatibility with other plugins.
+
 ## 3.0.1 - 2024-06-18
 
 ### Changed
