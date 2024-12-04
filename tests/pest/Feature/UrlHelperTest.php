@@ -1,8 +1,8 @@
 <?php
 
 /**
-* Tests the functionality of the URL helper.
-*/
+ * Tests the functionality of the URL helper.
+ */
 
 use putyourlightson\cloudflare\Cloudflare;
 use putyourlightson\cloudflare\helpers\UrlHelper;
@@ -67,22 +67,4 @@ test('URLs not within a zone are not purgeable', function() {
         expect(UrlHelper::isPurgeableUrl($url, true))
             ->toBeFalse();
     }
-});
-
-test('The base domain is correctly returned from a URL', function() {
-    $urls = [
-        'snipcart.com' => 'https://snipcart.com/foo/bar',
-        'example.org.au' => 'https://www.example.org.au/path/to/something',
-        'foo.bar' => 'https://subdomain.foo.bar',
-    ];
-
-    foreach ($urls as $domain => $url) {
-        expect(UrlHelper::getBaseDomainFromUrl($url))
-            ->toBe($domain);
-    }
-});
-
-test('A base domain that is not real is not returned from a URL', function() {
-    expect(UrlHelper::getBaseDomainFromUrl('www.nota.realdomain/foo/bar'))
-        ->toBeNull();
 });

@@ -21,7 +21,7 @@ class RulesController extends Controller
     {
         Cloudflare::$plugin->rules->saveRules();
 
-        Craft::$app->getSession()->setNotice(Craft::t(
+        Craft::$app->getSession()->setSuccess(Craft::t(
             'cloudflare',
             'Cloudflare rules saved.'
         ));

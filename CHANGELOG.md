@@ -1,10 +1,14 @@
 # Release Notes for Cloudflare
 
-## 3.0.2 - Unreleased
+## 3.0.2 - 2024-12-04
 
 ### Changed
 
 - Element URLs are now checked for null values for better compatibility with other plugins.
+
+### Fixed
+
+- Fixed a bug in which URLs with a subdomain were not being purged ([#74](https://github.com/putyourlightson/craft-cloudflare/issues/74)).
 
 ## 3.0.1 - 2024-06-18
 
