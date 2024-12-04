@@ -319,7 +319,9 @@ class Cloudflare extends Plugin
 
         if (!$isNew && $this->_shouldPurgeElementType($className)) {
             $url = $this->getAbsoluteUrl($element);
-            Queue::push(new PurgeCloudflareCache(['urls' => [$url]]));
+            if ($url !== null) {
+                Queue::push(new PurgeCloudflareCache(['urls' => [$url]]));
+            }
         }
 
         // Honour any explicit rules that match this URL, regardless of whatever Element it is.
@@ -332,6 +334,10 @@ class Cloudflare extends Plugin
     {
         $urls = [];
         $url = $this->getAbsoluteUrl($asset);
+
+        if ($url === null) {
+            return;
+        }
 
         $indexes = (new Query())
             ->select([
@@ -356,9 +362,13 @@ class Cloudflare extends Plugin
         Queue::push(new PurgeCloudflareCache(['urls' => $urls]));
     }
 
-    private function getAbsoluteUrl(ElementInterface $element): string
+    private function getAbsoluteUrl(ElementInterface $element): ?string
     {
         $url = $element->getUrl();
+
+        if ($url === null) {
+            return null;
+        }
 
         if (!str_contains($url, '//')) {
             $url = UrlHelper::siteUrl($url);
