@@ -112,7 +112,10 @@ class Rules extends Component
         if ($immediately) {
             Cloudflare::$plugin->api->purgeUrls($urlsToPurge);
         } else {
-            Queue::push(new PurgeCloudflareCache(['urls' => $urlsToPurge]));
+            Queue::push(
+                new PurgeCloudflareCache(['urls' => $urlsToPurge]),
+                Cloudflare::$plugin->settings->queueJobPriority,
+            );
         }
     }
 

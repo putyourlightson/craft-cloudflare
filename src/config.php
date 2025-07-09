@@ -38,5 +38,8 @@ return [
         //purgeElements => [
         //    'craft\elements\Asset',
         //],
+
+        // Priority for queue jobs.
+        //'queueJobPriority' => null,
     ],
 ];

@@ -63,6 +63,11 @@ class Settings extends Model
     public ?string $zoneName = null;
 
     /**
+     * @var int|null  Priority for queue jobs.
+     */
+    public ?int $queueJobPriority = null;
+
+    /**
      * Returns `true` if the Cloudflare zone ID is set in a static config file.\
      */
     public function zoneIsStatic(): bool
@@ -88,12 +93,16 @@ class Settings extends Model
             [['purgeElements'], 'each', 'rule' => ['in', 'range' => Cloudflare::$supportedElementTypes]],
             [['apiKey', 'email', 'apiToken', 'zone', 'zoneName', 'userServiceKey'], 'string'],
             ['zone', 'required'],
-            [['apiKey', 'email'], 'required', 'when' => static function($model) {
+            [
+                ['apiKey', 'email'], 'required', 'when' => static function($model) {
                 return $model->authType === self::AUTH_TYPE_KEY;
-            }],
-            ['apiToken', 'required', 'when' => static function($model) {
+            },
+            ],
+            [
+                'apiToken', 'required', 'when' => static function($model) {
                 return $model->authType === self::AUTH_TYPE_TOKEN;
-            }],
+            },
+            ],
         ];
     }
 

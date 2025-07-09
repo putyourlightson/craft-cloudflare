@@ -320,7 +320,10 @@ class Cloudflare extends Plugin
         if (!$isNew && $this->_shouldPurgeElementType($className)) {
             $url = $this->getAbsoluteUrl($element);
             if ($url !== null) {
-                Queue::push(new PurgeCloudflareCache(['urls' => [$url]]));
+                Queue::push(
+                    new PurgeCloudflareCache(['urls' => [$url]]),
+                    Cloudflare::$plugin->settings->queueJobPriority,
+                );
             }
         }
 
@@ -359,7 +362,10 @@ class Cloudflare extends Plugin
             );
         }
 
-        Queue::push(new PurgeCloudflareCache(['urls' => $urls]));
+        Queue::push(
+            new PurgeCloudflareCache(['urls' => $urls]),
+            Cloudflare::$plugin->settings->queueJobPriority,
+        );
     }
 
     private function getAbsoluteUrl(ElementInterface $element): ?string

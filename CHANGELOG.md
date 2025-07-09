@@ -1,5 +1,9 @@
 # Release Notes for Cloudflare
 
+## 3.1.0 - Unreleased
+
+- Added a `queueJobPriority` config setting.
+
 ## 3.0.2 - 2024-12-04
 
 ### Changed

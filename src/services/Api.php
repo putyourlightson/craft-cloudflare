@@ -218,7 +218,7 @@ class Api extends Component
 
     /**
      * Purge the entire zone cache.
-     * https://developers.cloudflare.com/api/operations/zone-purge
+     * https://developers.cloudflare.com/api/resources/cache/methods/purge/
      */
     public function purgeZoneCache(): ?object
     {
@@ -262,7 +262,7 @@ class Api extends Component
 
     /**
      * Clear specific URLs in Cloudflare’s cache.
-     * https://developers.cloudflare.com/api/operations/zone-purge
+     * https://developers.cloudflare.com/api/resources/cache/methods/purge/
      *
      * @param string[] $urls array of absolute URLs
      */
