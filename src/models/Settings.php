@@ -95,13 +95,13 @@ class Settings extends Model
             ['zone', 'required'],
             [
                 ['apiKey', 'email'], 'required', 'when' => static function($model) {
-                return $model->authType === self::AUTH_TYPE_KEY;
-            },
+                    return $model->authType === self::AUTH_TYPE_KEY;
+                },
             ],
             [
                 'apiToken', 'required', 'when' => static function($model) {
-                return $model->authType === self::AUTH_TYPE_TOKEN;
-            },
+                    return $model->authType === self::AUTH_TYPE_TOKEN;
+                },
             ],
         ];
     }

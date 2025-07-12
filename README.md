@@ -2,7 +2,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/workingconcept/craft-cloudflare)](https://packagist.org/packages/workingconcept/craft-cloudflare)
 [![Total Downloads](https://img.shields.io/packagist/dt/putyourlightson/craft-cloudflare)](https://packagist.org/packages/putyourlightson/craft-cloudflare)
 
-<p align="center"><img width="150" src="https://raw.githubusercontent.com/putyourlightson/craft-cloudflare/develop/src/icon.svg"></p>
+<p align="center"><img width="200" height="200" src="https://putyourlightson.com/assets/logos/cloudflare.svg"></p>
 
 # Cloudflare Plugin for Craft CMS
 
