@@ -1,6 +1,6 @@
 # Release Notes for Cloudflare
 
-## 2.2.0 - Unreleased
+## 2.2.0 - 2025-07-21
 
 ### Added
 
