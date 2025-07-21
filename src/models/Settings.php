@@ -63,6 +63,11 @@ class Settings extends Model
     public ?string $zoneName = null;
 
     /**
+     * @var int|null  Priority for queue jobs.
+     */
+    public ?int $queueJobPriority = null;
+
+    /**
      * Returns `true` if the Cloudflare zone ID is set in a static config file.\
      */
     public function zoneIsStatic(): bool
