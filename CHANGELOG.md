@@ -1,5 +1,9 @@
 # Release Notes for Cloudflare
 
+## 3.1.1 - Unreleased
+
+- Fixed a bug in which image transform URLs containing URL encoded characters were not purged ([#76](https://github.com/putyourlightson/craft-cloudflare/issues/76)).
+
 ## 3.1.0 - 2025-07-12
 
 - Added a `queueJobPriority` config setting.

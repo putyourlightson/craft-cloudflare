@@ -358,7 +358,7 @@ class Cloudflare extends Plugin
             $urls[] = str_replace(
                 $asset->getFilename(),
                 $index['transformString'] . '/' . $asset->getFilename(),
-                $url,
+                rawurldecode($url),
             );
         }
 
