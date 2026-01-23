@@ -113,7 +113,7 @@
             required: true,
             name: 'zone',
             options: zoneOptions,
-            value: settings.zone,
+            value: settings.getZone(requestedSite.handle),
             autofocus: true,
             errors: settings.getErrors('zone'),
             instructions: 'Specify which Cloudflare Zone is utilized by this site.'|t('cloudflare')
@@ -134,7 +134,7 @@
             required: true,
             name: 'zone',
             class: 'code',
-            value: settings.zone,
+            value: settings.getZone(requestedSite.handle),
             autofocus: true,
             errors: settings.getErrors('zone'),
             disabled: settings.zoneIsStatic(),

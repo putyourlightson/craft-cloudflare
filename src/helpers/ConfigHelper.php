@@ -9,6 +9,7 @@ namespace putyourlightson\cloudflare\helpers;
 use Craft;
 use craft\console\Application as ConsoleApplication;
 use craft\helpers\App;
+use craft\helpers\Cp;
 use putyourlightson\cloudflare\Cloudflare;
 use putyourlightson\cloudflare\models\Settings;
 
@@ -35,7 +36,7 @@ class ConfigHelper
      * parameters if we’re in the control panel checking unsaved settings.
      * Also parses environment variables.
      */
-    public static function getParsedSetting(string $key): ?string
+    public static function getParsedSetting(string $key, ?string $siteHandle = null): ?string
     {
         $request = Craft::$app->getRequest();
         $isConsole = Craft::$app instanceof ConsoleApplication;
@@ -49,8 +50,14 @@ class ConfigHelper
             !empty($request->getParam($key)) &&
             is_string($request->getParam($key));
 
-        $settingValue = $usePost ? $request->getParam($key) :
-            Cloudflare::$plugin->getSettings()->{$key} ?? null;
+        if ($usePost) {
+            $settingValue = $request->getParam($key);
+        } elseif ($key == 'zone') {
+            $siteHandle = $siteHandle ?? Cp::requestedSite()->handle;
+            $settingValue = Cloudflare::$plugin->getSettings()->getZone($siteHandle);
+        } else {
+            $settingValue = Cloudflare::$plugin->getSettings()->{$key} ?? null;
+        }
 
         if ($settingValue) {
             /** @scrutinizer ignore-call */

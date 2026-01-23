@@ -265,8 +265,9 @@ class Api extends Component
      * https://developers.cloudflare.com/api/resources/cache/methods/purge/
      *
      * @param string[] $urls array of absolute URLs
+     * @param string|null $siteHandle optional site handle to override the default one
      */
-    public function purgeUrls(array $urls = []): mixed
+    public function purgeUrls(array $urls = [], ?string $siteHandle = null): mixed
     {
         if (!$this->getClient()) {
             return null;
@@ -284,7 +285,7 @@ class Api extends Component
         try {
             $response = $this->getClient()->delete(sprintf(
                 'zones/%s/purge_cache',
-                ConfigHelper::getParsedSetting('zone')
+                ConfigHelper::getParsedSetting('zone', $siteHandle),
             ),
                 ['body' => Json::encode(['files' => $urls])]
             );

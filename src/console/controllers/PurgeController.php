@@ -17,8 +17,9 @@ class PurgeController extends Controller
      * https://www.yiiframework.com/doc/guide/2.0/en/tutorial-console#arguments
      *
      * @param string[] $urls
+     * @param string|null $siteHandle
      */
-    public function actionPurgeUrls(array $urls): int
+    public function actionPurgeUrls(array $urls, ?string $siteHandle = null): int
     {
         $urlCount = count($urls);
         $urlWord = $urlCount === 1 ? 'URL' : 'URLs';
@@ -27,7 +28,7 @@ class PurgeController extends Controller
             sprintf('Purging %d %s...', $urlCount, $urlWord) . PHP_EOL
         );
 
-        $response = Cloudflare::$plugin->api->purgeUrls($urls);
+        $response = Cloudflare::$plugin->api->purgeUrls($urls, $siteHandle);
 
         return $this->_handleResult($response);
     }

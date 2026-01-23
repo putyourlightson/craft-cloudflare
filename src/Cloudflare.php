@@ -316,12 +316,13 @@ class Cloudflare extends Plugin
         }
 
         $className = get_class($element);
+        $siteHandle = $element->getSite()->handle;
 
         if (!$isNew && $this->_shouldPurgeElementType($className)) {
             $url = $this->getAbsoluteUrl($element);
             if ($url !== null) {
                 Queue::push(
-                    new PurgeCloudflareCache(['urls' => [$url]]),
+                    new PurgeCloudflareCache(['urls' => [$url], 'siteHandle' => $siteHandle]),
                     Cloudflare::$plugin->settings->queueJobPriority,
                 );
             }
@@ -329,7 +330,8 @@ class Cloudflare extends Plugin
 
         // Honour any explicit rules that match this URL, regardless of whatever Element it is.
         $this->rules->purgeCachesForUrl(
-            $element->getUrl()
+            $element->getUrl(),
+            $siteHandle,
         );
     }
 
@@ -363,7 +365,7 @@ class Cloudflare extends Plugin
         }
 
         Queue::push(
-            new PurgeCloudflareCache(['urls' => $urls]),
+            new PurgeCloudflareCache(['urls' => $urls, 'siteHandle' => $asset->getSite()->handle]),
             Cloudflare::$plugin->settings->queueJobPriority,
         );
     }
