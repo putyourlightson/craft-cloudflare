@@ -128,7 +128,7 @@ class Settings extends Model
     private function _getStaticConfig(?string $siteHandle = null): array
     {
         $config = Craft::$app->getConfig()->getConfigFromFile('cloudflare');
-        $config['zone'] = ConfigHelper::localizedValue($config['zone'], $siteHandle);
+        $config['zone'] = ConfigHelper::localizedValue($config['zone'] ?? null, $siteHandle);
 
         return $config;
     }
