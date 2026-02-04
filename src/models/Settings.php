@@ -4,6 +4,7 @@ namespace putyourlightson\cloudflare\models;
 
 use Craft;
 use craft\base\Model;
+use craft\helpers\ConfigHelper;
 use putyourlightson\cloudflare\Cloudflare;
 
 class Settings extends Model
@@ -40,9 +41,9 @@ class Settings extends Model
     public ?string $apiToken = null;
 
     /**
-     * @var ?string  This site’s related Cloudflare Zone ID.
+     * @var mixed  This site’s related Cloudflare Zone ID.
      */
-    public ?string $zone = null;
+    public mixed $zone = null;
 
     /**
      * @var string[]  List of element type classes that should be purged automatically.
@@ -68,6 +69,14 @@ class Settings extends Model
     public ?int $queueJobPriority = null;
 
     /**
+     * Returns the localized Zone value.
+     */
+    public function getZone(?string $siteHandle = null): ?string
+    {
+        return ConfigHelper::localizedValue($this->zone, $siteHandle);
+    }
+
+    /**
      * Returns `true` if the Cloudflare zone ID is set in a static config file.\
      */
     public function zoneIsStatic(): bool
@@ -91,7 +100,17 @@ class Settings extends Model
         return [
             [['authType'], 'in', 'range' => [self::AUTH_TYPE_KEY, self::AUTH_TYPE_TOKEN]],
             [['purgeElements'], 'each', 'rule' => ['in', 'range' => Cloudflare::$supportedElementTypes]],
-            [['apiKey', 'email', 'apiToken', 'zone', 'zoneName', 'userServiceKey'], 'string'],
+            [['apiKey', 'email', 'apiToken', 'zoneName', 'userServiceKey'], 'string'],
+            [
+                ['zone'], 'string', 'when' => static function ($model) {
+                    return is_string($model->zone);
+                },
+            ],
+            [
+                ['zone'], 'each', 'rule' => ['string'], 'when' => static function ($model) {
+                    return is_array($model->zone);
+                },
+            ],
             ['zone', 'required'],
             [
                 ['apiKey', 'email'], 'required', 'when' => static function($model) {
@@ -106,8 +125,11 @@ class Settings extends Model
         ];
     }
 
-    private function _getStaticConfig(): array
+    private function _getStaticConfig(?string $siteHandle = null): array
     {
-        return Craft::$app->getConfig()->getConfigFromFile('cloudflare');
+        $config = Craft::$app->getConfig()->getConfigFromFile('cloudflare');
+        $config['zone'] = ConfigHelper::localizedValue($config['zone'] ?? null, $siteHandle);
+
+        return $config;
     }
 }

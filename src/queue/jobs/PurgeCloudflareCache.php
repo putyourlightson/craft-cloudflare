@@ -14,11 +14,16 @@ class PurgeCloudflareCache extends BaseJob
     public array $urls;
 
     /**
+     * @var string|null Site handle to be used for purging
+     */
+    public ?string $siteHandle = null;
+
+    /**
      * @inheritdoc
      */
     public function execute($queue): void
     {
-        Cloudflare::$plugin->api->purgeUrls($this->urls);
+        Cloudflare::$plugin->api->purgeUrls($this->urls, $this->siteHandle);
         $this->setProgress($queue, 100);
     }
 

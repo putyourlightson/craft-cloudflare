@@ -78,7 +78,7 @@ class Rules extends Component
     /**
      * Purge any related URLs we’ve established with custom rules.
      */
-    public function purgeCachesForUrl(string $url, bool $immediately = false): void
+    public function purgeCachesForUrl(string $url, ?string $siteHandle = null, bool $immediately = false): void
     {
         // max limit for Cloudflare API
         $cloudflareRuleCountLimit = 30;
@@ -110,10 +110,10 @@ class Rules extends Component
         }
 
         if ($immediately) {
-            Cloudflare::$plugin->api->purgeUrls($urlsToPurge);
+            Cloudflare::$plugin->api->purgeUrls($urlsToPurge, $siteHandle);
         } else {
             Queue::push(
-                new PurgeCloudflareCache(['urls' => $urlsToPurge]),
+                new PurgeCloudflareCache(['urls' => $urlsToPurge, 'siteHandle' => $siteHandle]),
                 Cloudflare::$plugin->settings->queueJobPriority,
             );
         }
