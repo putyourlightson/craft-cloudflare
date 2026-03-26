@@ -1,5 +1,9 @@
 # Release Notes for Cloudflare
 
+## 2.3.0 - 2026-03-26
+
+- Removed the domain parser.
+
 ## 2.2.0 - 2025-07-21
 
 ### Added
