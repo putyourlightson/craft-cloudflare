@@ -1,8 +1,9 @@
 # Release Notes for Cloudflare
 
-## 3.1.1 - Unreleased
+## 3.1.1 - 2026-03-26
 
 - Fixed a bug in which image transform URLs containing URL encoded characters were not purged ([#76](https://github.com/putyourlightson/craft-cloudflare/issues/76)).
+- Fixed a bug in which the queue job progress status was displaying 10000% on completion ([#84](https://github.com/putyourlightson/craft-cloudflare/issues/84)).
 
 ## 3.1.0 - 2025-07-12
 
