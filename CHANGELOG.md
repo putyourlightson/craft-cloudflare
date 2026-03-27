@@ -1,6 +1,6 @@
 # Release Notes for Cloudflare
 
-## 3.1.2 - Unreleased
+## 3.1.2 - 2026-03-27
 
 - Fixed a bug in which zone selection in plugin settings was unreliable ([#86](https://github.com/putyourlightson/craft-cloudflare/issues/86)).
 
