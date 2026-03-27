@@ -1,5 +1,9 @@
 # Release Notes for Cloudflare
 
+## 2.2.2 - Unreleased
+
+- Fixed a bug in which zone selection in plugin settings was unreliable ([#86](https://github.com/putyourlightson/craft-cloudflare/issues/86)).
+
 ## 2.2.1 - 2026-03-26
 
 - Fixed a bug in which image transform URLs containing URL encoded characters were not purged ([#76](https://github.com/putyourlightson/craft-cloudflare/issues/76)).
