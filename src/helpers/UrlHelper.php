@@ -68,16 +68,21 @@ class UrlHelper
          */
         if ($includeZoneCheck) {
             if (!$urlDomain = parse_url($url, PHP_URL_HOST)) {
+                Craft::info(
+                    sprintf('Couldn’t parse URL: %s', $url),
+                    'cloudflare'
+                );
+
                 return false;
             }
 
-            if (strtolower($urlDomain) !== strtolower($cfDomainName)) {
+            if (!str_contains(strtolower($urlDomain), strtolower($cfDomainName))) {
                 Craft::info(
                     sprintf('Ignoring URL outside zone: %s', $url),
                     'cloudflare'
                 );
 
-                return false; // base domain doesn't match Cloudflare zone
+                return false;
             }
         }
 

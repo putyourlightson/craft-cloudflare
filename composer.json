@@ -1,7 +1,7 @@
 {
   "name": "putyourlightson/craft-cloudflare",
   "description": "Purge Cloudflare caches from Craft.",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "type": "craft-plugin",
   "license": "mit",
   "require": {

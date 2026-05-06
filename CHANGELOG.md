@@ -1,5 +1,9 @@
 # Release Notes for Cloudflare
 
+## 2.2.3 - Unreleased
+
+- Fixed a bug in which subdomains were not matching zone URLs ([#87](https://github.com/putyourlightson/craft-cloudflare/issues/87)).
+
 ## 2.2.2 - 2026-03-27
 
 - Fixed a bug in which zone selection in plugin settings was unreliable ([#86](https://github.com/putyourlightson/craft-cloudflare/issues/86)).
