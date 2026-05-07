@@ -68,6 +68,11 @@ class UrlHelper
          */
         if ($includeZoneCheck) {
             if (!$urlDomain = parse_url($url, PHP_URL_HOST)) {
+                Craft::info(
+                    sprintf('Couldn’t parse URL: %s', $url),
+                    'cloudflare'
+                );
+
                 return false;
             }
 
