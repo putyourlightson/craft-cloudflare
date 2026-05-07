@@ -76,7 +76,7 @@ class UrlHelper
                 return false;
             }
 
-            if (!str_contains(strtolower($urlDomain), strtolower($cfDomainName))) {
+            if (!str_ends_with(strtolower($urlDomain), strtolower($cfDomainName))) {
                 Craft::info(
                     sprintf('Ignoring URL outside zone: %s', $url),
                     'cloudflare'
