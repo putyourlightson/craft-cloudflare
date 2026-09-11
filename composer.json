@@ -1,7 +1,7 @@
 {
   "name": "putyourlightson/craft-cloudflare",
   "description": "Purge Cloudflare caches from Craft.",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "type": "craft-plugin",
   "license": "mit",
   "require": {
@@ -10,7 +10,8 @@
   },
   "require-dev": {
     "craftcms/ecs": "dev-main",
-    "craftcms/phpstan": "dev-main"
+    "craftcms/phpstan": "dev-main",
+    "phpstan/phpstan": "^2.0"
   },
   "autoload": {
     "psr-4": {

@@ -69,9 +69,8 @@ if (purgeUrlsToggle) {
 
 function fetchZones() {
     const settings = getAuthSettings();
-    const selectedZoneId = zoneSelect.querySelector("option:checked")
-        ? zoneSelect.querySelector("option:checked").value
-        : false;
+    const selectedZoneId = zoneSelect.value || zoneInputElement.value;
+    const zoneIsStatic = zoneInputWrap.dataset.static === "true";
     showSpinner();
 
     Craft.postActionRequest(
@@ -115,14 +114,27 @@ function fetchZones() {
 
             // restore selection
             if (selectedZoneId) {
+                const selectedZoneExists = Array.from(zoneSelect.options).some(
+                    (option) => option.value === selectedZoneId
+                );
+
+                if (!selectedZoneExists) {
+                    const option = document.createElement("option");
+
+                    option.value = selectedZoneId;
+                    option.textContent = selectedZoneId;
+
+                    zoneSelect.appendChild(option);
+                }
+
                 zoneSelect.value = selectedZoneId;
             }
 
-            if (response.length === 0) {
+            if (response.length === 0 || zoneIsStatic) {
                 // hide + disable menu, enable + display input
                 zoneSelect.disabled = true;
                 zoneSelectWrap.classList.add("hidden");
-                zoneInputElement.disabled = false;
+                zoneInputElement.disabled = zoneIsStatic;
                 zoneInputWrap.classList.remove("hidden");
             }
             else {

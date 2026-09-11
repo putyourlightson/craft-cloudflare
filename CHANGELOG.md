@@ -1,5 +1,9 @@
 # Release Notes for Cloudflare
 
+## 3.1.3 - 2026-09-11
+
+- Fixed a bug in which an environment variable used for the Cloudflare zone could be replaced by a zone ID ([#89](https://github.com/putyourlightson/craft-cloudflare/issues/89)).
+
 ## 3.1.2 - 2026-03-27
 
 - Fixed a bug in which zone selection in plugin settings was unreliable ([#86](https://github.com/putyourlightson/craft-cloudflare/issues/86)).
