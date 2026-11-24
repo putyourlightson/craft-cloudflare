@@ -11,6 +11,7 @@ use craft\base\Component;
 use craft\helpers\Json;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use putyourlightson\cloudflare\helpers\ConfigHelper;
 use putyourlightson\cloudflare\helpers\UrlHelper;
@@ -316,6 +317,43 @@ class Api extends Component
         } catch (ClientException|RequestException $exception) {
             return $this->_handleApiException($exception, 'URL purge', $urls);
         }
+    }
+
+    /**
+     * Purge cached content with the given Cloudflare cache tags.
+     *
+     * Earlier successful batches remain purged if a later request fails.
+     *
+     * @param string[] $tags Cache tags to purge.
+     * @return bool Whether every batch succeeded. An empty list succeeds without an API request.
+     * @throws GuzzleException If a purge request fails at the HTTP or transport layer.
+     */
+    public function purgeTags(array $tags): bool
+    {
+        if ($tags === []) {
+            return true;
+        }
+
+        $client = $this->getClient();
+        $zone = $client ? ConfigHelper::getParsedSetting('zone') : null;
+        if (!$client || !$zone) {
+            return false;
+        }
+
+        foreach (array_chunk(array_unique($tags), 100) as $batch) {
+            $response = $client->post(sprintf('zones/%s/purge_cache', $zone), [
+                'json' => ['tags' => $batch],
+                'http_errors' => true,
+                'timeout' => 10,
+            ]);
+            $responseBody = Json::decode((string)$response->getBody(), false);
+
+            if ($response->getStatusCode() !== 200 || !($responseBody->success ?? false)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
