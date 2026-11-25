@@ -1,5 +1,10 @@
 # Release Notes for Cloudflare
 
+## 3.2.0 - 2026-11-24
+
+- Added support for purging cached content by cache tag ([#91](https://github.com/putyourlightson/craft-cloudflare/pull/91)).
+- URL purges now run in batches of up to 100 URLs, including purges triggered by custom rules.
+
 ## 3.1.3 - 2026-09-11
 
 - Fixed a bug in which an environment variable used for the Cloudflare zone could be replaced by a zone ID ([#89](https://github.com/putyourlightson/craft-cloudflare/issues/89)).

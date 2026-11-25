@@ -11,6 +11,7 @@ use craft\base\Component;
 use craft\helpers\Json;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use putyourlightson\cloudflare\helpers\ConfigHelper;
@@ -29,6 +30,11 @@ class Api extends Component
      * Base Cloudflare API URL.
      */
     public const API_BASE_URL = 'https://api.cloudflare.com/client/v4/';
+
+    /**
+     * Batch size for purging.
+     */
+    private const PURGE_BATCH_SIZE = 100;
 
     /**
      * @var ?Client
@@ -262,61 +268,42 @@ class Api extends Component
     }
 
     /**
-     * Clear specific URLs in Cloudflare’s cache.
+     * Clear specific URLs in Cloudflare’s cache in batches.
      * https://developers.cloudflare.com/api/resources/cache/methods/purge/
+     *
+     * Returns the first failure or, if every batch succeeds, the last response.
      *
      * @param string[] $urls array of absolute URLs
      */
     public function purgeUrls(array $urls = []): mixed
     {
-        if (!$this->getClient()) {
+        $client = $this->getClient();
+        if ($client === null) {
             return null;
         }
 
         $urls = UrlHelper::prepUrls($urls);
 
-        // don’t do anything if URLs are missing
-        if (count($urls) === 0) {
-            return $this->_failureResponse(
-                'Cannot purge; no valid URLs.'
-            );
+        if ($urls === []) {
+            return $this->_failureResponse('Cannot purge. No valid URLs.');
         }
 
-        try {
-            $response = $this->getClient()->delete(sprintf(
-                'zones/%s/purge_cache',
-                ConfigHelper::getParsedSetting('zone')
-            ),
-                ['body' => Json::encode(['files' => $urls])]
-            );
+        $zone = ConfigHelper::getParsedSetting('zone');
+        if (!$zone) {
+            return $this->_failureResponse('Cannot purge URLs without a configured Cloudflare zone.');
+        }
 
-            $responseBody = Json::decode($response->getBody(), false);
-
-            if ($response->getStatusCode() !== 200) {
-                Craft::info(sprintf(
-                    'Request failed: %s',
-                    Json::encode($responseBody)
-                ), 'cloudflare');
-
-                return (object)[
-                    'success' => false,
-                    'message' => $response->getBody()->getContents(),
-                    'result' => [],
-                ];
+        $uri = sprintf('zones/%s/purge_cache', $zone);
+        $failure = null;
+        $response = null;
+        foreach (array_chunk($urls, self::PURGE_BATCH_SIZE) as $batch) {
+            $response = $this->_purgeUrlBatch($client, $uri, $batch);
+            if (!$response->success) {
+                $failure ??= $response;
             }
-
-            $urlString = implode(',', $urls);
-
-            Craft::info(sprintf(
-                'Purged URLs (%d): %s',
-                $responseBody->result->id,
-                $urlString
-            ), 'cloudflare');
-
-            return $responseBody;
-        } catch (ClientException|RequestException $exception) {
-            return $this->_handleApiException($exception, 'URL purge', $urls);
         }
+
+        return $failure ?? $response;
     }
 
     /**
@@ -340,13 +327,14 @@ class Api extends Component
             return false;
         }
 
-        foreach (array_chunk(array_unique($tags), 100) as $batch) {
-            $response = $client->post(sprintf('zones/%s/purge_cache', $zone), [
+        $uri = sprintf('zones/%s/purge_cache', $zone);
+        foreach (array_chunk(array_unique($tags), self::PURGE_BATCH_SIZE) as $batch) {
+            $response = $client->post($uri, [
                 'json' => ['tags' => $batch],
                 'http_errors' => true,
                 'timeout' => 10,
             ]);
-            $responseBody = Json::decode((string)$response->getBody(), false);
+            $responseBody = Json::decodeIfJson((string)$response->getBody(), false);
 
             if ($response->getStatusCode() !== 200 || !($responseBody->success ?? false)) {
                 return false;
@@ -365,6 +353,40 @@ class Api extends Component
     }
 
     /**
+     * @param string[] $urls
+     */
+    private function _purgeUrlBatch(Client $client, string $uri, array $urls): object
+    {
+        try {
+            $response = $client->post($uri, ['json' => ['files' => $urls]]);
+            $body = (string)$response->getBody();
+
+            if ($response->getStatusCode() !== 200) {
+                return $this->_failureResponse(sprintf('Request failed: %s', $body));
+            }
+
+            $responseBody = Json::decodeIfJson($body, false);
+            if (!isset($responseBody->success)) {
+                return $this->_failureResponse('Cloudflare returned an invalid URL purge response.');
+            }
+
+            if ($responseBody->success) {
+                Craft::info(sprintf(
+                    'Purged URLs (%s): %s',
+                    $responseBody->result->id ?? '',
+                    implode(',', $urls),
+                ), 'cloudflare');
+            }
+
+            return $responseBody;
+        } catch (ConnectException $exception) {
+            return $this->_failureResponse($exception->getMessage());
+        } catch (RequestException $exception) {
+            return $this->_handleApiException($exception, 'URL purge', $urls);
+        }
+    }
+
+    /**
      * Quietly handle an exception from the Cloudflare API.
      *
      * @param mixed $exception (ClientException or RequestException)
@@ -375,14 +397,16 @@ class Api extends Component
      */
     private function _handleApiException(mixed $exception, string $action, array $urls = []): object
     {
-        if ($responseBody = Json::decode($exception->getResponse()->getBody(), false)) {
+        $response = $exception->getResponse();
+        $responseBody = $response === null ? null : Json::decodeIfJson((string)$response->getBody(), false);
+        if (is_object($responseBody)) {
             $message = $action . " failed.\n";
 
             if ($urls) {
                 $message .= '- urls: ' . implode(',', $urls) . "\n";
             }
 
-            foreach ($responseBody->errors as $error) {
+            foreach ($responseBody->errors ?? [] as $error) {
                 $message .= "- error code " . $error->code . ": " . $error->message . "\n";
             }
 

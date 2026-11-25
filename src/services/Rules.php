@@ -10,7 +10,6 @@ use craft\helpers\UrlHelper;
 use putyourlightson\cloudflare\Cloudflare;
 use putyourlightson\cloudflare\queue\jobs\PurgeCloudflareCache;
 use putyourlightson\cloudflare\records\RuleRecord;
-use yii\base\NotSupportedException;
 use yii\db\ActiveRecordInterface;
 
 /**
@@ -80,8 +79,6 @@ class Rules extends Component
      */
     public function purgeCachesForUrl(string $url, bool $immediately = false): void
     {
-        // max limit for Cloudflare API
-        $cloudflareRuleCountLimit = 30;
         $relatedRules = $this->getRulesForUrl($url);
         $urlsToPurge = [];
 
@@ -91,18 +88,6 @@ class Rules extends Component
             foreach ($clearList as $clearUrl) {
                 $urlsToPurge[] = UrlHelper::siteUrl($clearUrl);
             }
-        }
-
-        $numRules = count($urlsToPurge);
-
-        if ($numRules > $cloudflareRuleCountLimit) {
-            throw new NotSupportedException(
-                sprintf(
-                    'Too many rules; API requests are limited to %d and you provided %d',
-                    $cloudflareRuleCountLimit,
-                    $numRules
-                )
-            );
         }
 
         if (empty($urlsToPurge)) {
